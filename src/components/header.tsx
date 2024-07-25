@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 const Header = (props: { openCode: () => void }) => {
     return (
       <div className="w-full h-20 bg-white flex justify-between items-center px-4">
-        <h1 className="text-xl font-bold">Copilot Kit</h1>
+        <h1 className="text-xl font-bold">V0</h1>
         <div className="flex gap-x-2">
           <Button
             className="  px-6 py-1 rounded-md space-x-1"
