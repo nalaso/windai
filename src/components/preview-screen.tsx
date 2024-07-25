@@ -151,11 +151,20 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui'
+import simpleJsxParser from '@/lib/parser';
+import { useEffect, useState, ReactNode } from 'react';
 
 const PreviewScreen = ({ html_code }: { html_code: string }) => {
+  const [parsedHtml, setParsedHtml] = useState<ReactNode>(html_code);
+
+  useEffect(() => {
+    const parsedJsx = simpleJsxParser(html_code, { Button });
+    setParsedHtml(parsedJsx);
+  }, [html_code])
+  
     return (
       <div className="w-full h-full bg-white rounded-lg  shadow-lg p-2 border">
-        {<div dangerouslySetInnerHTML={{ __html: html_code }} />}
+        {parsedHtml}
       </div>
     );
   };
