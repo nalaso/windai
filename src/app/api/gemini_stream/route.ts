@@ -1,29 +1,29 @@
-import { AnthropicVertex } from '@anthropic-ai/vertex-sdk';
+import { createVertex } from '@ai-sdk/google-vertex';
+import { generateText, streamText } from 'ai'
 
 export async function POST(req: Request): Promise<Response> {
-    const { codeDescription } = await req.json();
+    const  {prompt}  = await req.json();
+    console.log("prompt", prompt);
+    const codeDescription = prompt;
 
     console.log("codeDescription", codeDescription);
     
-
     const projectId = 'agent-427709';
     const region = 'us-east5';
 
-    const anthropic = new AnthropicVertex({
-        projectId,
-        region,
+    const vertex = createVertex({
+        project: projectId,
+        location: region,
     });
 
-    const response = await anthropic.messages.create({
-        messages: [
-            { role: 'user', content: `
+    const content = `
                 Act as a React developer using shadcn/ui components and TailwindCSS.
                 Design pages or components with beautiful styles using shadcn/ui components wherever possible.
                 Do not add any code comments.
                 Do not add any import statements.
                 do not add any function declarations.
                 do not enclose in backticks or quotes.
-                do not add statements like use client, use server, etc.
+                do not include statements like 'use client', 'use server', etc.
                 just provide the JSX code as string.
                 Only provide the HTML code without any .
                 Add rich colors and visual elements to the UI.
@@ -42,22 +42,13 @@ export async function POST(req: Request): Promise<Response> {
                 The response should be just React JSX code without import statements or function declarations. Assume all necessary components are already imported.
                 For any shadcn/ui components that require client-side interactivity (like Dropdown, Dialog, etc.), wrap them in a client-side component using the 'use client' directive at the top of the code block.
                 Use Tailwind CSS classes for additional styling and layout.
-                Now generate React JSX code for this: ${codeDescription}        
-            ` },
-        ],
-        model: 'claude-3-5-sonnet@20240620',
-        max_tokens: 4096,
-    });
+                Now generate React JSX code for this: ${codeDescription}          
+            ` 
 
-    console.log("response", response);
+    const result = await streamText({
+        model: vertex('gemini-1.5-pro'),
+        prompt: content
+    })
 
-    const text = response.content[0].type == "text" ? response.content[0][response.content[0].type] : response.content[0].type;
-    const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '')
-    console.log(text);
-
-    return new Response(JSON.stringify(code), {
-        headers: {
-            'content-type': 'application/json',
-        },
-    });
+    return result.toAIStreamResponse();
 }

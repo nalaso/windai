@@ -42,7 +42,7 @@ export async function POST(req: Request): Promise<Response> {
                 The response should be just React JSX code without import statements or function declarations. Assume all necessary components are already imported.
                 For any shadcn/ui components that require client-side interactivity (like Dropdown, Dialog, etc.), wrap them in a client-side component using the 'use client' directive at the top of the code block.
                 Use Tailwind CSS classes for additional styling and layout.
-                Now generate React JSX code for this: ${codeDescription}        
+                Now generate React JSX code for this: ${codeDescription}          
             ` },
         ],
         model: 'claude-3-5-sonnet@20240620',

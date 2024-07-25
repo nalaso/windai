@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,20 +12,26 @@ import Header from "@/components/header";
 import Sidebar from "@/components/sidebar";
 import PreviewScreen from "@/components/preview-screen";
 import { Input } from "@/components/ui/input";
-
-const tailwindCDN = `<style>
-@import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
-</style>
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-`;
+import { useCompletion } from 'ai/react'
 
 export default function Home() {
   const [advancedCode, setCodeToDisplay] = useState<string>(`<h1 class="text-gray-500"></h1>`);
   const [simpleCode, setSimpleCode] = useState(`<h1 class="text-gray-500"></h1>`);
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [codeCommand, setCodeCommand] = useState<string>("");
   const [loading, setLoading] = useState(false)
+  const { completion, input , handleInputChange, handleSubmit, isLoading} = useCompletion({
+    api: '/api/gemini_stream',
+    onFinish:(prompt: string, completion: string) => {
+      console.log("prompt", prompt);
+      console.log("completion", completion);
+      setSimpleCode(completion.replace(/use client|'use client'/g, '').replace(/```/g, '').replace(/jsx|tsx|ts|js/g, ''));
+    }
+  })
+
+  useEffect(() => {
+    if(completion)
+      console.log("completion", completion);
+    }, [completion])
 
   const generateAdvancedCode = async () => {
     try {
@@ -36,7 +42,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ codeCommand }),
+        body: JSON.stringify({ input }),
       });
 
       const codeDescription = await description.json();
@@ -51,11 +57,10 @@ export default function Home() {
       });
 
       const response = await res.json();
-      const readableCode = response + tailwindCDN;
 
-      console.log("advanced code", readableCode);
+      console.log("advanced code", response);
 
-      setCodeToDisplay(readableCode);
+      setCodeToDisplay(response);
     } catch (e) {
       console.error(e);
     }
@@ -65,20 +70,19 @@ export default function Home() {
     try {
       console.log("generateSimpleCode");
 
-      const res = await fetch('/api/anthropic', {
+      const res = await fetch('/api/gemini_stream', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ codeDescription: codeCommand }),
+        body: JSON.stringify({ codeDescription: input }),
       });
 
       const response = await res.json();
-      const readableCode = response + tailwindCDN;
 
-      console.log("simple code", readableCode);
+      console.log("simple code", response);
 
-      setSimpleCode(readableCode);
+      setSimpleCode(response);
     } catch (e) {
       console.error(e);
     }
@@ -86,8 +90,9 @@ export default function Home() {
 
   const generateCode = async () => {
     setLoading(true);
-    const promised = [generateSimpleCode(), generateAdvancedCode()];
-    await Promise.all(promised);
+    handleSubmit()
+    // const promised = [handleSubmit()];
+    // await Promise.all(promised);
     setLoading(false);
   }
 
@@ -99,15 +104,15 @@ export default function Home() {
           type="text"
           placeholder="Enter your code command"
           className="w-11/12 rounded-2xl-full bg-primary bg-gray-400 outline-none border-none text-black"
-          value={codeCommand}
-          onChange={(e) => setCodeCommand(e.target.value)}
+          value={input}
+          onChange={(e) => handleInputChange(e)}
         />
         <button
-          className="w-1/12 bg-white text-primary rounded-md hover:bg-gray-100 hover:text-primary-dark transition-all duration-300"
+          className="w-[40px] h-[40px] bg-white text-primary rounded-md hover:bg-gray-100 hover:text-primary-dark transition-all duration-300 flex items-center justify-center"
           onClick={() => generateCode()}
         >
           {
-            loading ? <ion-icon name="stop-circle-outline"></ion-icon> : <ion-icon name="send-outline"></ion-icon>
+            loading ? <ion-icon size="large" name="stop-circle-sharp"></ion-icon> : <ion-icon size="large" name="send-sharp"></ion-icon>
           }
         </button>
       </div>
@@ -137,7 +142,7 @@ export default function Home() {
           <div className="w-10/12 mt-20 m-auto">
             <p className="text-2xl font-bold my-3">UI Generated with simple prompt</p>
             <div className="h-[80vh] overflow-auto">
-              <PreviewScreen html_code={simpleCode.length<35 && loading? "Generating code..." : simpleCode} />
+              <PreviewScreen html_code={completion} />
             </div>
           </div>
         </div>
@@ -152,6 +157,11 @@ export default function Home() {
           </DialogHeader>
         </DialogContent>
       </Dialog>
+      <style>
+        @import url('https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css');
+      </style>
+      <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+      <script noModule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     </main>
   );
 }

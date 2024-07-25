@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/google-vertex": "^0.0.17",
+    "@ai-sdk/google": "^0.0.30",
+    "@ai-sdk/google-vertex": "^0.0.19",
     "@anthropic-ai/vertex-sdk": "^0.4.0",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -40,7 +41,7 @@
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-toggle-group": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
-    "ai": "^3.2.34",
+    "ai": "^3.2.36",
     "child_process": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
