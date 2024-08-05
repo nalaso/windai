@@ -4,19 +4,21 @@ import { DragHandleDots2Icon } from "@radix-ui/react-icons"
 import * as ResizablePrimitive from "react-resizable-panels"
 
 import { cn } from "@/lib/utils"
+import { forwardRef, LegacyRef } from "react"
 
-const ResizablePanelGroup = ({
+const ResizablePanelGroup = forwardRef(({
   className,
   ...props
-}: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) => (
+}: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>,ref:LegacyRef<ResizablePrimitive.ImperativePanelGroupHandle>) => (
   <ResizablePrimitive.PanelGroup
+  ref={ref}
     className={cn(
       "flex h-full w-full data-[panel-group-direction=vertical]:flex-col",
       className
     )}
     {...props}
   />
-)
+))
 
 const ResizablePanel = ResizablePrimitive.Panel
 

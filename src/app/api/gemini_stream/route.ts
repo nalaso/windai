@@ -1,5 +1,5 @@
 import { createVertex } from '@ai-sdk/google-vertex';
-import { generateText, streamText } from 'ai'
+import { streamText } from 'ai'
 
 export async function POST(req: Request): Promise<Response> {
     const  {prompt}  = await req.json();
