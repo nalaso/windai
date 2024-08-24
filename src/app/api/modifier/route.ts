@@ -1,12 +1,7 @@
 import { AnthropicVertex } from '@anthropic-ai/vertex-sdk';
 
 export async function POST(req: Request): Promise<Response> {
-    const  {codeDescription} = await req.json();
-
-    // const codeDescription = prompt
-
-    console.log("codeDescription", process.env.ANTHROPIC_PROJECT_ID);
-    
+    const  {modifyDescription, precode} = await req.json();
 
     const projectId = 'agent-427709';
     const region = 'us-east5';
@@ -24,6 +19,8 @@ export async function POST(req: Request): Promise<Response> {
             { role: 'user', content: `
                 Act as a React developer using shadcn/ui components and TailwindCSS.
                 Design pages or components with beautiful styles using shadcn/ui components wherever possible.
+                Most important - Dont change the code unnecessarily, just modify the code to match the description.
+                The desrired description is provided at the end of the prompt.
                 Do not add any code comments.
                 Do not add any import statements.
                 do not add any function declarations.
@@ -31,10 +28,6 @@ export async function POST(req: Request): Promise<Response> {
                 do not add statements like use client, use server, etc.
                 just provide the JSX code as string.
                 DO not provide any explanation or comments like here is the code.
-                Only provide the HTML code without any .
-                Add rich colors and visual elements to the UI.
-                Add necessary padding and margin to the elements.
-                Add necessary spacing between elements.
                 No elements should be neither touching each other nor overflwowing other elements.
                 Provide only the React JSX code without any quotes and in string format, without any explanations or inline comments.
                 Based on the component details provided, return the corresponding React code using shadcn/ui components in a triple backtick code block.
@@ -45,11 +38,9 @@ export async function POST(req: Request): Promise<Response> {
                 if using CollapsibleTrigger with Collapsible, ensure that the CollapsibleTrigger doesn't contain asChild as attribute.
                 When using icons with text, ensure that it is inside a Flex container with items center and add some gap between icon and the text.
                 Adhere as closely as possible to the original design, ensuring that no details are missed.
-                Add rich but not cluttered UI visual elements or color matching.
                 The response should be just React JSX code without import statements or function declarations. Assume all necessary components are already imported.
-                For any shadcn/ui components that require client-side interactivity (like Dropdown, Dialog, etc.), wrap them in a client-side component using the 'use client' directive at the top of the code block.
-                Use Tailwind CSS classes for additional styling and layout. use tailwind propertied to create responsive design which works for desktop, tablet, and mobile. Responsive design is the highest priority.eg-if there is card componenets in row, it should be in column in mobile view.
-                Now generate React JSX code for this: ${codeDescription}        
+                Use Tailwind CSS classes for additional styling and layout.
+                Now modify React JSX code: ${precode} based on this description: ${modifyDescription}      
             ` },
         ],
         model: 'claude-3-5-sonnet@20240620',

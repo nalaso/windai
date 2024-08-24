@@ -159,11 +159,11 @@ export default function Home() {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-      <style>
+      {/* <style>
         @import url(&#x27;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&#x27;);
       </style>
       <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-      <script noModule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+      <script noModule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script> */}
     </main>
   );
 }

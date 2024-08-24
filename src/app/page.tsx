@@ -1,14 +1,29 @@
 "use client"
+import AuthModal from "@/components/auth-modal";
 import Header from "@/components/header";
 import Suggestions from "@/components/suggestions";
 import { Button, Card, Input } from "@/components/ui";
+import { useAuthModal } from "@/hooks/useAuthModal";
 import { useUIState } from "@/hooks/useUIState";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { SendHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
     const { push } = useRouter();
     const { input, setInput } = useUIState();
+    const { toggle } = useAuthModal()
+    const {user} = useUser();
+
+    const { signOut } = useClerk()
+
+    const generateUI = () => {
+       if(user){
+           push('/ui');
+       }else{
+        toggle()
+        }
+    }
 
     return (
         <div>
@@ -30,7 +45,7 @@ export default function Home() {
                             className="flex-grow rounded-full bg-black px-6 py-4 text-sm text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 border-0 focus-visible:border-0 focus:ring-gray-600"
                         />
                         <Button
-                        onClick={()=>push('/ui')}
+                        onClick={()=>generateUI()}
                          variant="ghost" size="icon" className="rounded-md w-12 h-12 text-gray-200 bg-black hover:bg-black hover:text-gray-600">
                         <SendHorizontal />
                         </Button>
@@ -38,7 +53,7 @@ export default function Home() {
                     <Suggestions/>
                 </div>
             </div>
-            
+            <AuthModal />
         </div>
     );
 }

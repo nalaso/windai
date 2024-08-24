@@ -8,18 +8,10 @@ import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { useEffect, useState } from "react";
 
 interface Uis {
-    precise:{
-        loading: boolean,
-        code: string
-    },
-    balanced:{
-        loading: boolean,
-        code: string
-    },
-    creative:{
-        loading: boolean,
-        code: string
-    }
+    [key: string]: {
+        loading: boolean;
+        code: string;
+    };
 }
 
 const UIRigthHeader = ({
@@ -29,15 +21,22 @@ const UIRigthHeader = ({
     setuis,
     uis,
     setMode,
-    mode
-}:{
+    mode,
+    currentState
+}: {
     setDesktop: () => void,
     setTablet: () => void,
     setPhone: () => void,
     setuis: (uis: Uis) => void,
-    uis: Uis,
+    uis: {
+		[key: string]: {
+			loading: boolean;
+			code: string;
+		};
+	},
     setMode: (mode: string) => void,
     mode: string,
+    currentState: number
 }) => {
     const [type, setType] = useState("desktop")
 
@@ -66,11 +65,11 @@ const UIRigthHeader = ({
             </div>
             <div className="flex space-x-2 items-center ">
                 <ToggleGroup
-                value={type}
-                onValueChange={(value) => {
-                  if (value) setType(value);
-                }}
-                 className="bg-gray-200 p-0.5 rounded-lg" type="single">
+                    value={type}
+                    onValueChange={(value) => {
+                        if (value) setType(value);
+                    }}
+                    className="bg-gray-200 p-0.5 rounded-lg" type="single">
                     <ToggleGroupItem value="desktop" aria-label="Toggle bold">
                         <LaptopMinimal className="h-4 w-4" />
                     </ToggleGroupItem>
@@ -82,45 +81,53 @@ const UIRigthHeader = ({
                     </ToggleGroupItem>
                 </ToggleGroup>
                 <ToggleGroup
-                value={mode}
-                onValueChange={(value) => {
-                  if (value) setMode(value);
-                }}
-                 className="bg-gray-200 p-0.5 rounded-lg" type="single">
+                    value={mode}
+                    onValueChange={(value) => {
+                        if (value) setMode(value);
+                    }}
+                    className="bg-gray-200 p-0.5 rounded-lg" type="single">
                     <ToggleGroupItem value="precise" aria-label="Toggle bold">
                         Precise
                         {
-                            uis.precise.loading?(
-                                <LoaderCircle className="h-4 w-4 ml-1 animate-spin"/>
-                            ):(
+                            uis.precise.loading ? (
+                                <LoaderCircle className="h-4 w-4 ml-1 animate-spin" />
+                            ) : (
                                 <PackageSearch className="h-4 w-4 ml-1" />
                             )
                         }
                     </ToggleGroupItem>
-                    <ToggleGroupItem value="balanced" aria-label="Toggle italic">
-                        Balanced
-                        {
-                            uis.balanced.loading?(
-                                <LoaderCircle className="h-4 w-4 ml-1 animate-spin"/>
-                            ):(
-                                <Scale className="h-4 w-4 ml-1" />
-                            )
-                        }
-                    </ToggleGroupItem>
-                    <ToggleGroupItem value="creative" aria-label="Toggle underline">
-                        Creative
-                        {
-                            uis.creative.loading?(
-                                <LoaderCircle className="h-4 w-4 ml-1 animate-spin"/>
-                            ):(
-                                <Cpu className="h-4 w-4 ml-1" />
-                            )
-                        }
-                    </ToggleGroupItem>
+                    {
+                        currentState==0 && (
+                            <ToggleGroupItem value="balanced" aria-label="Toggle italic">
+                                Balanced
+                                {
+                                    uis.balanced.loading ? (
+                                        <LoaderCircle className="h-4 w-4 ml-1 animate-spin" />
+                                    ) : (
+                                        <Scale className="h-4 w-4 ml-1" />
+                                    )
+                                }
+                            </ToggleGroupItem>
+                        )
+                    }
+                    {
+                        currentState==0 && (
+                            <ToggleGroupItem value="creative" aria-label="Toggle underline">
+                                Creative
+                                {
+                                    uis.creative.loading ? (
+                                        <LoaderCircle className="h-4 w-4 ml-1 animate-spin" />
+                                    ) : (
+                                        <Cpu className="h-4 w-4 ml-1" />
+                                    )
+                                }
+                            </ToggleGroupItem>
+                        )
+                    }
                 </ToggleGroup>
                 <Button variant="default" className="rounded-lg">
                     Code
-                    <CodeXml className="ml-2"/>
+                    <CodeXml className="ml-2" />
                 </Button>
             </div>
         </div>

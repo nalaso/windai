@@ -13,7 +13,10 @@
     "@ai-sdk/google": "^0.0.30",
     "@ai-sdk/google-vertex": "^0.0.19",
     "@anthropic-ai/vertex-sdk": "^0.4.0",
+    "@clerk/elements": "^0.13.0",
+    "@clerk/nextjs": "^5.3.1",
     "@hookform/resolvers": "^3.9.0",
+    "@prisma/client": "5.18.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
@@ -77,6 +80,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
+    "prisma": "^5.18.0",
     "tailwindcss": "^3.4.6",
     "typescript": "^5"
   }

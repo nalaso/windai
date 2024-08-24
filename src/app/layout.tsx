@@ -1,3 +1,10 @@
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -16,20 +23,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <head>
         <Script
           type="module"
           src={"https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"}
           strategy="afterInteractive" // lazyOnload, afterInteractive
-        />
+          />
         <Script
           noModule
           src={"https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"}
           strategy="afterInteractive" // lazyOnload, afterInteractive
-        />
+          />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {children}
+        </body>
     </html>
+          </ClerkProvider>
   );
 }
