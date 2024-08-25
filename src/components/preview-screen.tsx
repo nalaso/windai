@@ -11,9 +11,6 @@ const PreviewScreen = ({ html_code }: { html_code: string }) => {
         components={{ ...UI }}
         jsx={html_code}
         />
-        <style>
-        @import url(&#x27;https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css&#x27;);
-      </style>
         </div>
     // </div>
   );

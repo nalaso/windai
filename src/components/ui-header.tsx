@@ -7,7 +7,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useAuthModal } from "@/hooks/useAuthModal";
 
-const UIHeader = () => {
+const UIHeader = ({mainPrompt}:{mainPrompt:string}) => {
     const router = useRouter()
     const {toggle} = useAuthModal()
     return (
@@ -15,7 +15,7 @@ const UIHeader = () => {
             <div className="flex space-x-2 h-8 items-center">
                 <Button onClick={() => router.push("/")} variant={"ghost"} className="text-xl font-bold p-0">V1</Button>
                 <Separator orientation="vertical" />
-                <Badge variant={"secondary"} className="rounded-xl">prompt</Badge>
+                <Badge variant={"secondary"} className="rounded-xl">{mainPrompt}</Badge>
                 <Badge variant={"outline"} className="rounded-xl space-x-1">
                     <LockOpen size={14} />
                     <p>Public</p>

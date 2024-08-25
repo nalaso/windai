@@ -39,6 +39,7 @@ model SubPrompt {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   UIId      String   @db.ObjectId
   SUBId     String   @unique
+  createdAt DateTime @default(now())
   subPrompt String
   code      Code[]
   UI        UI       @relation(fields: [UIId], references: [id], onDelete: Cascade)
@@ -46,7 +47,7 @@ model SubPrompt {
 
 model Code{
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  promptId String @db.ObjectId
+  promptId String @db.ObjectId @unique
   code String
   prompt SubPrompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
 }

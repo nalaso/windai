@@ -19,6 +19,8 @@ interface UIState {
 
 const UIRigthHeader = ({
     UIId,
+    subPrompt,
+    selectedVersion,
     setPanelView,
     setUiState,
     uiState,
@@ -27,6 +29,8 @@ const UIRigthHeader = ({
     currentState
 }: {
     UIId: string,
+    subPrompt: string,
+    selectedVersion: number,
     setPanelView: (type: string) => void,
     setUiState: (uiState: UIState) => void,
     uiState: {
@@ -60,7 +64,7 @@ const UIRigthHeader = ({
                     <AvatarFallback>NS</AvatarFallback>
                 </Avatar>
                 <Separator className="h-6" orientation="vertical" />
-                <Badge variant={"secondary"} className="rounded-xl">prompt</Badge>
+                <Badge variant={"secondary"} className="rounded-xl">{subPrompt}</Badge>
                 <Button variant={"ghost"} className="rounded-full" size={"icon"}>
                     <RefreshCw className="text-gray-600" size={16} />
                 </Button>
@@ -100,7 +104,7 @@ const UIRigthHeader = ({
                         }
                     </ToggleGroupItem>
                     {
-                        currentState==0 && (
+                        selectedVersion==0 && (
                             <ToggleGroupItem value="balanced" aria-label="Toggle italic">
                                 Balanced
                                 {
@@ -114,7 +118,7 @@ const UIRigthHeader = ({
                         )
                     }
                     {
-                        currentState==0 && (
+                        selectedVersion==0 && (
                             <ToggleGroupItem value="creative" aria-label="Toggle underline">
                                 Creative
                                 {

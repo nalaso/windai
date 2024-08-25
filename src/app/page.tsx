@@ -36,7 +36,7 @@ export default function Home() {
                         Generate. Ship. Done.
                     </p>
                     <p>
-                        Generate UI with shadcn/ui from text prompts and <strike>images 😢</strike>.
+                        Generate UI with shadcn/ui from text prompts and <del>images 😢</del>.
                     </p>
                     <Card className="flex w-full space-x-2 bg-black items-center">
                         <Input
