@@ -10,7 +10,7 @@ import LikeButton from "./like-button";
 import { toggleLike } from "@/actions/ui/toggle-like-ui";
 import { useAuth, useUser } from "@clerk/nextjs";
 
-interface Uis {
+interface UIState {
     [key: string]: {
         loading: boolean;
         code: string;
@@ -19,21 +19,17 @@ interface Uis {
 
 const UIRigthHeader = ({
     UIId,
-    setDesktop,
-    setTablet,
-    setPhone,
-    setuis,
-    uis,
+    setPanelView,
+    setUiState,
+    uiState,
     setMode,
     mode,
     currentState
 }: {
     UIId: string,
-    setDesktop: () => void,
-    setTablet: () => void,
-    setPhone: () => void,
-    setuis: (uis: Uis) => void,
-    uis: {
+    setPanelView: (type: string) => void,
+    setUiState: (uiState: UIState) => void,
+    uiState: {
 		[key: string]: {
 			loading: boolean;
 			code: string;
@@ -48,13 +44,7 @@ const UIRigthHeader = ({
     const [liked, setLiked] = useState(false)     
 
     useEffect(() => {
-        if (type === "desktop") {
-            setDesktop();
-        } else if (type === "tablet") {
-            setTablet();
-        } else if (type === "phone") {
-            setPhone();
-        }
+        setPanelView(type)
     }, [type])
 
     const toggleLikeClick = async() => {
@@ -102,7 +92,7 @@ const UIRigthHeader = ({
                     <ToggleGroupItem value="precise" aria-label="Toggle bold">
                         Precise
                         {
-                            uis.precise.loading ? (
+                            uiState.precise.loading ? (
                                 <LoaderCircle className="h-4 w-4 ml-1 animate-spin" />
                             ) : (
                                 <PackageSearch className="h-4 w-4 ml-1" />
@@ -114,7 +104,7 @@ const UIRigthHeader = ({
                             <ToggleGroupItem value="balanced" aria-label="Toggle italic">
                                 Balanced
                                 {
-                                    uis.balanced.loading ? (
+                                    uiState.balanced.loading ? (
                                         <LoaderCircle className="h-4 w-4 ml-1 animate-spin" />
                                     ) : (
                                         <Scale className="h-4 w-4 ml-1" />
@@ -128,7 +118,7 @@ const UIRigthHeader = ({
                             <ToggleGroupItem value="creative" aria-label="Toggle underline">
                                 Creative
                                 {
-                                    uis.creative.loading ? (
+                                    uiState.creative.loading ? (
                                         <LoaderCircle className="h-4 w-4 ml-1 animate-spin" />
                                     ) : (
                                         <Cpu className="h-4 w-4 ml-1" />

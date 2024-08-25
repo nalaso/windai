@@ -42,7 +42,7 @@ const UI = ({ params }: { params: any }) => {
 		views: number;
 	} | null>(null)
 
-	const [uis, setuis] = useState<{
+	const [uiState, setUiState] = useState<{
 		[key: string]: {
 			loading: boolean;
 			code: string;
@@ -97,52 +97,39 @@ const UI = ({ params }: { params: any }) => {
 	}, [input, prompt])
 
 	useEffect(() => {
-		if (!uis.precise.loading && mode == "precise") {
-			setCode(uis.precise.code)
+		if (!uiState.precise.loading && mode == "precise") {
+			setCode(uiState.precise.code)
 		}
-		else if (!uis.balanced.loading && mode == "balanced") {
-			setCode(uis.balanced.code)
+		else if (!uiState.balanced.loading && mode == "balanced") {
+			setCode(uiState.balanced.code)
 		}
-		else if (!uis.creative.loading && mode == "creative") {
-			setCode(uis.creative.code)
+		else if (!uiState.creative.loading && mode == "creative") {
+			setCode(uiState.creative.code)
 		}
-	}, [uis.balanced.loading, uis.creative.loading, uis.precise.loading])
+	}, [uiState.balanced.loading, uiState.creative.loading, uiState.precise.loading])
 
 	useEffect(() => {
 		if (mode === "precise") {
-			setCode(uis.precise.code)
+			setCode(uiState.precise.code)
 		} else if (mode === "balanced") {
-			setCode(uis.balanced.code)
+			setCode(uiState.balanced.code)
 		}
 		else if (mode === "creative") {
-			setCode(uis.creative.code)
+			setCode(uiState.creative.code)
 		}
 	}, [mode])
 
-	const setDesktop = () => {
+	const setPanelView = (view: string) => {
 		const panel = ref.current;
-		if (panel) {
-			panel.setLayout([0, 100, 0]);
-		}
-	};
-
-	const setTablet = () => {
-		const panel = ref.current;
-		if (panel) {
-			panel.setLayout([27, 46, 27]);
-		}
-	}
-
-	const setPhone = () => {
-		const panel = ref.current;
-		if (panel) {
-			panel.setLayout([38, 24, 38]);
-		}
+		if(!panel) return;
+		if(view === "desktop") panel.setLayout([0, 100, 0]);
+		else if(view === "tablet") panel.setLayout([27, 46, 27]);
+		else if(view === "phone") panel.setLayout([38, 24, 38]);
 	}
 
 	const generatePreciseCode = async () => {
 		try {
-			setuis(preuis => ({
+			setUiState(preuis => ({
 				...preuis,
 				precise: {
 					...preuis.precise,
@@ -160,7 +147,7 @@ const UI = ({ params }: { params: any }) => {
 
 			const response = await res.json();
 
-			setuis(preuis => ({
+			setUiState(preuis => ({
 				...preuis,
 				precise: {
 					code: response,
@@ -178,7 +165,7 @@ const UI = ({ params }: { params: any }) => {
 
 	const generateCreativeCode = async () => {
 		try {
-			setuis(preuis => ({
+			setUiState(preuis => ({
 				...preuis,
 				creative: {
 					...preuis.creative,
@@ -212,7 +199,7 @@ const UI = ({ params }: { params: any }) => {
 			const subPrompt = "creative-" + prompt
 			const data = await createSubPrompt(subPrompt, uiid, "c", response)
 
-			setuis(preuis => ({
+			setUiState(preuis => ({
 				...preuis,
 				creative: {
 					code: response,
@@ -227,7 +214,7 @@ const UI = ({ params }: { params: any }) => {
 
 	const generateBalancedCode = async () => {
 		try {
-			setuis(preuis => ({
+			setUiState(preuis => ({
 				...preuis,
 				balanced: {
 					...preuis.balanced,
@@ -261,7 +248,7 @@ const UI = ({ params }: { params: any }) => {
 			const subPrompt = "balanced-" + prompt
 			const data = await createSubPrompt(subPrompt, uiid, "b", response)
 
-			setuis(preuis => ({
+			setUiState(preuis => ({
 				...preuis,
 				balanced: {
 					code: response,
@@ -276,7 +263,7 @@ const UI = ({ params }: { params: any }) => {
 
 	const generateModifiedCode = async () => {
 		try {
-			setuis(preuis => ({
+			setUiState(preuis => ({
 				...preuis,
 				precise: {
 					...preuis.precise,
@@ -291,13 +278,13 @@ const UI = ({ params }: { params: any }) => {
 				},
 				body: JSON.stringify({
 					modifyDescription: prompt,
-					precode: uis[mode]?.code
+					precode: uiState[mode]?.code
 				}),
 			});
 
 			const response = await res.json();
 
-			setuis(preuis => ({
+			setUiState(preuis => ({
 				...preuis,
 				precise: {
 					code: response,
@@ -307,9 +294,6 @@ const UI = ({ params }: { params: any }) => {
 
 			const subPrompt = prompt
 			const data = await createSubPrompt(subPrompt, uiid, charMap[mode] + currentState, response)
-
-			console.log(data);
-
 		} catch (e) {
 			console.error(e);
 		}
@@ -366,11 +350,9 @@ const UI = ({ params }: { params: any }) => {
 						<div className="flex justify-between items-center">
 							<UIRigthHeader
 								UIId={uiid}
-								setDesktop={setDesktop}
-								setTablet={setTablet}
-								setPhone={setPhone}
-								setuis={setuis}
-								uis={uis}
+								setPanelView={setPanelView}
+								setUiState={setUiState}
+								uiState={uiState}
 								setMode={setMode}
 								mode={mode}
 								currentState={currentState}
