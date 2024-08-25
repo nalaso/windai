@@ -13,9 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  userId    String   @unique
+  imageUrl  String
+  createdAt DateTime @default(now())
+  UI        UI[]
+}
+
 model UI {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String
+  userId    String   @unique
   prompt    String
   img       String
   createdAt DateTime @default(now())
@@ -23,6 +32,7 @@ model UI {
   views     Int      @default(0)
   subPrompt SubPrompt[]
   like      Like[]
+  user      User     @relation(fields: [userId], references: [userId])
 }
 
 model SubPrompt {

@@ -2,6 +2,7 @@
 import { createUI } from "@/actions/ui/create-ui";
 import AuthModal from "@/components/auth-modal";
 import Header from "@/components/header";
+import HomeUICards from "@/components/home-uis";
 import Suggestions from "@/components/suggestions";
 import { Button, Card, Input } from "@/components/ui";
 import { useAuthModal } from "@/hooks/useAuthModal";
@@ -11,7 +12,7 @@ import { SendHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-    const { push } = useRouter();
+    const router = useRouter();
     const { input, setInput } = useUIState();
     const { toggle } = useAuthModal()
     const { userId, isSignedIn } = useAuth();
@@ -20,7 +21,7 @@ export default function Home() {
         if (!input) return;
         if (isSignedIn) {
             const ui = await createUI(input, userId, "")
-            push(`/ui/${ui.id}`);
+            router.push(`/ui/${ui.id}`);
         } else {
             toggle()
         }
@@ -29,7 +30,7 @@ export default function Home() {
     return (
         <div>
             <Header />
-            <div className="flex items-center justify-center h-[80vh]">
+            <div className="flex items-center justify-center h-[70vh]">
                 <div className="w-full max-w-lg h-auto items-center flex flex-col space-y-6">
                     <p className="font-bold text-5xl">
                         Generate. Ship. Done.
@@ -54,6 +55,7 @@ export default function Home() {
                     <Suggestions />
                 </div>
             </div>
+            <HomeUICards />
             <AuthModal />
         </div>
     );

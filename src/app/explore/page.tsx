@@ -1,58 +1,101 @@
-"use client"
-import Header from '@/components/header'
-import { Avatar, AvatarFallback, AvatarImage, Button, Card, CardContent, Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui'
-import { RefreshCcw } from 'lucide-react'
-import { useState } from 'react'
+"use client";
+import { getUIs } from '@/actions/ui/get-uis';
+import Header from '@/components/header';
+import { Avatar, AvatarFallback, AvatarImage, Badge, Button, Card, CardContent, Tabs, TabsContent, TabsList, TabsTrigger, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
+import { timeAgo } from '@/lib/time';
+import { RefreshCcw } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-const page = () => {
-    const [mode, setMode] = useState("latest")
+const Page = () => {
+    const [mode, setMode] = useState<string>("latest");
+    const [uis, setUis] = useState<UI[]>([]);
+    const [start, setStart] = useState<number>(0);
+    const limit = 10;
+    const router = useRouter();
+
+    interface UI {
+        id: string;
+        userId: string;
+        prompt: string;
+        img: string;
+        createdAt: Date;
+        likes: number;
+        views: number;
+        user:{
+            username: string;
+            imageUrl: string;
+        }
+    }
+
+    useEffect(() => {
+        const fetchUIs = async () => {
+            const fetchedUIs = await getUIs(mode, start, limit);
+            if (start === 0) {
+                setUis(fetchedUIs); 
+            } else {
+                setUis((prevUis) => [...prevUis, ...fetchedUIs]);
+            }
+        };
+
+        fetchUIs();
+    }, [mode, start]);
+
+    const handleTabChange = (value: string) => {
+        setMode(value);
+        setStart(0); 
+    };
+
+    const handleLoadMore = () => {
+        setStart((prevStart) => prevStart + limit);
+    };
+
     return (
         <div className="bg-gray-100 min-h-screen">
             <Header />
             <div className="max-w-7xl mx-auto pt-5">
-                <h1 className='text-3xl font-bold'>
-                    Explore
-                </h1>
-                <Tabs defaultValue="latest" className="w-full mb-8 mt-5">
-                    <TabsList className="bg-white rounded-lg shadow-sm p-1">
+                <h1 className="text-3xl font-bold">Explore</h1>
+                <Tabs defaultValue={mode} className="w-full mb-8 mt-5" onValueChange={handleTabChange}>
+                    <TabsList className="bg-gray-300 rounded-lg shadow-sm p-2 px-1 h-10">
                         <TabsTrigger value="latest" className="px-4 py-2 text-sm font-medium">Latest</TabsTrigger>
-                        <TabsTrigger value="most-viewed" className="px-4 py-2 text-sm font-medium">Most Viewed</TabsTrigger>
-                        <TabsTrigger value="most-liked" className="px-4 py-2 text-sm font-medium">Most Liked</TabsTrigger>
+                        <TabsTrigger value="most_viewed" className="px-4 py-2 text-sm font-medium">Most Viewed</TabsTrigger>
+                        <TabsTrigger value="most_liked" className="px-4 py-2 text-sm font-medium">Most Liked</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="latest">
+                    <TabsContent value={mode}>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {[1, 2, 3, 4, 5, 6].map((item) => (
-                                <Card key={item} className="bg-white rounded-xl shadow-md overflow-hidden">
+                            {uis.map((ui) => (
+                                <Card onClick={()=>router.push(`ui/${ui.id}`)} key={ui.id} className="bg-white rounded-xl shadow-md overflow-hidden">
                                     <div className="relative">
-                                        <img src={`https://picsum.photos/seed/${item}/400/200`} alt="Card image" className="w-full h-48 object-cover" />
-                                        <Avatar className="absolute -bottom-4 right-4 border-2 border-primary">
-                                            <AvatarImage src={`https://i.pravatar.cc/40?img=${item}`} />
-                                            <AvatarFallback>CN</AvatarFallback>
-                                        </Avatar>
+                                        <img src={ui.img} alt={ui.prompt} className="w-full h-48 object-cover" />
                                     </div>
-                                    <CardContent className="p-4">
-                                        <h3 className="text-lg font-semibold text-gray-800 mt-2">Creator Name</h3>
-                                        <p className="text-sm text-gray-600 mt-2 line-clamp-3">
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                    <CardContent className="p-2 flex items-center">
+                                        <div className="flex items-center flex-grow min-w-0 relative">
+                                            <Avatar className="border-2 border-primary h-5 w-5">
+                                                <AvatarImage src={ui.user.imageUrl} />
+                                                <AvatarFallback>{ui.user.username.substring(0,2)}</AvatarFallback>
+                                            </Avatar>
+                                            <Tooltip>
+                                                <TooltipTrigger>
+                                                    <Badge variant={"secondary"} className="rounded-full font-semibold ml-2 flex-1 text-ellipsis overflow-hidden whitespace-nowrap">
+                                                        {ui.prompt}
+                                                    </Badge>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>{ui.prompt}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </div>
+                                        <p className="text-xs text-gray-600 whitespace-nowrap ml-2 flex-shrink-0">
+                                            {timeAgo(ui.createdAt)}
                                         </p>
                                     </CardContent>
                                 </Card>
                             ))}
                         </div>
                     </TabsContent>
-                    <TabsContent value="most-viewed">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {/* Similar card structure as above, but with different content */}
-                        </div>
-                    </TabsContent>
-                    <TabsContent value="most-liked">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {/* Similar card structure as above, but with different content */}
-                        </div>
-                    </TabsContent>
                 </Tabs>
                 <div className="flex justify-center mt-8">
-                    <Button variant="outline" className="bg-primary text-white hover:bg-primary-dark transition-colors">
+                    <Button variant="outline" className="bg-primary text-white hover:bg-primary-dark hover:text-gray-200 transition-colors" onClick={handleLoadMore}>
                         <div className="flex items-center gap-2">
                             <RefreshCcw />
                             <span>Load More</span>
@@ -61,7 +104,7 @@ const page = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default page
+export default Page;
