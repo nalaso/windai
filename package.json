@@ -53,6 +53,8 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.1.7",
     "fs": "^0.0.1-security",
+    "html-to-image": "^1.11.11",
+    "html2canvas": "^1.4.1",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.414.0",
     "net": "^1.0.2",

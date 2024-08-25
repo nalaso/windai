@@ -22,6 +22,7 @@ model UI {
   likes     Int      @default(0)
   views     Int      @default(0)
   subPrompt SubPrompt[]
+  like      Like[]
 }
 
 model SubPrompt {
@@ -38,4 +39,12 @@ model Code{
   promptId String @db.ObjectId
   code String
   prompt SubPrompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  UIId      String   @db.ObjectId
+  createdAt DateTime @default(now())
+  ui      UI     @relation(fields: [UIId], references: [id])
 }

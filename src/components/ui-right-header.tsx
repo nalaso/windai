@@ -6,6 +6,9 @@ import { Separator } from "./ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { useEffect, useState } from "react";
+import LikeButton from "./like-button";
+import { toggleLike } from "@/actions/ui/toggle-like-ui";
+import { useAuth, useUser } from "@clerk/nextjs";
 
 interface Uis {
     [key: string]: {
@@ -15,6 +18,7 @@ interface Uis {
 }
 
 const UIRigthHeader = ({
+    UIId,
     setDesktop,
     setTablet,
     setPhone,
@@ -24,6 +28,7 @@ const UIRigthHeader = ({
     mode,
     currentState
 }: {
+    UIId: string,
     setDesktop: () => void,
     setTablet: () => void,
     setPhone: () => void,
@@ -39,6 +44,8 @@ const UIRigthHeader = ({
     currentState: number
 }) => {
     const [type, setType] = useState("desktop")
+    const {userId} = useAuth()   
+    const [liked, setLiked] = useState(false)     
 
     useEffect(() => {
         if (type === "desktop") {
@@ -49,6 +56,11 @@ const UIRigthHeader = ({
             setPhone();
         }
     }, [type])
+
+    const toggleLikeClick = async() => {
+        const liked = await toggleLike(userId!,UIId)
+        setLiked(liked.liked)
+    }
 
     return (
         <div className="w-full bg-white flex justify-between items-center p-2 rounded-t-xl">
@@ -64,6 +76,7 @@ const UIRigthHeader = ({
                 </Button>
             </div>
             <div className="flex space-x-2 items-center ">
+                <LikeButton liked={liked} toggleLikeClick={toggleLikeClick} />
                 <ToggleGroup
                     value={type}
                     onValueChange={(value) => {

@@ -22,7 +22,7 @@ const UIHeader = () => {
                 </Badge>
             </div>
             <div className="flex space-x-2 h-8 items-center">
-                <Button variant="default" className="rounded-3xl">New Generation</Button>
+                <Button onClick={() => router.push("/")} variant="default" className="rounded-3xl">New Generation</Button>
                 <SignedOut>
                     <Button onClick={()=>toggle()} variant="default">Sign In</Button>
                 </SignedOut>

@@ -10,23 +10,25 @@ import { useUIState } from "@/hooks/useUIState"
 import { db } from "@/lib/db"
 import { useUser } from "@clerk/nextjs"
 import { set } from "date-fns"
+import html2canvas from "html2canvas"
+import * as htmlToImage from 'html-to-image';
 import { LoaderCircle, SendHorizontal } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { ImperativePanelGroupHandle } from "react-resizable-panels"
+import { updateUI } from "@/actions/ui/update-ui"
 
-const UI = () => {
+const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);
-	const {user} = useUser()
-	console.log(user);
-	const username = user?.username!
-	
+	const captureRef = useRef<HTMLDivElement>(null);
+	const { user } = useUser()
+
 	const [prompt, setPrompt] = useState("")
 	const [code, setCode] = useState("")
 	const [currentState, setCurrentState] = useState(-1)
 	const [mode, setMode] = useState("precise")
 	const [loading, setLoading] = useState(false)
-	const [uiid, setuiid] = useState("0")
+	const uiid = params.uiid
+
 	const [uis, setuis] = useState<{
 		[key: string]: {
 			loading: boolean;
@@ -58,18 +60,18 @@ const UI = () => {
 	const { input, setInput } = useUIState();
 
 	useEffect(() => {
-	  if(input!=""){
-		setPrompt(input)
-	  }
+		if (input != "") {
+			setPrompt(input)
+		}
 	}, [])
 
 	useEffect(() => {
-		if(input!="" && prompt!=""){
-		  setInput("")
-		  generateCode()
+		if (input != "" && prompt != "") {
+			setInput("")
+			generateCode()
 		}
 	}, [input, prompt])
-	
+
 	useEffect(() => {
 		if (!uis.precise.loading && mode == "precise") {
 			setCode(uis.precise.code)
@@ -114,7 +116,7 @@ const UI = () => {
 		}
 	}
 
-	const generatePreciseCode = async (uiid:string) => {
+	const generatePreciseCode = async () => {
 		try {
 			setuis(preuis => ({
 				...preuis,
@@ -142,15 +144,15 @@ const UI = () => {
 				}
 			}))
 
-			const subPrompt = "precise-"+prompt
+			const subPrompt = "precise-" + prompt
 			const data = await createSubPrompt(subPrompt, uiid, "a", response)
-			
+
 		} catch (e) {
 			console.error(e);
 		}
 	}
 
-	const generateCreativeCode = async (uiid: string) => {
+	const generateCreativeCode = async () => {
 		try {
 			setuis(preuis => ({
 				...preuis,
@@ -165,7 +167,7 @@ const UI = () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ 
+				body: JSON.stringify({
 					codeCommand: prompt,
 					type: "creative"
 				}),
@@ -183,7 +185,7 @@ const UI = () => {
 
 			const response = await res.json();
 
-			const subPrompt = "creative-"+prompt
+			const subPrompt = "creative-" + prompt
 			const data = await createSubPrompt(subPrompt, uiid, "c", response)
 
 			setuis(preuis => ({
@@ -199,7 +201,7 @@ const UI = () => {
 		}
 	}
 
-	const generateBalancedCode = async (uiid:string) => {
+	const generateBalancedCode = async () => {
 		try {
 			setuis(preuis => ({
 				...preuis,
@@ -214,7 +216,7 @@ const UI = () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ 
+				body: JSON.stringify({
 					codeCommand: prompt,
 					type: "balanced"
 				}),
@@ -232,7 +234,7 @@ const UI = () => {
 
 			const response = await res.json();
 
-			const subPrompt = "balanced-"+prompt
+			const subPrompt = "balanced-" + prompt
 			const data = await createSubPrompt(subPrompt, uiid, "b", response)
 
 			setuis(preuis => ({
@@ -248,7 +250,7 @@ const UI = () => {
 		}
 	}
 
-	const generateModifiedCode = async (uiid:string) => {
+	const generateModifiedCode = async () => {
 		try {
 			setuis(preuis => ({
 				...preuis,
@@ -263,7 +265,7 @@ const UI = () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ 
+				body: JSON.stringify({
 					modifyDescription: prompt,
 					precode: uis[mode]?.code
 				}),
@@ -280,32 +282,54 @@ const UI = () => {
 			}))
 
 			const subPrompt = prompt
-			const data = await createSubPrompt(subPrompt, uiid, charMap[mode]+currentState, response)
+			const data = await createSubPrompt(subPrompt, uiid, charMap[mode] + currentState, response)
 
 			console.log(data);
-			
+
 		} catch (e) {
 			console.error(e);
 		}
 	}
 
 	const generateCode = async () => {
-		if(prompt=="") return;
-
+		if (prompt == "") return;
 		setLoading(true)
-		setCurrentState(pre=>pre+1)
-		if(currentState==-1){
-			console.log("creating ui");
-			const ui = await createUI(prompt, username, "")
-			setuiid(ui.id)
-			const promised = [generatePreciseCode(ui.id), generateBalancedCode(ui.id), generateCreativeCode(ui.id)];
-			await Promise.all(promised);
-		}else{
-			console.log("modifying ui");
-			const promised = [generateModifiedCode(uiid)];
-			await Promise.all(promised);
+		setCurrentState(pre => pre + 1)
+		var promises = []
+		if (currentState == -1) {
+			promises = [generatePreciseCode()];
+		} else {
+			promises = [generateModifiedCode()];
 		}
+		await Promise.all(promises);
 		setLoading(false);
+		capture()
+	}
+
+	const capture = async () => {
+		htmlToImage.toJpeg(captureRef.current!).then(function (dataUrl: string) {
+			console.log(dataUrl.length);
+			var img = new Image();
+			img.src = dataUrl;
+			img.onload = async function () {
+				const canvas = document.createElement('canvas');
+				const ctx = canvas.getContext('2d');
+
+				const width = 1200;
+				const scaleFactor = width / img.width;
+				const height = img.height * scaleFactor;
+
+				canvas.width = width;
+				canvas.height = height;
+
+				ctx!.drawImage(img, 0, 0, width, height);
+
+				const resizedDataURL = canvas.toDataURL('image/jpeg');
+				await updateUI(uiid, {
+					img: resizedDataURL
+				})
+			}
+		})
 	}
 
 	return (
@@ -317,6 +341,7 @@ const UI = () => {
 					<Card className="flex flex-col bg-secondary">
 						<div className="flex justify-between items-center">
 							<UIRigthHeader
+								UIId={uiid}
 								setDesktop={setDesktop}
 								setTablet={setTablet}
 								setPhone={setPhone}
@@ -327,7 +352,7 @@ const UI = () => {
 								currentState={currentState}
 							/>
 						</div>
-						<UIBody code={code} ref={ref} />
+						<UIBody code={code} ref={ref} captureRef={captureRef} />
 					</Card>
 					<Card className="flex w-full max-w-lg space-x-2 bg-black items-center m-auto">
 						<Input
@@ -340,16 +365,15 @@ const UI = () => {
 						/>
 						<Button disabled={loading} onClick={() => generateCode()} variant="ghost" size="icon" className="rounded-md w-12 h-12 text-gray-200 bg-black hover:bg-black hover:text-gray-600">
 							{
-								loading?(
-									<LoaderCircle className="h-4 w-4 ml-1 animate-spin"/>
-								):(
+								loading ? (
+									<LoaderCircle className="h-4 w-4 ml-1 animate-spin" />
+								) : (
 									<SendHorizontal />
 								)
 							}
 						</Button>
 					</Card>
 				</div>
-
 			</div>
 		</div>
 	)
