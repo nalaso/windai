@@ -8,7 +8,12 @@ import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { useEffect, useState } from "react";
 import LikeButton from "./like-button";
 import { toggleLike } from "@/actions/ui/toggle-like-ui";
-import { useAuth, useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { a11yLight, atomOneLight, CodeBlock, CopyBlock, dracula, paraisoLight } from 'react-code-blocks';
+import { embededCode } from "@/lib/code";
+import { toast } from "sonner";
+import { Toast } from "./ui/toast";
 
 interface UIState {
     [key: string]: {
@@ -26,7 +31,7 @@ const UIRigthHeader = ({
     uiState,
     setMode,
     mode,
-    currentState
+    code
 }: {
     UIId: string,
     subPrompt: string,
@@ -34,25 +39,25 @@ const UIRigthHeader = ({
     setPanelView: (type: string) => void,
     setUiState: (uiState: UIState) => void,
     uiState: {
-		[key: string]: {
-			loading: boolean;
-			code: string;
-		};
-	},
+        [key: string]: {
+            loading: boolean;
+            code: string;
+        };
+    },
     setMode: (mode: string) => void,
     mode: string,
-    currentState: number
+    code: string
 }) => {
     const [type, setType] = useState("desktop")
-    const {userId} = useAuth()   
-    const [liked, setLiked] = useState(false)     
+    const { userId } = useAuth()
+    const [liked, setLiked] = useState(false)
 
     useEffect(() => {
         setPanelView(type)
     }, [type])
 
-    const toggleLikeClick = async() => {
-        const liked = await toggleLike(userId!,UIId)
+    const toggleLikeClick = async () => {
+        const liked = await toggleLike(userId!, UIId)
         setLiked(liked.liked)
     }
 
@@ -104,7 +109,7 @@ const UIRigthHeader = ({
                         }
                     </ToggleGroupItem>
                     {
-                        selectedVersion==0 && (
+                        selectedVersion == 0 && (
                             <ToggleGroupItem value="balanced" aria-label="Toggle italic">
                                 Balanced
                                 {
@@ -118,7 +123,7 @@ const UIRigthHeader = ({
                         )
                     }
                     {
-                        selectedVersion==0 && (
+                        selectedVersion == 0 && (
                             <ToggleGroupItem value="creative" aria-label="Toggle underline">
                                 Creative
                                 {
@@ -132,10 +137,34 @@ const UIRigthHeader = ({
                         )
                     }
                 </ToggleGroup>
-                <Button variant="default" className="rounded-lg">
-                    Code
-                    <CodeXml className="ml-2" />
-                </Button>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant="default" className="rounded-lg">
+                            Code
+                            <CodeXml className="ml-2" />
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-[75vw] overflow-hidden">
+                        <DialogHeader>
+                            <DialogTitle>React code</DialogTitle>
+                            <DialogDescription>
+                                <Badge variant={"secondary"} className="rounded-xl">{subPrompt}</Badge>
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="py-4 max-h-[70vh] overflow-y-auto">
+                            <CopyBlock
+                                text={embededCode(code)}
+                                language={"jsx"}
+                                showLineNumbers={false}
+                                theme={a11yLight}
+                                wrapLongLines={true}
+                            />
+                        </div>
+                        <DialogFooter>
+                            <Button type="submit">Copy Code</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     );

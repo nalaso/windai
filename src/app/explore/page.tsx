@@ -11,7 +11,7 @@ const Page = () => {
     const [mode, setMode] = useState<string>("latest");
     const [uis, setUis] = useState<UI[]>([]);
     const [start, setStart] = useState<number>(0);
-    const limit = 10;
+    const limit = 9;
     const router = useRouter();
 
     interface UI {

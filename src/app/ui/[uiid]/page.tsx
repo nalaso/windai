@@ -552,7 +552,7 @@ const UI = ({ params }: { params: any }) => {
 								uiState={uiState}
 								setMode={setMode}
 								mode={mode}
-								currentState={currentState}
+								code={code}
 							/>
 						</div>
 						<UIBody isloading={uiState[mode!].loading} code={code} ref={ref} captureRef={captureRef} />
