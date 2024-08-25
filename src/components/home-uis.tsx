@@ -62,11 +62,15 @@ const HomeUICards = () => {
                     </CardContent>
                 </Card>
             ))}
-            <Card onClick={() => router.push(`explore`)} className="bg-white hover:bg-gray-200 cursor-pointer border-dashed border-black rounded-xl shadow-md overflow-hidden flex items-center justify-center">
-                    <CardContent className="font-bold text-xl text-gray-500">
-                        Explore more
-                    </CardContent>
-                </Card>
+            {
+                uis.length>0 && (
+                    <Card onClick={() => router.push(`explore`)} className="bg-white hover:bg-gray-200 cursor-pointer border-dashed border-black rounded-xl shadow-md overflow-hidden flex items-center justify-center">
+                        <CardContent className="font-bold text-xl text-gray-500">
+                            Explore more
+                        </CardContent>
+                    </Card>
+                )
+            }
         </div>
     )
 }

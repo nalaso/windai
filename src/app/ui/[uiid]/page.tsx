@@ -16,6 +16,7 @@ import { LoaderCircle, SendHorizontal } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { ImperativePanelGroupHandle } from "react-resizable-panels"
 import { updateUI } from "@/actions/ui/update-ui"
+import { getUI } from "@/actions/ui/get-uis"
 
 const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);
@@ -27,7 +28,19 @@ const UI = ({ params }: { params: any }) => {
 	const [currentState, setCurrentState] = useState(-1)
 	const [mode, setMode] = useState("precise")
 	const [loading, setLoading] = useState(false)
+	const [backendCheck, setBackendCheck] = useState(0)
 	const uiid = params.uiid
+	const [ui, setUi] = useState<{
+		user: { username: string; imageUrl: string };
+		subPrompt: { id: string; UIId: string; SUBId: string; subPrompt: string }[];
+		id: string;
+		userId: string;
+		prompt: string;
+		img: string;
+		createdAt: Date;
+		likes: number;
+		views: number;
+	} | null>(null)
 
 	const [uis, setuis] = useState<{
 		[key: string]: {
@@ -60,10 +73,21 @@ const UI = ({ params }: { params: any }) => {
 	const { input, setInput } = useUIState();
 
 	useEffect(() => {
+		const fetchUI = async () => {
+			const fetchedUIs = await getUI(uiid);
+			console.log(fetchedUIs);
+			setUi(fetchedUIs);
+		};
+
+		fetchUI();
+	}, [])
+
+	useEffect(() => {
+		if (backendCheck == 0 || backendCheck == 1) return
 		if (input != "") {
 			setPrompt(input)
 		}
-	}, [])
+	}, [backendCheck])
 
 	useEffect(() => {
 		if (input != "" && prompt != "") {

@@ -8,7 +8,10 @@ const Header = () => {
     const router = useRouter()
     return (
         <div className="w-full bg-white flex justify-between items-center p-4">
-                <Button onClick={() => router.push("/")} variant={"ghost"} className="text-xl font-bold">V1</Button>
+          <div className="flex">
+          <Button onClick={() => router.push("/")} variant={"ghost"} className="text-xl font-bold">V1</Button>
+          <Button onClick={() => router.push("/explore")} variant={"outline"} className="text-xl font-semibold">Explore</Button>
+          </div>
                 <SignedOut>
             <Button onClick={()=>toggle()} variant="default">Sign In</Button>
             </SignedOut>
