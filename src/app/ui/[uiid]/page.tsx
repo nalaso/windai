@@ -253,6 +253,19 @@ const UI = ({ params }: { params: any }) => {
 
 		fetchUI();
 	}, []);
+
+	useEffect(() => {
+		const incView = async () => {
+			await fetch('/api/view-increment', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ uiid: uiid }),
+			});
+		}
+		incView()
+	}, [])
 	
 	useEffect(() => {
 		if (backendCheck === 0) return		
@@ -568,6 +581,7 @@ const UI = ({ params }: { params: any }) => {
 						<div className="flex justify-between items-center">
 							<UIRigthHeader
 								UIId={uiid}
+								views={ui?.views!}
 								selectedVersion={selectedVersion.version}
 								subPrompt={selectedVersion.prompt}
 								setPanelView={setPanelView}

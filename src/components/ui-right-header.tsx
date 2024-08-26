@@ -24,6 +24,7 @@ interface UIState {
 
 const UIRigthHeader = ({
     UIId,
+    views,
     subPrompt,
     selectedVersion,
     setPanelView,
@@ -34,6 +35,7 @@ const UIRigthHeader = ({
     code
 }: {
     UIId: string,
+    views: number,
     subPrompt: string,
     selectedVersion: number,
     setPanelView: (type: string) => void,
@@ -73,6 +75,7 @@ const UIRigthHeader = ({
                 <Button variant={"ghost"} className="rounded-full" size={"icon"}>
                     <RefreshCw className="text-gray-600" size={16} />
                 </Button>
+                <Badge variant={"secondary"} className="rounded-xl text-xs text-gray-500">{views} views</Badge>
             </div>
             <div className="flex space-x-2 items-center ">
                 <LikeButton liked={liked} toggleLikeClick={toggleLikeClick} />
