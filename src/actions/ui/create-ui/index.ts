@@ -2,10 +2,10 @@
 
 import { db } from "@/lib/db";
 
-export const createUI = async (prompt:string, username: string, img:string) => {
+export const createUI = async (prompt:string, userId: string, img:string) => {
     const data = await db.uI.create({
         data: {
-            userId: username,
+            userId: userId,
             prompt: prompt,
             img: img,
             createdAt: new Date(),
