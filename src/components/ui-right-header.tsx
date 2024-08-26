@@ -109,7 +109,7 @@ const UIRigthHeader = ({
                         }
                     </ToggleGroupItem>
                     {
-                        selectedVersion == 0 && (
+                        selectedVersion === 0 && (
                             <ToggleGroupItem value="balanced" aria-label="Toggle italic">
                                 Balanced
                                 {
@@ -123,7 +123,7 @@ const UIRigthHeader = ({
                         )
                     }
                     {
-                        selectedVersion == 0 && (
+                        selectedVersion === 0 && (
                             <ToggleGroupItem value="creative" aria-label="Toggle underline">
                                 Creative
                                 {

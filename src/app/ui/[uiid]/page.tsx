@@ -24,7 +24,7 @@ const UI = ({ params }: { params: any }) => {
 
 	const [selectedVersion, setSelectedVersion] = useState({
 		prompt: "",
-		version: 0
+		version: -1
 	})
 	const [prompt, setPrompt] = useState("")
 	const [code, setCode] = useState("")
@@ -71,6 +71,9 @@ const UI = ({ params }: { params: any }) => {
 			code: ""
 		},
 	});
+
+	console.log(selectedVersion.version,currentState);
+	
 	
 	const charMap: {
 		[key: string]: string;
@@ -100,6 +103,8 @@ const UI = ({ params }: { params: any }) => {
 	}
 
 	const setVersion = async (version: number) => {	
+		console.log(ui?.subPrompts);
+		
 		if (ui?.subPrompts.length === 0) return
 		const subPrompt = ui?.subPrompts[version]
 		if(!subPrompt) return	
@@ -271,7 +276,7 @@ const UI = ({ params }: { params: any }) => {
 	}, [uiState.balanced.loading, uiState.creative.loading, uiState.precise.loading])
 
 	useEffect(() => {
-		if (mode in ["precise", "balanced", "creative"]) {
+		if (["precise", "balanced", "creative"].includes(mode)) {
 			setCode(uiState[mode].code)
 		}
 	}, [mode])
@@ -313,7 +318,12 @@ const UI = ({ params }: { params: any }) => {
 			}))
 
 			const subPromptText = "precise-" + prompt
-			const { data } = await createSubPrompt(subPromptText, uiid, "a", response)
+			const data = await createSubPrompt(subPromptText, uiid, "a", response)
+
+			return {
+				code: data.codeData.code,
+				id: data.data.id
+			}
 
 		} catch (e) {
 			console.error(e);
@@ -364,6 +374,11 @@ const UI = ({ params }: { params: any }) => {
 				}
 			}))
 
+			return {
+				code: data.codeData.code,
+				id: data.data.id
+			}
+
 		} catch (e) {
 			console.error(e);
 		}
@@ -413,6 +428,11 @@ const UI = ({ params }: { params: any }) => {
 				}
 			}))
 
+			return {
+				code: data.codeData.code,
+				id: data.data.id
+			}
+
 		} catch (e) {
 			console.error(e);
 		}
@@ -451,10 +471,18 @@ const UI = ({ params }: { params: any }) => {
 
 			const subPrompt = prompt
 			const data = await createSubPrompt(subPrompt, uiid, charMap[mode] + currentState, response)
+
+			return {
+				code: data.codeData.code,
+				id: data.data.id
+			}
 		} catch (e) {
 			console.error(e);
 		}
 	}
+
+	console.log(uiState);
+	
 
 	const generateCode = async () => {
 		if (prompt === "") return;
@@ -465,7 +493,7 @@ const UI = ({ params }: { params: any }) => {
 			version: selectedVersion.version+1
 		})
 
-		let promises: Promise<void>[];
+		let promises: Promise<{ code: string; id: string; } | undefined>[];
 
 		if (ui?.subPrompts.length === 0) {
 			promises = [generatePreciseCode(), generateBalancedCode(), generateCreativeCode()];
@@ -473,24 +501,23 @@ const UI = ({ params }: { params: any }) => {
 			promises = [generateModifiedCode()];
 		}
 
-		await Promise.all(promises);
+		const resolved = await Promise.all(promises);
+
+		console.log(resolved);
 
 		setUi((prevUi) => {
 			if (prevUi) {
 				const updatedSubPrompts = [...prevUi.subPrompts];
 
-				if (ui?.subPrompts.length === 1) {
-					const preciseCode = uiState.precise.code;
-					const balancedCode = uiState.balanced.code;
-					const creativeCode = uiState.creative.code;
+				if (ui?.subPrompts.length === 0) {
 					updatedSubPrompts.push([
-						{ id: 'new-id', UIId: uiid, SUBId: 'a', createdAt: new Date(), subPrompt: "precise"+prompt, code: preciseCode },
-						{ id: 'new-id', UIId: uiid, SUBId: 'b', createdAt: new Date(), subPrompt: "balanced"+prompt, code: balancedCode },
-						{ id: 'new-id', UIId: uiid, SUBId: 'c', createdAt: new Date(), subPrompt: "creative"+prompt, code: creativeCode }
+						{ id: resolved[0]?.id!, UIId: uiid, SUBId: 'a', createdAt: new Date(), subPrompt: "precise"+prompt, code: resolved[0]?.code! },
+						{ id: resolved[1]?.id!, UIId: uiid, SUBId: 'b', createdAt: new Date(), subPrompt: "balanced"+prompt, code: resolved[1]?.code! },
+						{ id: resolved[2]?.id!, UIId: uiid, SUBId: 'c', createdAt: new Date(), subPrompt: "creative"+prompt, code: resolved[2]?.code! }
 					]);
+					setMode("precise");
 				} else {
-					const newCode = uiState.precise.code;
-					updatedSubPrompts.push([{ id: 'new-id', UIId: uiid, SUBId: charMap[mode] + currentState, createdAt: new Date(), subPrompt: prompt, code: newCode }]);
+					updatedSubPrompts.push([{ id: resolved[0]?.id!, UIId: uiid, SUBId: charMap[mode] + currentState, createdAt: new Date(), subPrompt: prompt, code: resolved[0]?.code! }]);
 				}
 
 				return {
@@ -501,10 +528,6 @@ const UI = ({ params }: { params: any }) => {
 				return prevUi;
 			}
 		});
-		setSelectedVersion({
-			prompt: prompt,
-			version: currentState+1
-		})
 		setPrompt("");
 		setLoading(false);
 		// capture();
