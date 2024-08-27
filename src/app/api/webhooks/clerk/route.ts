@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
                     data: {
                         userId: user.id,
                         username: user.username!,
+                        email: user.emailAddresses[0].emailAddress,
                         imageUrl: user.imageUrl,
                         createdAt: new Date(),
                     },

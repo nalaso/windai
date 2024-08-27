@@ -5,15 +5,15 @@ import { useAuth } from "@clerk/nextjs";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { useUIState } from "@/hooks/useUIState";
 import { createUI } from "@/actions/ui/create-ui";
+const suggestions = [
+	"login page for netflix",
+	"product detail card for sneakers",
+	"ecommerce checkout page",
+	"dashboard for sales data",
+	"Instagram App UI clone"
+]
 
 const Suggestions = () => {
-	const suggestions = [
-		"login page for netflix",
-		"product detail card for sneakers",
-		"ecommerce checkout page",
-		"dashboard for sales data",
-		"Instagram App UI clone"
-	]
 
 	const router = useRouter();
 	const { input, setInput } = useUIState();
