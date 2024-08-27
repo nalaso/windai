@@ -21,7 +21,7 @@ export async function POST(req: Request): Promise<Response> {
             }
         });
 
-        console.log("here2");
+        console.log("here2",auth);
         
         const anthropic = new AnthropicVertex({
             projectId,
@@ -32,7 +32,7 @@ export async function POST(req: Request): Promise<Response> {
             googleAuth: auth
         });
 
-        console.log("here3");
+        console.log("here3",anthropic);
         
         const response = await anthropic.messages.create({
             messages: [
