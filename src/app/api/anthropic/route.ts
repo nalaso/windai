@@ -1,18 +1,7 @@
-import { AnthropicVertex } from '@anthropic-ai/vertex-sdk';
+import { anthropic } from '@/lib/anthropic';
 
 export async function POST(req: Request): Promise<Response> {
     const  {codeDescription} = await req.json();
-    
-    const projectId = process.env.Vertex_Ai_ProjectID
-    const region = process.env.Vertex_Ai_Location
-
-    const anthropic = new AnthropicVertex({
-        projectId,
-        region,
-        defaultHeaders:{
-            "anthropic-beta":"max-tokens-3-5-sonnet-2024-07-15"
-        }
-    });
 
     const response = await anthropic.messages.create({
         messages: [

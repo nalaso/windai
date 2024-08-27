@@ -1,4 +1,4 @@
-import { AnthropicVertex } from '@anthropic-ai/vertex-sdk';
+import { anthropic } from '@/lib/anthropic';
 
 const genrateContent = (prompt:string, type:string) => {
     if (type=="creative") {
@@ -41,14 +41,6 @@ const genrateContent = (prompt:string, type:string) => {
 
 export async function POST(req: Request): Promise<Response> {
     const { codeCommand, type } = await req.json();
-    
-    const projectId = process.env.Vertex_Ai_ProjectID;
-    const region = process.env.Vertex_Ai_Region;
-
-    const anthropic = new AnthropicVertex({
-        projectId,
-        region,
-    });
 
     const response = await anthropic.messages.create({
         messages: [

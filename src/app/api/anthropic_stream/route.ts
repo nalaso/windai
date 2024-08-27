@@ -1,13 +1,14 @@
-import { createVertex } from '@ai-sdk/google-vertex';
+import { anthropic } from '@/lib/anthropic';
+// import { createVertex } from '@ai-sdk/google-vertex';
 import { generateText, streamText } from 'ai';
 
 export async function POST(req: Request): Promise<Response> {
     const  {codeDescription}  = await req.json();
     
-    const vertex = createVertex({
-        project: process.env.Vertex_Ai_ProjectID,
-        location: process.env.Vertex_Ai_Location,
-    });
+    // const vertex = createVertex({
+    //     project: process.env.Vertex_Ai_ProjectID,
+    //     location: process.env.Vertex_Ai_Location,
+    // });
 
     const content = `
                 Act as a React developer using shadcn/ui components and TailwindCSS.
@@ -38,10 +39,11 @@ export async function POST(req: Request): Promise<Response> {
                 Now generate React JSX code for this: ${codeDescription}          
             ` 
 
-    const {text} = await generateText({
-        model: vertex('claude-3-5-sonnet@20240620'),
-        prompt: content
-    })
+    // const {text} = await generateText({
+    //     model: vertex('claude-3-5-sonnet@20240620'),
+    //     prompt: content
+    // })
+    const text =""
 
     return new Response(JSON.stringify(text), {
         headers: {

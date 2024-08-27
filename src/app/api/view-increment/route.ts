@@ -5,10 +5,6 @@ import { db } from "@/lib/db";
 
 const redis = Redis.fromEnv();
 
-export const config = {
-    runtime: "edge",
-};
-
 export async function POST(req: NextRequest): Promise<NextResponse> {
     const body = await req.json();
     const UIId = body.uiid as string | undefined;

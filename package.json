@@ -9,10 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/azure": "^0.0.17",
-    "@ai-sdk/google": "^0.0.30",
-    "@ai-sdk/google-vertex": "^0.0.19",
-    "@anthropic-ai/vertex-sdk": "^0.4.0",
+    "@anthropic-ai/vertex-sdk": "^0.4.1",
     "@clerk/elements": "^0.13.0",
     "@clerk/nextjs": "^5.3.1",
     "@hookform/resolvers": "^3.9.0",
@@ -54,6 +51,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.1.7",
     "fs": "^0.0.1-security",
+    "google-auth-library": "^9.14.0",
     "html-to-image": "^1.11.11",
     "html2canvas": "^1.4.1",
     "input-otp": "^1.2.4",
