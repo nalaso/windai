@@ -1,11 +1,43 @@
-import { anthropic } from '@/lib/anthropic';
+import { AnthropicVertex } from "@anthropic-ai/vertex-sdk";
+import { GoogleAuth } from "google-auth-library";
 
 export async function POST(req: Request): Promise<Response> {
-    const  {modifyDescription, precode} = await req.json();
+    try {
 
-    const response = await anthropic.messages.create({
-        messages: [
-            { role: 'user', content: `
+        const { modifyDescription, precode } = await req.json();
+
+        const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL;
+        const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+        const projectId = process.env.Vertex_Ai_ProjectID
+        const region = process.env.Vertex_Ai_Location
+
+        console.log("here1");
+
+        const auth = new GoogleAuth({
+            scopes: 'https://www.googleapis.com/auth/cloud-platform',
+            credentials: {
+                "private_key": GOOGLE_CLIENT_SECRET,
+                "client_email": GOOGLE_CLIENT_EMAIL
+            }
+        });
+
+        console.log("here2");
+        
+        const anthropic = new AnthropicVertex({
+            projectId,
+            region,
+            defaultHeaders: {
+                "anthropic-beta": "max-tokens-3-5-sonnet-2024-07-15"
+            },
+            googleAuth: auth
+        });
+
+        console.log("here3");
+        
+        const response = await anthropic.messages.create({
+            messages: [
+                {
+                    role: 'user', content: `
                 Act as a React developer using shadcn/ui components and TailwindCSS.
                 Design pages or components with beautiful styles using shadcn/ui components wherever possible.
                 Most important - Dont change the code unnecessarily, just modify the code to match the description.
@@ -31,17 +63,31 @@ export async function POST(req: Request): Promise<Response> {
                 Use Tailwind CSS classes for additional styling and layout.
                 Now modify React JSX code: ${precode} based on this description: ${modifyDescription}      
             ` },
-        ],
-        model: 'claude-3-5-sonnet@20240620',
-        max_tokens: 4096,
-    });
+            ],
+            model: 'claude-3-5-sonnet@20240620',
+            max_tokens: 4096,
+        });
 
-    const text = response.content[0].type == "text" ? response.content[0][response.content[0].type] : response.content[0].type;
-    const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '').replace("asChild"," ")
+        console.log("here4", response);
 
-    return new Response(JSON.stringify(code), {
-        headers: {
-            'content-type': 'application/json',
-        },
-    });
+        const text = response.content[0].type == "text" ? response.content[0][response.content[0].type] : response.content[0].type;
+
+        console.log("here5", text);
+        const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '').replace("asChild", " ")
+
+        console.log("here6", code);
+
+        return new Response(JSON.stringify(code), {
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+    }
+    catch (e) {
+        return new Response(JSON.stringify(e), {
+            headers: {
+                'content-type': 'application/json',
+            },
+        });
+    }
 }
