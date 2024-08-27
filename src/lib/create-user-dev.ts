@@ -5,6 +5,7 @@ export const creatDevUser = async (username:string) => {
         data: {
             userId: `user_${username}`,
             username: username,
+            email: "",
             imageUrl: `https://github.com/${username}.png`,
             createdAt: new Date(),
         },
