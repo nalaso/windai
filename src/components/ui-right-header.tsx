@@ -10,11 +10,10 @@ import LikeButton from "./like-button";
 import { toggleLike } from "@/actions/ui/toggle-like-ui";
 import { useAuth } from "@clerk/nextjs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { a11yLight, atomOneLight, CodeBlock, CopyBlock, dracula, paraisoLight } from 'react-code-blocks';
+import { a11yLight, CopyBlock } from 'react-code-blocks';
 import { embededCode } from "@/lib/code";
-import { toast } from "sonner";
-import { Toast } from "./ui/toast";
 import PromptBadge from "./prompt-badge";
+import { useAuthModal } from "@/hooks/useAuthModal";
 
 interface UIState {
     [key: string]: {
@@ -53,13 +52,18 @@ const UIRigthHeader = ({
 }) => {
     const [type, setType] = useState("desktop")
     const { userId } = useAuth()
+    const { toggle } = useAuthModal()
     const [liked, setLiked] = useState(false)
 
     useEffect(() => {
         setPanelView(type)
-    }, [type])
+    }, [type])    
 
     const toggleLikeClick = async () => {
+        if (!userId) {
+            toggle()
+            return
+        }
         const liked = await toggleLike(userId!, UIId)
         setLiked(liked.liked)
     }

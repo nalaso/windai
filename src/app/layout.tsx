@@ -11,6 +11,7 @@ import "./globals.css";
 import Script from "next/script";
 import { TooltipProvider } from '@/components/ui';
 import { Toaster } from '@/components/ui/sonner';
+import AuthModal from '@/components/auth-modal';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,6 +44,7 @@ export default function RootLayout({
           <body className={inter.className}>
             {children}
           <Toaster />
+          <AuthModal />
           </body>
         </html>
       </TooltipProvider>

@@ -1,6 +1,5 @@
 "use client"
 import { createUI } from "@/actions/ui/create-ui";
-import AuthModal from "@/components/auth-modal";
 import Header from "@/components/header";
 import HomeUICards from "@/components/home-uis";
 import Suggestions from "@/components/suggestions";
@@ -56,7 +55,6 @@ export default function Home() {
                 </div>
             </div>
             <HomeUICards />
-            <AuthModal />
         </div>
     );
 }
