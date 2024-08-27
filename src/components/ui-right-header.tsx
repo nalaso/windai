@@ -14,6 +14,7 @@ import { a11yLight, atomOneLight, CodeBlock, CopyBlock, dracula, paraisoLight } 
 import { embededCode } from "@/lib/code";
 import { toast } from "sonner";
 import { Toast } from "./ui/toast";
+import PromptBadge from "./prompt-badge";
 
 interface UIState {
     [key: string]: {
@@ -71,7 +72,9 @@ const UIRigthHeader = ({
                     <AvatarFallback>NS</AvatarFallback>
                 </Avatar>
                 <Separator className="h-6" orientation="vertical" />
-                <Badge variant={"secondary"} className="rounded-xl">{subPrompt}</Badge>
+                <PromptBadge variant={"secondary"} className="rounded-xl"
+                    prompt={subPrompt}
+                />
                 <Button variant={"ghost"} className="rounded-full" size={"icon"}>
                     <RefreshCw className="text-gray-600" size={16} />
                 </Button>
@@ -151,7 +154,9 @@ const UIRigthHeader = ({
                         <DialogHeader>
                             <DialogTitle>React code</DialogTitle>
                             <DialogDescription>
-                                <Badge variant={"secondary"} className="rounded-xl">{subPrompt}</Badge>
+                                <PromptBadge variant={"secondary"} className="rounded-xl"
+                                    prompt={subPrompt}
+                                />
                             </DialogDescription>
                         </DialogHeader>
                         <div className="py-4 max-h-[70vh] overflow-y-auto">
