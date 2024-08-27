@@ -7,7 +7,8 @@ export async function POST(req: Request): Promise<Response> {
         const { modifyDescription, precode } = await req.json();
 
         const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL;
-        const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+
+        const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET?.replace(/\*\*/g, "\n");
         const projectId = process.env.Vertex_Ai_ProjectID
         const region = process.env.Vertex_Ai_Location
 
