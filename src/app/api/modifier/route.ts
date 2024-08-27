@@ -1,39 +1,8 @@
-import { AnthropicVertex } from "@anthropic-ai/vertex-sdk";
-import { GoogleAuth } from "google-auth-library";
+import { anthropic } from "@/lib/anthropic";
 
 export async function POST(req: Request): Promise<Response> {
     try {
-
         const { modifyDescription, precode } = await req.json();
-
-        const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL;
-
-        const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET?.replace(/\*\*/g, "\n");
-        const projectId = process.env.Vertex_Ai_ProjectID
-        const region = process.env.Vertex_Ai_Location
-
-        console.log("here1");
-
-        const auth = new GoogleAuth({
-            scopes: 'https://www.googleapis.com/auth/cloud-platform',
-            credentials: {
-                "private_key": GOOGLE_CLIENT_SECRET,
-                "client_email": GOOGLE_CLIENT_EMAIL
-            }
-        });
-
-        console.log("here2",auth);
-        
-        const anthropic = new AnthropicVertex({
-            projectId,
-            region,
-            defaultHeaders: {
-                "anthropic-beta": "max-tokens-3-5-sonnet-2024-07-15"
-            },
-            googleAuth: auth
-        });
-
-        console.log("here3",anthropic);
         
         const response = await anthropic.messages.create({
             messages: [

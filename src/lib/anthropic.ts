@@ -9,7 +9,7 @@ const region = process.env.Vertex_Ai_Location
 const auth = new GoogleAuth({
   scopes: 'https://www.googleapis.com/auth/cloud-platform',
   credentials: {
-    "private_key": GOOGLE_CLIENT_SECRET,
+    "private_key": GOOGLE_CLIENT_SECRET!.split(String.raw`\n`).join('\n'),
     "client_email": GOOGLE_CLIENT_EMAIL
   }
 });
