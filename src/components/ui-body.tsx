@@ -27,4 +27,6 @@ const UIBody = forwardRef((props: { isloading: boolean, code: string, captureRef
     )
 })
 
+UIBody.displayName = "UIBody"
+
 export default UIBody

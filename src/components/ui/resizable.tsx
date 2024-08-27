@@ -20,6 +20,8 @@ const ResizablePanelGroup = forwardRef(({
   />
 ))
 
+ResizablePanelGroup.displayName = "ResizablePanelGroup";
+
 const ResizablePanel = ResizablePrimitive.Panel
 
 const ResizableHandle = ({
