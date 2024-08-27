@@ -3,11 +3,7 @@ import { generateText, streamText } from 'ai';
 
 export async function POST(req: Request): Promise<Response> {
     const  {codeDescription}  = await req.json();
-    // console.log("prompt", prompt);s
-    // const codeDescription = prompt;
     
-    console.log("codeDescription", codeDescription);
-
     const vertex = createVertex({
         project: process.env.Vertex_Ai_ProjectID,
         location: process.env.Vertex_Ai_Location,
@@ -46,8 +42,6 @@ export async function POST(req: Request): Promise<Response> {
         model: vertex('claude-3-5-sonnet@20240620'),
         prompt: content
     })
-
-    console.log("text", text);
 
     return new Response(JSON.stringify(text), {
         headers: {

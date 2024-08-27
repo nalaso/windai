@@ -2,9 +2,7 @@
 
 import { db } from "@/lib/db";
 
-export const toggleLike = async (userId: string, UIId: string) => {
-    console.log(userId, UIId);
-    
+export const toggleLike = async (userId: string, UIId: string) => {    
     const existingLike = await db.like.findFirst({
         where: { userId, UIId }
     });

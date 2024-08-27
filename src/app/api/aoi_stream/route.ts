@@ -3,10 +3,7 @@ import { generateText, streamText } from 'ai'
 
 export async function POST(req: Request): Promise<Response> {
     const  {prompt}  = await req.json();
-    console.log("prompt", prompt);
     const codeDescription = prompt;
-
-    console.log("codeDescription", codeDescription);
 
     const azure = createAzure({
         resourceName: process.env.Azure_Resouce_Name,

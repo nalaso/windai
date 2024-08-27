@@ -3,13 +3,10 @@ import { streamText } from 'ai'
 
 export async function POST(req: Request): Promise<Response> {
     const  {prompt}  = await req.json();
-    console.log("prompt", prompt);
     const codeDescription = prompt;
-
-    console.log("codeDescription", codeDescription);
     
-    const projectId = 'agent-427709';
-    const region = 'us-east5';
+    const projectId = process.env.Vertex_Ai_ProjectID
+    const region = process.env.Vertex_Ai_Location
 
     const vertex = createVertex({
         project: projectId,

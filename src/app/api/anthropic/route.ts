@@ -2,14 +2,9 @@ import { AnthropicVertex } from '@anthropic-ai/vertex-sdk';
 
 export async function POST(req: Request): Promise<Response> {
     const  {codeDescription} = await req.json();
-
-    // const codeDescription = prompt
-
-    console.log("codeDescription", process.env.ANTHROPIC_PROJECT_ID);
     
-
-    const projectId = 'agent-427709';
-    const region = 'us-east5';
+    const projectId = process.env.Vertex_Ai_ProjectID
+    const region = process.env.Vertex_Ai_Location
 
     const anthropic = new AnthropicVertex({
         projectId,
@@ -56,11 +51,8 @@ export async function POST(req: Request): Promise<Response> {
         max_tokens: 4096,
     });
 
-    console.log("response", response);
-
     const text = response.content[0].type == "text" ? response.content[0][response.content[0].type] : response.content[0].type;
     const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '').replace("asChild"," ")
-    console.log(text);
 
     return new Response(JSON.stringify(code), {
         headers: {

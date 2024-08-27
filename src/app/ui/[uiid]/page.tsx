@@ -541,42 +541,29 @@ const UI = ({ params }: { params: any }) => {
 
 	const capture = async () => {
 		try {
-			console.log("Starting capture...");
-	
-			// Convert the HTML element to a JPEG image
-			// const dataUrl = await htmlToImage.toJpeg(document.getElementById("captureDiv")!, { quality: 0.8 });
 			const canvas = await html2canvas(document.getElementById("captureDiv")!,{allowTaint: true, scrollY: -window.scrollY, useCORS: true});
 			const dataUrl2 = canvas.toDataURL('image/jpeg');
-			console.log("Image captured.");
 	
-			// Create a new image element to load the captured data URL
 			const img = new Image();
 			img.src = dataUrl2;
 	
 			img.onload = async function () {
-				console.log("Image loaded.");
 	
-				// Set the canvas dimensions based on the desired width
 				const canvas = document.createElement('canvas');
 				const ctx = canvas.getContext('2d')!;
 	
-				const width = 1200;  // Desired width
-				const scaleFactor = width / img.width;  // Scale factor to maintain aspect ratio
-				const height = img.height * scaleFactor;  // Calculated height
+				const width = 1200; 
+				const scaleFactor = width / img.width;  
+				const height = img.height * scaleFactor; 
 	
 				canvas.width = width;
 				canvas.height = height;
 	
-				// Draw the image on the canvas with the new dimensions
 				ctx.drawImage(img, 0, 0, width, height);
 	
-				// Convert the canvas content back to a data URL
 				const resizedDataURL = canvas.toDataURL('image/jpeg');
-				console.log("Image resized and converted.");
 	
-				// Update the UI with the resized image
 				await updateUI(uiid, { img: resizedDataURL });
-				console.log("UI updated with the captured image.");
 			};
 	
 			img.onerror = function (error) {

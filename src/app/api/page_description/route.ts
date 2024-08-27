@@ -41,11 +41,9 @@ const genrateContent = (prompt:string, type:string) => {
 
 export async function POST(req: Request): Promise<Response> {
     const { codeCommand, type } = await req.json();
-
-    console.log("codeCommand", codeCommand);
     
-    const projectId = 'agent-427709';
-    const region = 'us-east5';
+    const projectId = process.env.Vertex_Ai_ProjectID;
+    const region = process.env.Vertex_Ai_Region;
 
     const anthropic = new AnthropicVertex({
         projectId,
@@ -55,7 +53,7 @@ export async function POST(req: Request): Promise<Response> {
     const response = await anthropic.messages.create({
         messages: [
             {
-                role: 'user', 
+                role: 'user',
                 content: genrateContent(codeCommand, type)
             },
         ],
@@ -63,10 +61,7 @@ export async function POST(req: Request): Promise<Response> {
         max_tokens: 4096,
     });
 
-    console.log("response", response);
-
     const text = response.content[0].type == "text" ? response.content[0][response.content[0].type] : response.content[0].type;
-    console.log(text);
 
     return new Response(JSON.stringify(text), {
         headers: {
