@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage, Badge, Button, Card, CardContent, 
 import { timeAgo } from '@/lib/time';
 import { useRouter } from 'next/navigation';
 import { Eye, Heart } from 'lucide-react';
+import PromptBadge from './prompt-badge';
 
 interface UI {
     id: string;
@@ -56,12 +57,11 @@ const HomeUICards = () => {
 
                         <Tooltip>
                             <TooltipTrigger className='rounded-full font-semibold ml-2 flex-1 text-ellipsis overflow-hidden whitespace-nowrap'>
-                                <Badge
+                                <PromptBadge
                                     variant={"secondary"}
                                     className="rounded-full font-semibold flex text-ellipsis overflow-hidden whitespace-nowrap"
-                                >
-                                    {ui.prompt}
-                                </Badge>
+                                    prompt={ui.prompt}
+                                />
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>{ui.prompt}</p>

@@ -8,6 +8,8 @@ import UIRigthHeader from "@/components/ui-right-header"
 import { useUIState } from "@/hooks/useUIState"
 import { useAuth, useUser } from "@clerk/nextjs"
 import * as htmlToImage from 'html-to-image';
+import html2canvas from 'html2canvas';
+
 import { LoaderCircle, SendHorizontal } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { ImperativePanelGroupHandle } from "react-resizable-panels"
@@ -51,7 +53,7 @@ const UI = ({ params }: { params: any }) => {
 		likes: number;
 		views: number;
 	} | null>(null)
-	
+
 	const [uiState, setUiState] = useState<{
 		[key: string]: {
 			loading: boolean;
@@ -72,9 +74,6 @@ const UI = ({ params }: { params: any }) => {
 		},
 	});
 
-	console.log(selectedVersion.version,currentState);
-	
-	
 	const charMap: {
 		[key: string]: string;
 	} = {
@@ -102,12 +101,11 @@ const UI = ({ params }: { params: any }) => {
 		return code!
 	}
 
-	const setVersion = async (version: number) => {	
-		console.log(ui?.subPrompts);
-		
+	const setVersion = async (version: number) => {
+
 		if (ui?.subPrompts.length === 0) return
 		const subPrompt = ui?.subPrompts[version]
-		if(!subPrompt) return	
+		if (!subPrompt) return
 
 		setSelectedVersion({
 			prompt: subPrompt[0].subPrompt,
@@ -115,7 +113,7 @@ const UI = ({ params }: { params: any }) => {
 		})
 
 		var preiseCode = subPrompt[0].code
-		if(preiseCode==""){
+		if (preiseCode == "") {
 			setUiState(preUIState => ({
 				...preUIState,
 				precise: {
@@ -125,10 +123,10 @@ const UI = ({ params }: { params: any }) => {
 			}))
 			preiseCode = await getCode(subPrompt[0].id, version, 0)
 		}
-		if(version===0){
+		if (version === 0) {
 			var balancedCode = subPrompt[1].code
 			var creativeCode = subPrompt[2].code
-			if(balancedCode==""){
+			if (balancedCode == "") {
 				setUiState(preUIState => ({
 					...preUIState,
 					balanced: {
@@ -138,7 +136,7 @@ const UI = ({ params }: { params: any }) => {
 				}))
 				balancedCode = await getCode(subPrompt[1].id, version, 1)
 			}
-			if(creativeCode==""){
+			if (creativeCode == "") {
 				setUiState(preUIState => ({
 					...preUIState,
 					creative: {
@@ -162,7 +160,7 @@ const UI = ({ params }: { params: any }) => {
 					code: creativeCode!
 				}
 			})
-		}else{
+		} else {
 			setUiState({
 				precise: {
 					loading: false,
@@ -194,9 +192,9 @@ const UI = ({ params }: { params: any }) => {
 
 			const subPrompts = fetchedUI.subPrompt || [];
 
-			setCurrentState(subPrompts.length===0?0:subPrompts.length-3);
+			setCurrentState(subPrompts.length === 0 ? 0 : subPrompts.length - 3);
 
-			if(!subPrompts.find(sp => sp.SUBId === 'a')){
+			if (!subPrompts.find(sp => sp.SUBId === 'a')) {
 				const filterfetchedUI = {
 					...fetchedUI,
 					subPrompt: undefined,
@@ -223,7 +221,7 @@ const UI = ({ params }: { params: any }) => {
 				}, {
 					...subPromptMap['c'],
 					code: ""
-				}] as { id: string; UIId: string; SUBId: string; createdAt: Date; subPrompt: string; code : string; }[]
+				}] as { id: string; UIId: string; SUBId: string; createdAt: Date; subPrompt: string; code: string; }[]
 			];
 
 			const remainingSubPrompts = subPrompts.filter(subPromptObj =>
@@ -266,9 +264,9 @@ const UI = ({ params }: { params: any }) => {
 		}
 		incView()
 	}, [])
-	
+
 	useEffect(() => {
-		if (backendCheck === 0) return		
+		if (backendCheck === 0) return
 		setVersion(currentState)
 		if (input != "") {
 			setPrompt(input)
@@ -494,16 +492,13 @@ const UI = ({ params }: { params: any }) => {
 		}
 	}
 
-	console.log(uiState);
-	
-
 	const generateCode = async () => {
 		if (prompt === "") return;
 		setLoading(true);
-		setCurrentState(ui?.subPrompts.length ?? 1); 
+		setCurrentState(ui?.subPrompts.length ?? 1);
 		setSelectedVersion({
 			prompt: prompt,
-			version: selectedVersion.version+1
+			version: selectedVersion.version + 1
 		})
 
 		let promises: Promise<{ code: string; id: string; } | undefined>[];
@@ -516,17 +511,15 @@ const UI = ({ params }: { params: any }) => {
 
 		const resolved = await Promise.all(promises);
 
-		console.log(resolved);
-
 		setUi((prevUi) => {
 			if (prevUi) {
 				const updatedSubPrompts = [...prevUi.subPrompts];
 
 				if (ui?.subPrompts.length === 0) {
 					updatedSubPrompts.push([
-						{ id: resolved[0]?.id!, UIId: uiid, SUBId: 'a', createdAt: new Date(), subPrompt: "precise"+prompt, code: resolved[0]?.code! },
-						{ id: resolved[1]?.id!, UIId: uiid, SUBId: 'b', createdAt: new Date(), subPrompt: "balanced"+prompt, code: resolved[1]?.code! },
-						{ id: resolved[2]?.id!, UIId: uiid, SUBId: 'c', createdAt: new Date(), subPrompt: "creative"+prompt, code: resolved[2]?.code! }
+						{ id: resolved[0]?.id!, UIId: uiid, SUBId: 'a', createdAt: new Date(), subPrompt: "precise" + prompt, code: resolved[0]?.code! },
+						{ id: resolved[1]?.id!, UIId: uiid, SUBId: 'b', createdAt: new Date(), subPrompt: "balanced" + prompt, code: resolved[1]?.code! },
+						{ id: resolved[2]?.id!, UIId: uiid, SUBId: 'c', createdAt: new Date(), subPrompt: "creative" + prompt, code: resolved[2]?.code! }
 					]);
 					setMode("precise");
 				} else {
@@ -543,39 +536,64 @@ const UI = ({ params }: { params: any }) => {
 		});
 		setPrompt("");
 		setLoading(false);
-		// capture();
+		capture();
 	}
 
 	const capture = async () => {
-		htmlToImage.toJpeg(captureRef.current!).then(function (dataUrl: string) {
-			var img = new Image();
-			img.src = dataUrl;
+		try {
+			console.log("Starting capture...");
+	
+			// Convert the HTML element to a JPEG image
+			// const dataUrl = await htmlToImage.toJpeg(document.getElementById("captureDiv")!, { quality: 0.8 });
+			const canvas = await html2canvas(document.getElementById("captureDiv")!,{allowTaint: true, scrollY: -window.scrollY, useCORS: true});
+			const dataUrl2 = canvas.toDataURL('image/jpeg');
+			console.log("Image captured.");
+	
+			// Create a new image element to load the captured data URL
+			const img = new Image();
+			img.src = dataUrl2;
+	
 			img.onload = async function () {
+				console.log("Image loaded.");
+	
+				// Set the canvas dimensions based on the desired width
 				const canvas = document.createElement('canvas');
-				const ctx = canvas.getContext('2d');
-
-				const width = 1200;
-				const scaleFactor = width / img.width;
-				const height = img.height * scaleFactor;
-
+				const ctx = canvas.getContext('2d')!;
+	
+				const width = 1200;  // Desired width
+				const scaleFactor = width / img.width;  // Scale factor to maintain aspect ratio
+				const height = img.height * scaleFactor;  // Calculated height
+	
 				canvas.width = width;
 				canvas.height = height;
-
-				ctx!.drawImage(img, 0, 0, width, height);
-
+	
+				// Draw the image on the canvas with the new dimensions
+				ctx.drawImage(img, 0, 0, width, height);
+	
+				// Convert the canvas content back to a data URL
 				const resizedDataURL = canvas.toDataURL('image/jpeg');
-				await updateUI(uiid, {
-					img: resizedDataURL
-				})
-			}
-		})
-	}	
+				console.log("Image resized and converted.");
+	
+				// Update the UI with the resized image
+				await updateUI(uiid, { img: resizedDataURL });
+				console.log("UI updated with the captured image.");
+			};
+	
+			img.onerror = function (error) {
+				console.error("Error loading the image:", error);
+			};
+	
+		} catch (error) {
+			console.error("Error during capture:", error);
+		}
+	};
+	
 
 	return (
 		<div className="overflow-hidden h-screen">
-			<UIHeader mainPrompt={ui?.prompt!}/>
+			<UIHeader mainPrompt={ui?.prompt!} />
 			<div className="flex h-screen border-collapse overflow-hidden">
-				<Sidebar selectedVersion={selectedVersion.version} setVersion={setVersion} subPrompts={ui?.subPrompts}/>
+				<Sidebar selectedVersion={selectedVersion.version} setVersion={setVersion} subPrompts={ui?.subPrompts} />
 				<div className="flex-1 px-4 py-2 space-y-2">
 					<Card className="flex flex-col bg-secondary">
 						<div className="flex justify-between items-center">

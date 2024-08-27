@@ -22,7 +22,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const isNew = await redis.set(["deduplicate", hash, UIId].join(":"), true, {
         nx: true,
-        ex: 24 * 60 * 60,
+        ex: 24 * 60 * 60 * 1000 * 3,
     });
     if (!isNew) {
         return new NextResponse(null, { status: 202 });

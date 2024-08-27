@@ -16,9 +16,7 @@ export default function Sidebar({ subPrompts, setVersion, selectedVersion }: any
 		setTimeout(() => setStatus(false), 500);
 	};
 
-	if (!subPrompts) return <></>
-
-	console.log(subPrompts);
+	if (!subPrompts) return <div></div>
 	
 	return (
 		<nav

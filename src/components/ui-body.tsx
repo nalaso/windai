@@ -16,7 +16,7 @@ const UIBody = forwardRef((props: { isloading: boolean, code: string, captureRef
                             <div className="absolute z-10 opacity-20 w-full h-[75vh] gradient-animation shadow-lg" />
                         )
                     }
-                    <div ref={props.captureRef} className={`max-h-[75vh] h-[75vh] ${props.isloading ? "overflow-y-hidden" : "overflow-y-auto"}`}>
+                    <div id="captureDiv" ref={props.captureRef} className={`max-h-[75vh] h-[75vh] ${props.isloading ? "overflow-y-hidden" : "overflow-y-auto"}`}>
                         <PreviewScreen html_code={props.code} />
                     </div>
                 </ResizablePanel>

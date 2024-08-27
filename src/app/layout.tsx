@@ -10,6 +10,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { TooltipProvider } from '@/components/ui';
+import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,16 +32,17 @@ export default function RootLayout({
             <Script
               type="module"
               src={"https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"}
-              strategy="afterInteractive" // lazyOnload, afterInteractive
+              strategy="afterInteractive" 
             />
             <Script
               noModule
               src={"https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"}
-              strategy="afterInteractive" // lazyOnload, afterInteractive
+              strategy="afterInteractive" 
             />
           </head>
           <body className={inter.className}>
             {children}
+          <Toaster />
           </body>
         </html>
       </TooltipProvider>

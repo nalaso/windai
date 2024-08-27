@@ -57,5 +57,5 @@ model Like {
   userId    String
   UIId      String   @db.ObjectId
   createdAt DateTime @default(now())
-  ui      UI     @relation(fields: [UIId], references: [id])
+  ui      UI     @relation(fields: [UIId], references: [id], onDelete: Cascade)
 }

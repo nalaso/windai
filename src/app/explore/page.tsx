@@ -1,6 +1,7 @@
 "use client";
 import { getUIs } from '@/actions/ui/get-uis';
 import Header from '@/components/header';
+import PromptBadge from '@/components/prompt-badge';
 import { Avatar, AvatarFallback, AvatarImage, Badge, Button, Card, CardContent, CardFooter, Tabs, TabsContent, TabsList, TabsTrigger, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { timeAgo } from '@/lib/time';
 import { Eye, Heart, RefreshCcw } from 'lucide-react';
@@ -108,12 +109,11 @@ const Page = () => {
 
                                             <Tooltip>
                                                 <TooltipTrigger className='rounded-full font-semibold ml-2 flex-1 text-ellipsis overflow-hidden whitespace-nowrap'>
-                                                    <Badge
+                                                    <PromptBadge
                                                         variant={"secondary"}
                                                         className="rounded-full font-semibold flex text-ellipsis overflow-hidden whitespace-nowrap"
-                                                    >
-                                                        {ui.prompt}
-                                                    </Badge>
+                                                        prompt={ui.prompt}
+                                                    />
                                                 </TooltipTrigger>
                                                 <TooltipContent>
                                                     <p>{ui.prompt}</p>
