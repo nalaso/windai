@@ -3,13 +3,13 @@ import React, { useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { useSidebar } from "@/hooks/useSidebar";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LoaderCircle } from "lucide-react";
 import { Button } from "./ui";
 
-export default function Sidebar({ subPrompts, setVersion, selectedVersion }: any) {
+export default function Sidebar({ subPrompts, setVersion, subid }: any) {
 	const { isOpen, toggle } = useSidebar();
 	const [status, setStatus] = useState(false);
-
+	
 	const handleToggle = () => {
 		setStatus(true);
 		toggle();
@@ -41,8 +41,8 @@ export default function Sidebar({ subPrompts, setVersion, selectedVersion }: any
 							<Button 
 								size={"icon"} 
 								key={subPrompt[0].id} 
-								onClick={() => setVersion(i)} 
-								variant={selectedVersion?.SUBId?.endsWith("0")?"outline":selectedVersion.SUBId===subPrompt[0].SUBId?"outline":"secondary"} 
+								onClick={() => setVersion(subPrompt[0].SUBId)} 
+								variant={subid?.endsWith("0")?"outline":subid===subPrompt[0].SUBId?"outline":"secondary"} 
 								className="text-xs font-bold text-gray-500"
 								title={`Subid: ${subPrompt[0].id}`}
 							>
@@ -55,6 +55,18 @@ export default function Sidebar({ subPrompts, setVersion, selectedVersion }: any
 								}
 							</Button>
 						))
+					}
+					{
+						subid === "1" && (
+							<Button 
+								size={"icon"} 
+								onClick={() => setVersion("0")} 
+								variant={"outline"} 
+								className="text-xs font-bold text-gray-500"
+							>
+								<LoaderCircle className="h-4 w-4 ml-1 animate-spin" />
+							</Button>
+						)
 					}
 				</div>
 			</div>

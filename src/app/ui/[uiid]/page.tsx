@@ -26,7 +26,7 @@ const UI = ({ params }: { params: any }) => {
 
 	const [selectedVersion, setSelectedVersion] = useState({
 		prompt: "",
-		version: -1
+		subid: ""
 	})
 	const [prompt, setPrompt] = useState("")
 	const [code, setCode] = useState("")
@@ -92,19 +92,20 @@ const UI = ({ params }: { params: any }) => {
 		return code!
 	}
 
-	const setVersion = async (version: number) => {
+	const setVersion = async (subid: string) => {
 
 		if (ui?.subPrompts.length === 0) return
-		const subPrompt = ui?.subPrompts[version]
+		const i = ui?.subPrompts.findIndex(subPrompts => subPrompts.findIndex(subPrompt => subPrompt.SUBId === subid) !== -1)!
+		const subPrompt = ui?.subPrompts[i]
 		if (!subPrompt) return
 
 		setSelectedVersion({
 			prompt: subPrompt[0].subPrompt,
-			version: version
+			subid: subid
 		})
 
-		var preiseCode = subPrompt[0].code
-		if (preiseCode == "") {
+		var preciseCode = subPrompt[0].code
+		if (preciseCode == "") {
 			setUiState(preUIState => ({
 				...preUIState,
 				precise: {
@@ -112,9 +113,9 @@ const UI = ({ params }: { params: any }) => {
 					loading: true
 				}
 			}))
-			preiseCode = await getCode(subPrompt[0].id, version, 0)
+			preciseCode = await getCode(subPrompt[0].id, i, 0)
 		}
-		if (version === 0) {
+		if (subid.endsWith("0")) {
 			var balancedCode = subPrompt[1].code
 			var creativeCode = subPrompt[2].code
 			if (balancedCode == "") {
@@ -125,7 +126,7 @@ const UI = ({ params }: { params: any }) => {
 						loading: true
 					}
 				}))
-				balancedCode = await getCode(subPrompt[1].id, version, 1)
+				balancedCode = await getCode(subPrompt[1].id, i, 1)
 			}
 			if (creativeCode == "") {
 				setUiState(preUIState => ({
@@ -135,12 +136,12 @@ const UI = ({ params }: { params: any }) => {
 						loading: true
 					}
 				}))
-				creativeCode = await getCode(subPrompt[2].id, version, 2)
+				creativeCode = await getCode(subPrompt[2].id, i, 2)
 			}
 			setUiState({
 				precise: {
 					loading: false,
-					code: preiseCode!
+					code: preciseCode!
 				},
 				balanced: {
 					loading: false,
@@ -155,7 +156,7 @@ const UI = ({ params }: { params: any }) => {
 			setUiState({
 				precise: {
 					loading: false,
-					code: preiseCode!
+					code: preciseCode!
 				},
 				balanced: {
 					loading: false,
@@ -168,7 +169,7 @@ const UI = ({ params }: { params: any }) => {
 			})
 		}
 		setMode("precise")
-		setCode(preiseCode!)
+		setCode(preciseCode!)
 	}
 
 	useEffect(() => {
@@ -256,9 +257,15 @@ const UI = ({ params }: { params: any }) => {
 
 	useEffect(() => {
 		if (backendCheck === 0) return
-		// TODO set version to the last created version
-		setVersion(ui?.subPrompts.length! - 1)
-		// setVersion(0)
+		if(ui?.subPrompts.length === 0) {
+			setSelectedVersion({
+				prompt: ui?.prompt!,
+				subid: "0"
+			})
+		}else{
+			const lastGeneratedSubPrompt = ui?.subPrompts[ui?.subPrompts.length - 1][0]
+			setVersion(lastGeneratedSubPrompt?.SUBId!)
+		}
 		if (input != "") {
 			setPrompt(input)
 		}
@@ -277,9 +284,26 @@ const UI = ({ params }: { params: any }) => {
 		}
 	}, [uiState.balanced.loading, uiState.creative.loading, uiState.precise.loading])
 
+	const getIdxFromMode = (mode: string) => {
+		if (mode === "precise") {
+			return 0
+		} else if (mode === "balanced") {
+			return 1
+		} else if (mode === "creative") {
+			return 2
+		}
+	}
+
 	useEffect(() => {
 		if (["precise", "balanced", "creative"].includes(mode)) {
 			setCode(uiState[mode].code)
+			const idx = getIdxFromMode(mode)
+			const selectedSubPrompt = ui?.subPrompts.find(subPrompts => subPrompts.findIndex(subPrompt => subPrompt.SUBId === selectedVersion.subid) !== -1)
+			if(!selectedSubPrompt || !selectedSubPrompt[0]==null || !selectedSubPrompt[0]?.SUBId) return
+			setSelectedVersion({
+				prompt: selectedSubPrompt[idx!].subPrompt!,
+				subid: selectedSubPrompt[idx!].SUBId!
+			})
 		}
 	}, [mode])
 
@@ -481,11 +505,7 @@ const UI = ({ params }: { params: any }) => {
 			}))
 
 			const subPrompt = prompt
-			const parentSubPrompt = ui?.subPrompts[selectedVersion.version][0];
-			
-			let parentSUBId = parentSubPrompt ? parentSubPrompt.SUBId : '';
-
-			const data = await createSubPrompt(subPrompt, uiid, parentSUBId, response)
+			const data = await createSubPrompt(subPrompt, uiid, selectedVersion.subid, response)
 
 			return {
 				code: data.codeData.code,
@@ -501,16 +521,16 @@ const UI = ({ params }: { params: any }) => {
 	const generateCode = async () => {
 		if (prompt === "") return;
 		setLoading(true);
-		setSelectedVersion({
-			prompt: prompt,
-			version: selectedVersion.version + 1
-		})
 
 		let promises: Promise<{ code: string; id: string; SUBId?: string; subPrompt?: string; } | undefined>[];
 
 		if (ui?.subPrompts.length === 0) {
 			promises = [generatePreciseCode(), generateBalancedCode(), generateCreativeCode()];
 		} else {
+			setSelectedVersion({
+				prompt: prompt,
+				subid: "1"
+			})
 			promises = [generateModifiedCode()];
 		}
 
@@ -526,9 +546,9 @@ const UI = ({ params }: { params: any }) => {
 						{ id: resolved[1]?.id!, UIId: uiid, SUBId: resolved[1]?.SUBId!, createdAt: new Date(), subPrompt: resolved[1]?.subPrompt!, code: resolved[1]?.code! },
 						{ id: resolved[2]?.id!, UIId: uiid, SUBId: resolved[2]?.SUBId!, createdAt: new Date(), subPrompt: resolved[2]?.subPrompt!, code: resolved[2]?.code! }
 					]);
-					setMode("precise");
 				} else {
 					updatedSubPrompts.push([{ id: resolved[0]?.id!, UIId: uiid, SUBId: resolved[0]?.SUBId!, createdAt: new Date(), subPrompt: resolved[0]?.subPrompt!, code: resolved[0]?.code! }]);
+					setMode("precise");
 				}
 
 				return {
@@ -540,6 +560,10 @@ const UI = ({ params }: { params: any }) => {
 			}
 		});
 		setPrompt("");
+		setSelectedVersion({
+			prompt: prompt,
+			subid: resolved[0]?.SUBId!
+		})
 		setLoading(false);
 		capture();
 	}
@@ -584,17 +608,16 @@ const UI = ({ params }: { params: any }) => {
 		<div className="overflow-hidden h-screen">
 			<UIHeader mainPrompt={ui?.prompt!} />
 			<div className="flex h-screen border-collapse overflow-hidden">
-				<Sidebar selectedVersion={selectedVersion.version} setVersion={setVersion} subPrompts={ui?.subPrompts} />
+				<Sidebar subid={selectedVersion.subid} setVersion={setVersion} subPrompts={ui?.subPrompts} />
 				<div className="flex-1 px-4 py-2 space-y-2">
 					<Card className="flex flex-col bg-secondary">
 						<div className="flex justify-between items-center">
 							<UIRigthHeader
 								UIId={uiid}
 								views={ui?.views!}
-								selectedVersion={selectedVersion.version}
+								subid={selectedVersion.subid}
 								subPrompt={selectedVersion.prompt}
 								setPanelView={setPanelView}
-								setUiState={setUiState}
 								uiState={uiState}
 								setMode={setMode}
 								mode={mode}

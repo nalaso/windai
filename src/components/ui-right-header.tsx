@@ -15,12 +15,11 @@ import { embededCode } from "@/lib/code";
 import PromptBadge from "./prompt-badge";
 import { useAuthModal } from "@/hooks/useAuthModal";
 
-
 const UIRigthHeader = ({
     UIId,
     views,
     subPrompt,
-    selectedVersion,
+    subid,
     setPanelView,
     uiState,
     setMode,
@@ -30,7 +29,7 @@ const UIRigthHeader = ({
     UIId: string,
     views: number,
     subPrompt: string,
-    selectedVersion: number,
+    subid: string,
     setPanelView: (type: string) => void,
     uiState: {
         [key: string]: {
@@ -111,7 +110,7 @@ const UIRigthHeader = ({
                         }
                     </ToggleGroupItem>
                     {
-                        selectedVersion === 0 && (
+                        subid.endsWith("0") && (
                             <ToggleGroupItem value="balanced" aria-label="Toggle italic">
                                 Balanced
                                 {
@@ -125,7 +124,7 @@ const UIRigthHeader = ({
                         )
                     }
                     {
-                        selectedVersion === 0 && (
+                        subid.endsWith("0") && (
                             <ToggleGroupItem value="creative" aria-label="Toggle underline">
                                 Creative
                                 {
