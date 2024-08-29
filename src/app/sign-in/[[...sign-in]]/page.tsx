@@ -18,6 +18,7 @@ import { Github, LoaderCircle } from 'lucide-react'
 
 export default function SignInPage() {
   return (
+    // TODO redirect to here when auth modal clicked
     <div className="grid w-full grow items-center px-4 sm:justify-center">
       <SignIn.Root>
         <Clerk.Loading>
