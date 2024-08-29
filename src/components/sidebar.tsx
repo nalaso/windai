@@ -38,7 +38,22 @@ export default function Sidebar({ subPrompts, setVersion, selectedVersion }: any
 				<div className="flex flex-col space-y-4">
 					{
 						subPrompts.map((subPrompt: any, i: number) => (
-							<Button size={"icon"} key={subPrompt[0].id} onClick={() => setVersion(i)} variant={selectedVersion==i?"outline":"secondary"} className="text-xs font-bold text-gray-500">V{i + 1}</Button>
+							<Button 
+								size={"icon"} 
+								key={subPrompt[0].id} 
+								onClick={() => setVersion(i)} 
+								variant={selectedVersion?.SUBId?.endsWith("0")?"outline":selectedVersion.SUBId===subPrompt[0].SUBId?"outline":"secondary"} 
+								className="text-xs font-bold text-gray-500"
+								title={`Subid: ${subPrompt[0].id}`}
+							>
+								{
+									i===0?(
+										"V1"
+									):(
+										subPrompt[0].SUBId
+									)
+								}
+							</Button>
 						))
 					}
 				</div>

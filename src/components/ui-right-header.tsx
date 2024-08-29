@@ -15,12 +15,6 @@ import { embededCode } from "@/lib/code";
 import PromptBadge from "./prompt-badge";
 import { useAuthModal } from "@/hooks/useAuthModal";
 
-interface UIState {
-    [key: string]: {
-        loading: boolean;
-        code: string;
-    };
-}
 
 const UIRigthHeader = ({
     UIId,
@@ -28,7 +22,6 @@ const UIRigthHeader = ({
     subPrompt,
     selectedVersion,
     setPanelView,
-    setUiState,
     uiState,
     setMode,
     mode,
@@ -39,7 +32,6 @@ const UIRigthHeader = ({
     subPrompt: string,
     selectedVersion: number,
     setPanelView: (type: string) => void,
-    setUiState: (uiState: UIState) => void,
     uiState: {
         [key: string]: {
             loading: boolean;
