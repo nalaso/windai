@@ -7,7 +7,7 @@ import UIHeader from "@/components/ui-header"
 import UIRigthHeader from "@/components/ui-right-header"
 import { useUIState } from "@/hooks/useUIState"
 import { useAuth, useUser } from "@clerk/nextjs"
-import * as htmlToImage from 'html-to-image';
+// import * as htmlToImage from 'html-to-image';
 import html2canvas from 'html2canvas';
 
 import { LoaderCircle, SendHorizontal } from "lucide-react"
@@ -17,6 +17,7 @@ import { updateUI } from "@/actions/ui/update-ui"
 import { getUI } from "@/actions/ui/get-uis"
 import { useRouter } from "next/navigation"
 import { getCodeFromPromptId } from "@/actions/ui/get-code"
+import { toast } from "sonner"
 
 const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);
@@ -495,6 +496,19 @@ const UI = ({ params }: { params: any }) => {
 			});
 
 			const response = await res.json();
+
+			if(response=="Error"){
+				setUiState(preuis => ({
+					...preuis,
+					precise: {
+						code: "Error",
+						loading: false
+					}
+				}))
+				toast.error("Error modifying code")
+				router.push("/")
+				return
+			}
 
 			setUiState(preuis => ({
 				...preuis,
