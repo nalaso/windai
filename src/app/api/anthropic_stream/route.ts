@@ -2,7 +2,7 @@
 // // import { createVertex } from '@ai-sdk/google-vertex';
 // import { generateText, streamText } from 'ai';
 
-// export async function POST(req: Request): Promise<Response> {
+export async function POST(req: Request) {
 //     const  {codeDescription}  = await req.json();
     
 //     // const vertex = createVertex({
@@ -45,10 +45,10 @@
 //     // })
 //     const text =""
 
-//     return new Response(JSON.stringify(text), {
-//         headers: {
-//             'content-type': 'application/json',
-//         },
-//     });
+    return new Response(JSON.stringify("text"), {
+        headers: {
+            'content-type': 'application/json',
+        },
+    });
 
-// }
+}
