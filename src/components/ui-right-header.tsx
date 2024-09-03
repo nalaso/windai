@@ -10,12 +10,13 @@ import LikeButton from "./like-button";
 import { toggleLike } from "@/actions/ui/toggle-like-ui";
 import { useAuth } from "@clerk/nextjs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { a11yLight, CopyBlock } from 'react-code-blocks';
 import { embededCode } from "@/lib/code";
 import PromptBadge from "./prompt-badge";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneLight as theme } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const UIRigthHeader = ({
     UIId,
@@ -201,13 +202,9 @@ const UIRigthHeader = ({
                             </DialogDescription>
                         </DialogHeader>
                         <div className="py-4 max-h-[70vh] overflow-y-auto">
-                            <CopyBlock
-                                text={embededCode(code)}
-                                language={"jsx"}
-                                showLineNumbers={false}
-                                theme={a11yLight}
-                                wrapLongLines={true}
-                            />
+                            <SyntaxHighlighter language="jsx" style={theme} >
+                                {embededCode(code)}
+                            </SyntaxHighlighter>
                         </div>
                         <DialogFooter>
                             <Button type="submit">Copy Code</Button>
