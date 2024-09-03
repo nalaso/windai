@@ -3,6 +3,9 @@ import { generateText } from 'ai';
 import { createAnthropicVertex } from 'anthropic-vertex-ai';
 import { GoogleAuth } from 'google-auth-library';
 
+export const maxDuration = 30;
+export const dynamic = 'force-dynamic';
+
 const genrateContent = (prompt:string, type:string) => {
     if (type=="creative") {
         return getCreativePrompt(prompt)

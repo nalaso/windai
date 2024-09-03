@@ -3,6 +3,9 @@ import { createAnthropicVertex } from 'anthropic-vertex-ai';
 import { getModifierPromt } from '@/lib/prompt';
 import { GoogleAuth } from 'google-auth-library';
 
+export const maxDuration = 30;
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
     try {
         const { modifyDescription, precode } = await req.json();
