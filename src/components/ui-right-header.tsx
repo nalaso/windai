@@ -96,7 +96,7 @@ const UIRigthHeader = ({
                         <TooltipTrigger className='rounded-full font-semibold ml-2 flex-1 text-ellipsis overflow-hidden whitespace-nowrap'>
                             <PromptBadge
                                 variant={"secondary"}
-                                className="rounded-full font-semibold flex text-ellipsis overflow-hidden whitespace-nowrap w-96"
+                                className="rounded-full font-semibold flex text-ellipsis overflow-hidden whitespace-nowrap max-w-96"
                                 prompt={subPrompt}
                             />
                         </TooltipTrigger>

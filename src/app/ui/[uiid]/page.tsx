@@ -386,6 +386,7 @@ const UI = ({ params }: { params: any }) => {
 					loading: false
 				}
 			}))
+			throw error; // Re-throw the error to be caught by the caller
 		}
 	}
 
@@ -459,6 +460,7 @@ const UI = ({ params }: { params: any }) => {
 					loading: false
 				}
 			}))
+			throw error; // Re-throw the error to be caught by the caller
 		}
 	}
 
@@ -532,6 +534,7 @@ const UI = ({ params }: { params: any }) => {
 					loading: false
 				}
 			}))
+			throw error; // Re-throw the error to be caught by the caller
 		}
 	}
 
@@ -602,6 +605,7 @@ const UI = ({ params }: { params: any }) => {
 					loading: false
 				}
 			}))
+			throw error; // Re-throw the error to be caught by the caller
 		}
 	}
 
@@ -685,6 +689,7 @@ const UI = ({ params }: { params: any }) => {
 					loading: false
 				}
 			}))
+			throw error; // Re-throw the error to be caught by the caller
 		}
 	}
 
@@ -693,6 +698,7 @@ const UI = ({ params }: { params: any }) => {
 		setLoading(true);
 
 		let promises: Promise<{ code: string; id: string; SUBId?: string; subPrompt?: string; } | undefined>[];
+		const previousSubId = selectedVersion.subid;
 
 		if (ui?.subPrompts.length === 0) {
 			promises = [generatePreciseCode(), generateBalancedCode(), generateCreativeCode()];
@@ -705,20 +711,45 @@ const UI = ({ params }: { params: any }) => {
 		}
 
 		try {
-			const resolved = await Promise.all(promises);
+			console.log("Generating code...");
+			
+			const resolved = await Promise.allSettled(promises);
+
+			console.log(resolved);
+			
+			const successfulResults = resolved.filter(
+				(result): result is PromiseFulfilledResult<{ code: string; id: string; SUBId?: string; subPrompt?: string; } | undefined> => 
+				result.status === 'fulfilled' && result.value !== undefined
+			).map(result => result.value);
+
+			if (successfulResults.length === 0) {
+				throw new Error('All code generation attempts failed');
+			}
 
 			setUi((prevUi) => {
 				if (prevUi) {
 					const updatedSubPrompts = [...prevUi.subPrompts];
 
 					if (ui?.subPrompts.length === 0) {
-						updatedSubPrompts.push([
-							{ id: resolved[0]?.id!, UIId: uiid, SUBId: resolved[0]?.SUBId!, createdAt: new Date(), subPrompt: resolved[0]?.subPrompt!, code: resolved[0]?.code! },
-							{ id: resolved[1]?.id!, UIId: uiid, SUBId: resolved[1]?.SUBId!, createdAt: new Date(), subPrompt: resolved[1]?.subPrompt!, code: resolved[1]?.code! },
-							{ id: resolved[2]?.id!, UIId: uiid, SUBId: resolved[2]?.SUBId!, createdAt: new Date(), subPrompt: resolved[2]?.subPrompt!, code: resolved[2]?.code! }
-						]);
+						updatedSubPrompts.push(
+							successfulResults.map(result => ({
+								id: result!.id,
+								UIId: uiid,
+								SUBId: result!.SUBId!,
+								createdAt: new Date(),
+								subPrompt: result!.subPrompt!,
+								code: result!.code
+							}))
+						);
 					} else {
-						updatedSubPrompts.push([{ id: resolved[0]?.id!, UIId: uiid, SUBId: resolved[0]?.SUBId!, createdAt: new Date(), subPrompt: resolved[0]?.subPrompt!, code: resolved[0]?.code! }]);
+						updatedSubPrompts.push([{
+							id: successfulResults[0]!.id,
+							UIId: uiid,
+							SUBId: successfulResults[0]!.SUBId!,
+							createdAt: new Date(),
+							subPrompt: successfulResults[0]!.subPrompt!,
+							code: successfulResults[0]!.code
+						}]);
 						setMode("precise");
 					}
 
@@ -733,7 +764,7 @@ const UI = ({ params }: { params: any }) => {
 			setPrompt("");
 			setSelectedVersion({
 				prompt: prompt,
-				subid: resolved[0]?.SUBId!
+				subid: successfulResults[0]!.SUBId!
 			})
 			setLoading(false);
 			capture();
@@ -741,16 +772,18 @@ const UI = ({ params }: { params: any }) => {
 			console.error('Error generating code:', error);
 			toast.error('Failed to generate code. Please try again.');
 			setLoading(false);
+			setVersion(previousSubId);
 		}
 	}
 
 	const regenerateCode = async () => {
 		if (loading) return;
 		setLoading(true);
+		const previousSubId = selectedVersion.subid;
 		try {
-			const result = await reGenerateModifiedCode();
+			const result = await reGenerateModifiedCode();			
 			if (result) {
-				console.log(result);
+				console.log("-------------------", result);
 				setUi((prevUi) => {
 					if (prevUi) {
 						const updatedSubPrompts = prevUi.subPrompts.map((subPromptArray) =>
@@ -780,6 +813,7 @@ const UI = ({ params }: { params: any }) => {
 		} catch (error) {
 			console.error('Error regenerating code:', error);
 			toast.error('Failed to regenerate code. Please try again.');
+			setVersion(previousSubId);
 		} finally {
 			setLoading(false);
 		}
