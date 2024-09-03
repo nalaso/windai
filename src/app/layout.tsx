@@ -43,7 +43,7 @@ export default function RootLayout({
           </head>
           <body className={inter.className}>
             {children}
-          <Toaster />
+          <Toaster richColors expand />
           <AuthModal />
           </body>
         </html>

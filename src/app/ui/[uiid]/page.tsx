@@ -7,7 +7,6 @@ import UIHeader from "@/components/ui-header"
 import UIRigthHeader from "@/components/ui-right-header"
 import { useUIState } from "@/hooks/useUIState"
 import { useAuth, useUser } from "@clerk/nextjs"
-// import * as htmlToImage from 'html-to-image';
 import html2canvas from 'html2canvas';
 
 import { LoaderCircle, SendHorizontal } from "lucide-react"
@@ -77,167 +76,183 @@ const UI = ({ params }: { params: any }) => {
 	const { input, setInput } = useUIState();
 
 	const getCode = async (id: string, iidx: number, jidx: number) => {
-		const code = await getCodeFromPromptId(id)
-		setUi((prevUi) => {
-			if (prevUi) {
-				const updatedSubPrompts = [...prevUi.subPrompts];
-				updatedSubPrompts[iidx][jidx].code = code!
-				return {
-					...prevUi,
-					subPrompts: updatedSubPrompts
-				};
-			} else {
-				return prevUi;
-			}
-		})
-		return code!
+		try {
+			const code = await getCodeFromPromptId(id)
+			setUi((prevUi) => {
+				if (prevUi) {
+					const updatedSubPrompts = [...prevUi.subPrompts];
+					updatedSubPrompts[iidx][jidx].code = code!
+					return {
+						...prevUi,
+						subPrompts: updatedSubPrompts
+					};
+				} else {
+					return prevUi;
+				}
+			})
+			return code!
+		} catch (error) {
+			console.error('Error fetching code:', error);
+			toast.error('Failed to fetch code. Please try again.');
+			return '';
+		}
 	}
 
 	const setVersion = async (subid: string) => {
+		try {
+			if (ui?.subPrompts.length === 0) return
+			const i = ui?.subPrompts.findIndex(subPrompts => subPrompts.findIndex(subPrompt => subPrompt.SUBId === subid) !== -1)!
+			const subPrompt = ui?.subPrompts[i]
+			if (!subPrompt) return
 
-		if (ui?.subPrompts.length === 0) return
-		const i = ui?.subPrompts.findIndex(subPrompts => subPrompts.findIndex(subPrompt => subPrompt.SUBId === subid) !== -1)!
-		const subPrompt = ui?.subPrompts[i]
-		if (!subPrompt) return
+			setSelectedVersion({
+				prompt: subPrompt[0].subPrompt,
+				subid: subid
+			})
 
-		setSelectedVersion({
-			prompt: subPrompt[0].subPrompt,
-			subid: subid
-		})
-
-		var preciseCode = subPrompt[0].code
-		if (preciseCode == "") {
-			setUiState(preUIState => ({
-				...preUIState,
-				precise: {
-					...preUIState.precise,
-					loading: true
-				}
-			}))
-			preciseCode = await getCode(subPrompt[0].id, i, 0)
-		}
-		if (subid.endsWith("0")) {
-			var balancedCode = subPrompt[1].code
-			var creativeCode = subPrompt[2].code
-			if (balancedCode == "") {
+			var preciseCode = subPrompt[0].code
+			if (preciseCode == "") {
 				setUiState(preUIState => ({
 					...preUIState,
+					precise: {
+						...preUIState.precise,
+						loading: true
+					}
+				}))
+				preciseCode = await getCode(subPrompt[0].id, i, 0)
+			}
+			if (subid.endsWith("0")) {
+				var balancedCode = subPrompt[1].code
+				var creativeCode = subPrompt[2].code
+				if (balancedCode == "") {
+					setUiState(preUIState => ({
+						...preUIState,
+						balanced: {
+							...preUIState.balanced,
+							loading: true
+						}
+					}))
+					balancedCode = await getCode(subPrompt[1].id, i, 1)
+				}
+				if (creativeCode == "") {
+					setUiState(preUIState => ({
+						...preUIState,
+						creative: {
+							...preUIState.creative,
+							loading: true
+						}
+					}))
+					creativeCode = await getCode(subPrompt[2].id, i, 2)
+				}
+				setUiState({
+					precise: {
+						loading: false,
+						code: preciseCode!
+					},
 					balanced: {
-						...preUIState.balanced,
-						loading: true
-					}
-				}))
-				balancedCode = await getCode(subPrompt[1].id, i, 1)
-			}
-			if (creativeCode == "") {
-				setUiState(preUIState => ({
-					...preUIState,
+						loading: false,
+						code: balancedCode!
+					},
 					creative: {
-						...preUIState.creative,
-						loading: true
+						loading: false,
+						code: creativeCode!
 					}
-				}))
-				creativeCode = await getCode(subPrompt[2].id, i, 2)
+				})
+			} else {
+				setUiState({
+					precise: {
+						loading: false,
+						code: preciseCode!
+					},
+					balanced: {
+						loading: false,
+						code: ""
+					},
+					creative: {
+						loading: false,
+						code: ""
+					}
+				})
 			}
-			setUiState({
-				precise: {
-					loading: false,
-					code: preciseCode!
-				},
-				balanced: {
-					loading: false,
-					code: balancedCode!
-				},
-				creative: {
-					loading: false,
-					code: creativeCode!
-				}
-			})
-		} else {
-			setUiState({
-				precise: {
-					loading: false,
-					code: preciseCode!
-				},
-				balanced: {
-					loading: false,
-					code: ""
-				},
-				creative: {
-					loading: false,
-					code: ""
-				}
-			})
+			setMode("precise")
+			setCode(preciseCode!)
+		} catch (error) {
+			console.error('Error setting version:', error);
+			toast.error('Failed to set version. Please try again.');
 		}
-		setMode("precise")
-		setCode(preciseCode!)
 	}
 
 	useEffect(() => {
 		const fetchUI = async () => {
-			const fetchedUI = await getUI(uiid);
+			try {
+				const fetchedUI = await getUI(uiid);
 
-			if (!fetchedUI) {
-				console.error("Fetched UI is null or undefined.");
-				router.push("/");
-				return;
-			}
+				if (!fetchedUI) {
+					console.error("Fetched UI is null or undefined.");
+					toast.error('Failed to fetch UI. Redirecting to home page.');
+					router.push("/");
+					return;
+				}
 
-			const subPrompts = fetchedUI.subPrompt || [];
+				const subPrompts = fetchedUI.subPrompt || [];
 
-			if (!subPrompts.find(sp => sp.SUBId === "a-0")) {
+				if (!subPrompts.find(sp => sp.SUBId === "a-0")) {
+					const filterfetchedUI = {
+						...fetchedUI,
+						subPrompt: undefined,
+						subPrompts: []
+					};
+					setUi(filterfetchedUI);
+					setBackendCheck(1);
+					return
+				}
+
+				const subPromptMap = {
+					"a-0": subPrompts.find(sp => sp.SUBId === "a-0") || [],
+					"b-0": subPrompts.find(sp => sp.SUBId === "b-0") || [],
+					"c-0": subPrompts.find(sp => sp.SUBId === "c-0") || [],
+				};
+
+				const groupedSubPrompts = [
+					[{
+						...subPromptMap["a-0"],
+						code: ""
+					}, {
+						...subPromptMap["b-0"],
+						code: ""
+					}, {
+						...subPromptMap["c-0"],
+						code: ""
+					}] as { id: string; UIId: string; SUBId: string; createdAt: Date; subPrompt: string; code: string; }[]
+				];
+
+				const remainingSubPrompts = subPrompts.filter(subPromptObj =>
+					!["a-0", "b-0", "c-0"].includes(subPromptObj.SUBId)
+				);
+
+				const sortedRemainingSubPrompts = remainingSubPrompts.sort((a, b) =>
+					new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+				);
+
+				const combinedSubPrompts = [
+					...groupedSubPrompts,
+					...sortedRemainingSubPrompts.map(subPrompt => [{
+						...subPrompt,
+						code: ""
+					}] as { id: string; UIId: string; SUBId: string; createdAt: Date; subPrompt: string; code: string; }[])
+				];
+
 				const filterfetchedUI = {
 					...fetchedUI,
 					subPrompt: undefined,
-					subPrompts: []
+					subPrompts: combinedSubPrompts
 				};
 				setUi(filterfetchedUI);
 				setBackendCheck(1);
-				return
+			} catch (error) {
+				console.error('Error fetching UI:', error);
+				toast.error('Failed to fetch UI. Please try again.');
 			}
-
-			const subPromptMap = {
-				"a-0": subPrompts.find(sp => sp.SUBId === "a-0") || [],
-				"b-0": subPrompts.find(sp => sp.SUBId === "b-0") || [],
-				"c-0": subPrompts.find(sp => sp.SUBId === "c-0") || [],
-			};
-
-			const groupedSubPrompts = [
-				[{
-					...subPromptMap["a-0"],
-					code: ""
-				}, {
-					...subPromptMap["b-0"],
-					code: ""
-				}, {
-					...subPromptMap["c-0"],
-					code: ""
-				}] as { id: string; UIId: string; SUBId: string; createdAt: Date; subPrompt: string; code: string; }[]
-			];
-
-			const remainingSubPrompts = subPrompts.filter(subPromptObj =>
-				!["a-0", "b-0", "c-0"].includes(subPromptObj.SUBId)
-			);
-
-			const sortedRemainingSubPrompts = remainingSubPrompts.sort((a, b) =>
-				new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-			);
-
-			const combinedSubPrompts = [
-				...groupedSubPrompts,
-				...sortedRemainingSubPrompts.map(subPrompt => [{
-					...subPrompt,
-					code: ""
-				}] as { id: string; UIId: string; SUBId: string; createdAt: Date; subPrompt: string; code: string; }[])
-			];
-
-			const filterfetchedUI = {
-				...fetchedUI,
-				subPrompt: undefined,
-				subPrompts: combinedSubPrompts
-			};
-			setUi(filterfetchedUI);
-			setBackendCheck(1);
 		};
 
 		fetchUI();
@@ -334,6 +349,10 @@ const UI = ({ params }: { params: any }) => {
 				body: JSON.stringify({ codeDescription: prompt }),
 			});
 
+			if (!res.ok) {
+				throw new Error('Failed to generate precise code');
+			}
+
 			const response = await res.json();
 
 			setUiState(preuis => ({
@@ -355,8 +374,16 @@ const UI = ({ params }: { params: any }) => {
 				subPrompt: data.data.subPrompt
 			}
 
-		} catch (e) {
-			console.error(e);
+		} catch (error) {
+			console.error('Error generating precise code:', error);
+			toast.error('Failed to generate precise code. Please try again.');
+			setUiState(preuis => ({
+				...preuis,
+				precise: {
+					...preuis.precise,
+					loading: false
+				}
+			}))
 		}
 	}
 
@@ -381,6 +408,10 @@ const UI = ({ params }: { params: any }) => {
 				}),
 			});
 
+			if (!description.ok) {
+				throw new Error('Failed to generate page description');
+			}
+
 			const codeDescription = await description.json();
 
 			const res = await fetch('/api/anthropic', {
@@ -390,6 +421,10 @@ const UI = ({ params }: { params: any }) => {
 				},
 				body: JSON.stringify({ codeDescription }),
 			});
+
+			if (!res.ok) {
+				throw new Error('Failed to generate creative code');
+			}
 
 			const response = await res.json();
 
@@ -412,8 +447,16 @@ const UI = ({ params }: { params: any }) => {
 				subPrompt: data.data.subPrompt
 			}
 
-		} catch (e) {
-			console.error(e);
+		} catch (error) {
+			console.error('Error generating creative code:', error);
+			toast.error('Failed to generate creative code. Please try again.');
+			setUiState(preuis => ({
+				...preuis,
+				creative: {
+					...preuis.creative,
+					loading: false
+				}
+			}))
 		}
 	}
 
@@ -438,6 +481,10 @@ const UI = ({ params }: { params: any }) => {
 				}),
 			});
 
+			if (!description.ok) {
+				throw new Error('Failed to generate page description');
+			}
+
 			const codeDescription = await description.json();
 
 			const res = await fetch('/api/anthropic', {
@@ -447,6 +494,10 @@ const UI = ({ params }: { params: any }) => {
 				},
 				body: JSON.stringify({ codeDescription }),
 			});
+
+			if (!res.ok) {
+				throw new Error('Failed to generate balanced code');
+			}
 
 			const response = await res.json();
 
@@ -469,8 +520,16 @@ const UI = ({ params }: { params: any }) => {
 				subPrompt: data.data.subPrompt
 			}
 
-		} catch (e) {
-			console.error(e);
+		} catch (error) {
+			console.error('Error generating balanced code:', error);
+			toast.error('Failed to generate balanced code. Please try again.');
+			setUiState(preuis => ({
+				...preuis,
+				balanced: {
+					...preuis.balanced,
+					loading: false
+				}
+			}))
 		}
 	}
 
@@ -494,6 +553,10 @@ const UI = ({ params }: { params: any }) => {
 					precode: uiState[mode]?.code
 				}),
 			});
+
+			if (!res.ok) {
+				throw new Error('Failed to generate modified code');
+			}
 
 			const response = await res.json();
 
@@ -527,8 +590,16 @@ const UI = ({ params }: { params: any }) => {
 				SUBId: data.data.SUBId,
 				subPrompt: data.data.subPrompt
 			}
-		} catch (e) {
-			console.error(e);
+		} catch (error) {
+			console.error('Error generating modified code:', error);
+			toast.error('Failed to generate modified code. Please try again.');
+			setUiState(preuis => ({
+				...preuis,
+				precise: {
+					...preuis.precise,
+					loading: false
+				}
+			}))
 		}
 	}
 
@@ -548,38 +619,44 @@ const UI = ({ params }: { params: any }) => {
 			promises = [generateModifiedCode()];
 		}
 
-		const resolved = await Promise.all(promises);
+		try {
+			const resolved = await Promise.all(promises);
 
-		setUi((prevUi) => {
-			if (prevUi) {
-				const updatedSubPrompts = [...prevUi.subPrompts];
+			setUi((prevUi) => {
+				if (prevUi) {
+					const updatedSubPrompts = [...prevUi.subPrompts];
 
-				if (ui?.subPrompts.length === 0) {
-					updatedSubPrompts.push([
-						{ id: resolved[0]?.id!, UIId: uiid, SUBId: resolved[0]?.SUBId!, createdAt: new Date(), subPrompt: resolved[0]?.subPrompt!, code: resolved[0]?.code! },
-						{ id: resolved[1]?.id!, UIId: uiid, SUBId: resolved[1]?.SUBId!, createdAt: new Date(), subPrompt: resolved[1]?.subPrompt!, code: resolved[1]?.code! },
-						{ id: resolved[2]?.id!, UIId: uiid, SUBId: resolved[2]?.SUBId!, createdAt: new Date(), subPrompt: resolved[2]?.subPrompt!, code: resolved[2]?.code! }
-					]);
+					if (ui?.subPrompts.length === 0) {
+						updatedSubPrompts.push([
+							{ id: resolved[0]?.id!, UIId: uiid, SUBId: resolved[0]?.SUBId!, createdAt: new Date(), subPrompt: resolved[0]?.subPrompt!, code: resolved[0]?.code! },
+							{ id: resolved[1]?.id!, UIId: uiid, SUBId: resolved[1]?.SUBId!, createdAt: new Date(), subPrompt: resolved[1]?.subPrompt!, code: resolved[1]?.code! },
+							{ id: resolved[2]?.id!, UIId: uiid, SUBId: resolved[2]?.SUBId!, createdAt: new Date(), subPrompt: resolved[2]?.subPrompt!, code: resolved[2]?.code! }
+						]);
+					} else {
+						updatedSubPrompts.push([{ id: resolved[0]?.id!, UIId: uiid, SUBId: resolved[0]?.SUBId!, createdAt: new Date(), subPrompt: resolved[0]?.subPrompt!, code: resolved[0]?.code! }]);
+						setMode("precise");
+					}
+
+					return {
+						...prevUi,
+						subPrompts: updatedSubPrompts
+					};
 				} else {
-					updatedSubPrompts.push([{ id: resolved[0]?.id!, UIId: uiid, SUBId: resolved[0]?.SUBId!, createdAt: new Date(), subPrompt: resolved[0]?.subPrompt!, code: resolved[0]?.code! }]);
-					setMode("precise");
+					return prevUi;
 				}
-
-				return {
-					...prevUi,
-					subPrompts: updatedSubPrompts
-				};
-			} else {
-				return prevUi;
-			}
-		});
-		setPrompt("");
-		setSelectedVersion({
-			prompt: prompt,
-			subid: resolved[0]?.SUBId!
-		})
-		setLoading(false);
-		capture();
+			});
+			setPrompt("");
+			setSelectedVersion({
+				prompt: prompt,
+				subid: resolved[0]?.SUBId!
+			})
+			setLoading(false);
+			capture();
+		} catch (error) {
+			console.error('Error generating code:', error);
+			toast.error('Failed to generate code. Please try again.');
+			setLoading(false);
+		}
 	}
 
 	const capture = async () => {
@@ -611,10 +688,12 @@ const UI = ({ params }: { params: any }) => {
 	
 			img.onerror = function (error) {
 				console.error("Error loading the image:", error);
+				toast.error('Failed to load image. Please try again.');
 			};
 	
 		} catch (error) {
 			console.error("Error during capture:", error);
+			toast.error('Failed to capture UI. Please try again.');
 		}
 	};
 	
