@@ -1,5 +1,5 @@
 "use client"
-import { CodeXml, Cpu, LaptopMinimal, LoaderCircle, LockOpen, PackageSearch, RefreshCw, Scale, Smartphone, Tablet } from "lucide-react";
+import { CodeXml, Cpu, LaptopMinimal, LoaderCircle, PackageSearch, RefreshCw, Scale, Share2, Smartphone, Tablet } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
@@ -14,6 +14,7 @@ import { a11yLight, CopyBlock } from 'react-code-blocks';
 import { embededCode } from "@/lib/code";
 import PromptBadge from "./prompt-badge";
 import { useAuthModal } from "@/hooks/useAuthModal";
+import { toast } from "sonner";
 
 const UIRigthHeader = ({
     UIId,
@@ -59,6 +60,16 @@ const UIRigthHeader = ({
         setLiked(liked.liked)
     }
 
+    const handleShare = () => {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            toast.success("Link copied to clipboard!");
+        }).catch((err) => {
+            console.error('Failed to copy: ', err);
+            toast.error("Failed to copy link. Please try again.");
+        });
+    }
+
     return (
         <div className="w-full bg-white flex justify-between items-center p-2 rounded-t-xl">
             <div className="flex space-x-2 items-center">
@@ -77,6 +88,9 @@ const UIRigthHeader = ({
             </div>
             <div className="flex space-x-2 items-center ">
                 <LikeButton liked={liked} toggleLikeClick={toggleLikeClick} />
+                <Button variant="ghost" size="icon" onClick={handleShare}>
+                    <Share2 className="h-4 w-4" />
+                </Button>
                 <ToggleGroup
                     value={type}
                     onValueChange={(value) => {
