@@ -17,6 +17,8 @@ import { getUI } from "@/actions/ui/get-uis"
 import { useRouter } from "next/navigation"
 import { getCodeFromPromptId } from "@/actions/ui/get-code"
 import { toast } from "sonner"
+import { updateSubPrompt } from "@/actions/ui/update-subprompt"
+import { isParent } from "@/lib/helper"
 
 const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);
@@ -273,12 +275,12 @@ const UI = ({ params }: { params: any }) => {
 
 	useEffect(() => {
 		if (backendCheck === 0) return
-		if(ui?.subPrompts.length === 0) {
+		if (ui?.subPrompts.length === 0) {
 			setSelectedVersion({
 				prompt: ui?.prompt!,
 				subid: "0"
 			})
-		}else{
+		} else {
 			const lastGeneratedSubPrompt = ui?.subPrompts[ui?.subPrompts.length - 1][0]
 			setVersion(lastGeneratedSubPrompt?.SUBId!)
 		}
@@ -315,7 +317,7 @@ const UI = ({ params }: { params: any }) => {
 			setCode(uiState[mode].code)
 			const idx = getIdxFromMode(mode)
 			const selectedSubPrompt = ui?.subPrompts.find(subPrompts => subPrompts.findIndex(subPrompt => subPrompt.SUBId === selectedVersion.subid) !== -1)
-			if(!selectedSubPrompt || !selectedSubPrompt[0]==null || !selectedSubPrompt[0]?.SUBId) return
+			if (!selectedSubPrompt || !selectedSubPrompt[0] == null || !selectedSubPrompt[0]?.SUBId) return
 			setSelectedVersion({
 				prompt: selectedSubPrompt[idx!].subPrompt!,
 				subid: selectedSubPrompt[idx!].SUBId!
@@ -560,7 +562,7 @@ const UI = ({ params }: { params: any }) => {
 
 			const response = await res.json();
 
-			if(response=="Error"){
+			if (response == "Error") {
 				setUiState(preuis => ({
 					...preuis,
 					precise: {
@@ -593,6 +595,89 @@ const UI = ({ params }: { params: any }) => {
 		} catch (error) {
 			console.error('Error generating modified code:', error);
 			toast.error('Failed to generate modified code. Please try again.');
+			setUiState(preuis => ({
+				...preuis,
+				precise: {
+					...preuis.precise,
+					loading: false
+				}
+			}))
+		}
+	}
+
+	const reGenerateModifiedCode = async () => {
+		try {
+			if(!selectedVersion.subid) return
+
+			const parent = isParent(selectedVersion.subid, ui?.subPrompts)
+			if(parent) {
+				toast.error("Cannot regenerate parent subprompt")
+				return
+			}
+
+			setUiState(preuis => ({
+				...preuis,
+				precise: {
+					...preuis.precise,
+					loading: true
+				}
+			}))
+
+			const res = await fetch('/api/modifier', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					modifyDescription: selectedVersion.prompt,
+					precode: uiState[mode]?.code
+				}),
+			});
+
+			if (!res.ok) {
+				throw new Error('Failed to regenerate modified code');
+			}
+
+			const response = await res.json();
+
+			if (response == "Error") {
+				setUiState(preuis => ({
+					...preuis,
+					precise: {
+						code: "Error",
+						loading: false
+					}
+				}))
+				toast.error("Error modifying code")
+				router.push("/")
+				return
+			}
+
+			setUiState(preuis => ({
+				...preuis,
+				precise: {
+					code: response,
+					loading: false
+				}
+			}))
+
+			const data = await updateSubPrompt(uiid, response, selectedVersion.subid)
+
+			if (!data) {
+				toast.error("Error regenerating modified code")
+				return
+			}
+
+			return {
+				code: data.codeData.code,
+				id: data.data.id,
+				SUBId: data.data.SUBId,
+				subPrompt: data.data.subPrompt
+			}
+
+		} catch (error) {
+			console.error('Error regenerating modified code:', error);
+			toast.error('Failed to regenerate modified code. Please try again.');
 			setUiState(preuis => ({
 				...preuis,
 				precise: {
@@ -659,44 +744,85 @@ const UI = ({ params }: { params: any }) => {
 		}
 	}
 
+	const regenerateCode = async () => {
+		if (loading) return;
+		setLoading(true);
+		try {
+			const result = await reGenerateModifiedCode();
+			if (result) {
+				console.log(result);
+				setUi((prevUi) => {
+					if (prevUi) {
+						const updatedSubPrompts = prevUi.subPrompts.map((subPromptArray) =>
+							subPromptArray.map((subPrompt) =>
+								subPrompt.SUBId === result.SUBId ? {
+									...subPrompt,
+									code: result.code,
+								} : subPrompt
+							)
+						);
+
+						return {
+							...prevUi,
+							subPrompts: updatedSubPrompts,
+						};
+					} else {
+						return prevUi;
+					}
+				});
+				setSelectedVersion({
+					prompt: result.subPrompt!,
+					subid: result.SUBId!
+				});
+				setCode(result.code);
+				capture();
+			}
+		} catch (error) {
+			console.error('Error regenerating code:', error);
+			toast.error('Failed to regenerate code. Please try again.');
+		} finally {
+			setLoading(false);
+		}
+	}
+
 	const capture = async () => {
 		try {
-			const canvas = await html2canvas(document.getElementById("captureDiv")!,{allowTaint: true, scrollY: -window.scrollY, useCORS: true});
+			const canvas = await html2canvas(document.getElementById("captureDiv")!, { allowTaint: true, scrollY: -window.scrollY, useCORS: true });
 			const dataUrl2 = canvas.toDataURL('image/jpeg');
-	
+
 			const img = new Image();
 			img.src = dataUrl2;
-	
+
 			img.onload = async function () {
-	
+
 				const canvas = document.createElement('canvas');
 				const ctx = canvas.getContext('2d')!;
-	
-				const width = 1200; 
-				const scaleFactor = width / img.width;  
-				const height = img.height * scaleFactor; 
-	
+
+				const width = 1200;
+				const scaleFactor = width / img.width;
+				const height = img.height * scaleFactor;
+
 				canvas.width = width;
 				canvas.height = height;
-	
+
 				ctx.drawImage(img, 0, 0, width, height);
-	
+
 				const resizedDataURL = canvas.toDataURL('image/jpeg');
-	
+
 				await updateUI(uiid, { img: resizedDataURL });
 			};
-	
+
 			img.onerror = function (error) {
 				console.error("Error loading the image:", error);
 				toast.error('Failed to load image. Please try again.');
 			};
-	
+
 		} catch (error) {
 			console.error("Error during capture:", error);
 			toast.error('Failed to capture UI. Please try again.');
 		}
 	};
-	
+
 	return (
 		<div className="overflow-hidden h-screen">
 			<UIHeader mainPrompt={ui?.prompt!} />
@@ -715,6 +841,10 @@ const UI = ({ params }: { params: any }) => {
 								setMode={setMode}
 								mode={mode}
 								code={code}
+								regenerateCode={regenerateCode}
+								isLastSubprompt={!!(selectedVersion?.subid && !selectedVersion.subid.endsWith("0") 
+									// && selectedVersion.subid === ui?.subPrompts[ui.subPrompts.length - 1][0].SUBId
+								)}
 							/>
 						</div>
 						<UIBody isloading={uiState[mode!].loading} code={code} ref={ref} captureRef={captureRef} />

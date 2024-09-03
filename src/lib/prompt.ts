@@ -83,6 +83,7 @@ export const getModifierPromt = (precode: string, modifyDescription: string) => 
             Design pages or components with beautiful styles using shadcn/ui components wherever possible.
             Most important - Dont change the code unnecessarily, just modify the code to match the description.
             The desrired description is provided at the end of the prompt.
+            Also if the requesting description is not clear or isn't possible to implement, then return the code as it is.
             Do not add any code comments.
             Do not add any import statements.
             do not add any function declarations.

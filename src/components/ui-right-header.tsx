@@ -25,7 +25,9 @@ const UIRigthHeader = ({
     uiState,
     setMode,
     mode,
-    code
+    code,
+    regenerateCode,
+    isLastSubprompt
 }: {
     UIId: string,
     views: number,
@@ -40,7 +42,9 @@ const UIRigthHeader = ({
     },
     setMode: (mode: string) => void,
     mode: string,
-    code: string
+    code: string,
+    regenerateCode: () => void,
+    isLastSubprompt: boolean
 }) => {
     const [type, setType] = useState("desktop")
     const { userId } = useAuth()
@@ -49,7 +53,7 @@ const UIRigthHeader = ({
 
     useEffect(() => {
         setPanelView(type)
-    }, [type])    
+    }, [type])
 
     const toggleLikeClick = async () => {
         if (!userId) {
@@ -70,6 +74,14 @@ const UIRigthHeader = ({
         });
     }
 
+    const handleRegenerateCode = () => {
+        if (isLastSubprompt) {
+            regenerateCode();
+        } else {
+            toast.info("Regeneration is only available for the last generated subprompt.");
+        }
+    }
+
     return (
         <div className="w-full bg-white flex justify-between items-center p-2 rounded-t-xl">
             <div className="flex space-x-2 items-center">
@@ -78,12 +90,22 @@ const UIRigthHeader = ({
                     <AvatarFallback>NS</AvatarFallback>
                 </Avatar>
                 <Separator className="h-6" orientation="vertical" />
-                <PromptBadge variant={"secondary"} className="rounded-xl"
-                    prompt={subPrompt}
-                />
-                <Button variant={"ghost"} className="rounded-full" size={"icon"}>
-                    <RefreshCw className="text-gray-600" size={16} />
-                </Button>
+                <Badge variant={"secondary"} className="rounded-xl p-0 m-0">
+                    <PromptBadge variant={"secondary"} className="rounded-xl"
+                        prompt={subPrompt}
+                    />
+                    <Button
+                        variant={"ghost"}
+                        className="rounded-xl bg-gray-50 w-7 h-7"
+                        size={"icon"}
+                        onClick={handleRegenerateCode}
+                        disabled={!isLastSubprompt}
+                        title={isLastSubprompt ? "Regenerate code" : "Regeneration is only available for the last generated subprompt"}
+                    >
+                        <RefreshCw className={`m-0${isLastSubprompt ? "black" : "white"}`} size={16} />
+                    </Button>
+                </Badge>
+
                 <Badge variant={"secondary"} className="rounded-xl text-xs text-gray-500 whitespace-nowrap">{views} views</Badge>
             </div>
             <div className="flex space-x-2 items-center ">
