@@ -7,18 +7,28 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import PromptBadge from "./prompt-badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
-const UIHeader = ({mainPrompt}:{mainPrompt:string}) => {
+const UIHeader = ({ mainPrompt }: { mainPrompt: string }) => {
     const router = useRouter()
-    const {toggle} = useAuthModal()
+    const { toggle } = useAuthModal()
     return (
         <div className="w-full bg-white flex justify-between items-center p-4">
             <div className="flex space-x-2 h-8 items-center">
                 <Button onClick={() => router.push("/")} variant={"ghost"} className="text-xl font-bold p-0">V1</Button>
                 <Separator orientation="vertical" />
-                <PromptBadge variant={"secondary"} className="rounded-xl"
-                    prompt={mainPrompt}
-                />
+                <Tooltip>
+                    <TooltipTrigger className='rounded-full font-semibold ml-2 flex-1 text-ellipsis overflow-hidden whitespace-nowrap'>
+                        <PromptBadge
+                            variant={"secondary"}
+                            className="rounded-full font-semibold flex text-ellipsis overflow-hidden whitespace-nowrap w-96"
+                            prompt={mainPrompt}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>{mainPrompt}</p>
+                    </TooltipContent>
+                </Tooltip>
                 <Badge variant={"outline"} className="rounded-xl space-x-1">
                     <LockOpen size={14} />
                     <p>Public</p>
@@ -27,7 +37,7 @@ const UIHeader = ({mainPrompt}:{mainPrompt:string}) => {
             <div className="flex space-x-2 h-8 items-center">
                 <Button onClick={() => router.push("/")} variant="default" className="rounded-3xl">New Generation</Button>
                 <SignedOut>
-                    <Button onClick={()=>toggle()} variant="default">Sign In</Button>
+                    <Button onClick={() => toggle()} variant="default">Sign In</Button>
                 </SignedOut>
                 <SignedIn>
                     <UserButton />

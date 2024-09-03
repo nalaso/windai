@@ -15,6 +15,7 @@ import { embededCode } from "@/lib/code";
 import PromptBadge from "./prompt-badge";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { toast } from "sonner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const UIRigthHeader = ({
     UIId,
@@ -91,9 +92,18 @@ const UIRigthHeader = ({
                 </Avatar>
                 <Separator className="h-6" orientation="vertical" />
                 <Badge variant={"secondary"} className="rounded-xl p-0 m-0">
-                    <PromptBadge variant={"secondary"} className="rounded-xl"
-                        prompt={subPrompt}
-                    />
+                    <Tooltip>
+                        <TooltipTrigger className='rounded-full font-semibold ml-2 flex-1 text-ellipsis overflow-hidden whitespace-nowrap'>
+                            <PromptBadge
+                                variant={"secondary"}
+                                className="rounded-full font-semibold flex text-ellipsis overflow-hidden whitespace-nowrap w-96"
+                                prompt={subPrompt}
+                            />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>{subPrompt}</p>
+                        </TooltipContent>
+                    </Tooltip>
                     <Button
                         variant={"ghost"}
                         className="rounded-xl bg-gray-50 w-7 h-7"
