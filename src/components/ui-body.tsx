@@ -1,15 +1,26 @@
 "use client"
-import { forwardRef, LegacyRef } from "react"
+import { forwardRef, LegacyRef, useEffect, useRef, useState } from "react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable"
-import { ImperativePanelGroupHandle } from "react-resizable-panels"
+import { ImperativePanelGroupHandle, ImperativePanelHandle } from "react-resizable-panels"
 import PreviewScreen from "./preview-screen"
 
 const UIBody = forwardRef((props: { isloading: boolean, code: string, captureRef: LegacyRef<HTMLDivElement> }, ref: LegacyRef<ImperativePanelGroupHandle>) => {
+	const [layout, setLayout] = useState<number[] | null | undefined>()
+    const panelRef = useRef<ImperativePanelHandle>(null)
+
+    useEffect(() => {
+		console.log(layout);
+        const panel = panelRef?.current;
+		if (!panel) return;
+        if (!layout) return;
+		panel.resize(layout[2]);
+    }, [layout?.[2]])
+
     return (
         <div className="flex flex-1">
-            <ResizablePanelGroup className="bg-white rounded-b-xl" ref={ref} direction="horizontal">
-                <ResizablePanel defaultSize={0} order={1}></ResizablePanel>
-                <ResizableHandle withHandle />
+            <ResizablePanelGroup onLayout={setLayout} className="bg-white rounded-b-xl" ref={ref} direction="horizontal">
+                <ResizablePanel ref={panelRef} defaultSize={0} order={1}></ResizablePanel>
+                <ResizableHandle disabled={true}  />
                 <ResizablePanel minSize={26} defaultSize={100} className="bg-secondary relative" order={2}>
                     {
                         props.isloading && (
