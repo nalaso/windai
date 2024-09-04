@@ -18,7 +18,7 @@ export const toggleLike = async (userId: string, UIId: string) => {
                 id: UIId 
             },
             data: { 
-                likeCount: { 
+                likesCount: { 
                     decrement: 1 
                 }
             }
@@ -36,7 +36,7 @@ export const toggleLike = async (userId: string, UIId: string) => {
                 id: UIId 
             },
             data: { 
-                likeCount: { 
+                likesCount: { 
                     increment: 1 
                 } 
             }

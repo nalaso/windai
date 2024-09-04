@@ -13,7 +13,7 @@ interface UI {
     prompt: string;
     img: string;
     createdAt: Date;
-    likeCount: number;
+    likesCount: number;
     viewCount: number;
     user: {
         username: string;
@@ -81,7 +81,7 @@ const HomeUICards = () => {
                             className="flex items-center rounded-e-full font-semibold px-2"
                         >
                             <Heart className="h-4 w-4 mr-1" />
-                            <p className="text-xs text-gray-600">{ui.likeCount}</p>
+                            <p className="text-xs text-gray-600">{ui.likesCount}</p>
                         </Badge>
                     </div>
                     <p className="text-xs text-gray-600 whitespace-nowrap ml-2 flex-shrink-0">

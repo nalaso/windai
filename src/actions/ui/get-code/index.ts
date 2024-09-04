@@ -2,10 +2,10 @@
 
 import { db } from "@/lib/db";
 
-export const getCodeFromPromptId = async (promptId: string) => {
+export const getCodeFromId = async (codeId: string) => {
     const code = await db.code.findUnique({
         where:{
-            promptId: promptId
+            id: codeId
         }
     });
     return code?.code;

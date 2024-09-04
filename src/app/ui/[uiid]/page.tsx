@@ -15,7 +15,7 @@ import { ImperativePanelGroupHandle } from "react-resizable-panels"
 import { updateUI } from "@/actions/ui/update-ui"
 import { getUI } from "@/actions/ui/get-uis"
 import { useRouter } from "next/navigation"
-import { getCodeFromPromptId } from "@/actions/ui/get-code"
+import { getCodeFromId } from "@/actions/ui/get-code"
 import { toast } from "sonner"
 import { updateSubPrompt } from "@/actions/ui/update-subprompt"
 import { isParent } from "@/lib/helper"
@@ -44,6 +44,7 @@ const UI = ({ params }: { params: any }) => {
 			SUBId: string;
 			createdAt: Date;
 			subPrompt: string;
+			codeId: string;
 			code: string;
 		}[][];
 		id: string;
@@ -51,7 +52,7 @@ const UI = ({ params }: { params: any }) => {
 		prompt: string;
 		img: string;
 		createdAt: Date;
-		likeCount: number;
+		likesCount: number;
 		viewCount: number;
 	} | null>(null)
 
@@ -79,7 +80,7 @@ const UI = ({ params }: { params: any }) => {
 
 	const getCode = async (id: string, iidx: number, jidx: number) => {
 		try {
-			const code = await getCodeFromPromptId(id)
+			const code = await getCodeFromId(id)
 			setUi((prevUi) => {
 				if (prevUi) {
 					const updatedSubPrompts = [...prevUi.subPrompts];
@@ -121,7 +122,7 @@ const UI = ({ params }: { params: any }) => {
 						loading: true
 					}
 				}))
-				preciseCode = await getCode(subPrompt[0].id, i, 0)
+				preciseCode = await getCode(subPrompt[0].codeId, i, 0)
 			}
 			if (subid.endsWith("0")) {
 				var balancedCode = subPrompt[1].code
@@ -134,7 +135,7 @@ const UI = ({ params }: { params: any }) => {
 							loading: true
 						}
 					}))
-					balancedCode = await getCode(subPrompt[1].id, i, 1)
+					balancedCode = await getCode(subPrompt[1].codeId, i, 1)
 				}
 				if (creativeCode == "") {
 					setUiState(preUIState => ({
@@ -144,7 +145,7 @@ const UI = ({ params }: { params: any }) => {
 							loading: true
 						}
 					}))
-					creativeCode = await getCode(subPrompt[2].id, i, 2)
+					creativeCode = await getCode(subPrompt[2].codeId, i, 2)
 				}
 				setUiState({
 					precise: {
@@ -224,7 +225,15 @@ const UI = ({ params }: { params: any }) => {
 					}, {
 						...subPromptMap["c-0"],
 						code: ""
-					}] as { id: string; UIId: string; SUBId: string; createdAt: Date; subPrompt: string; code: string; }[]
+					}] as { 
+						id: string; 
+						UIId: string; 
+						SUBId: string; 
+						createdAt: Date; 
+						subPrompt: string; 
+						codeId: string;
+						code: string; 
+					}[]
 				];
 
 				const remainingSubPrompts = subPrompts.filter(subPromptObj =>
@@ -240,7 +249,16 @@ const UI = ({ params }: { params: any }) => {
 					...sortedRemainingSubPrompts.map(subPrompt => [{
 						...subPrompt,
 						code: ""
-					}] as { id: string; UIId: string; SUBId: string; createdAt: Date; subPrompt: string; code: string; }[])
+					}] as { 
+						id: string; 
+						UIId: string; 
+						SUBId: string; 
+						createdAt: Date; 
+						subPrompt: string; 
+						codeId: string;
+						code: string; 
+					}[]
+					)
 				];
 
 				const filterfetchedUI = {
@@ -368,10 +386,11 @@ const UI = ({ params }: { params: any }) => {
 			const data = await createSubPrompt(subPromptText, uiid, parentSUBId, response)
 
 			return {
-				code: data.codeData.code,
 				id: data.data.id,
 				SUBId: data.data.SUBId,
-				subPrompt: data.data.subPrompt
+				subPrompt: data.data.subPrompt,
+				code: data.codeData.code,
+				codeId: data.data.codeId
 			}
 
 		} catch (error) {
@@ -442,10 +461,11 @@ const UI = ({ params }: { params: any }) => {
 			}))
 
 			return {
-				code: data.codeData.code,
 				id: data.data.id,
 				SUBId: data.data.SUBId,
-				subPrompt: data.data.subPrompt
+				subPrompt: data.data.subPrompt,
+				code: data.codeData.code,
+				codeId: data.data.codeId
 			}
 
 		} catch (error) {
@@ -516,10 +536,11 @@ const UI = ({ params }: { params: any }) => {
 			}))
 
 			return {
-				code: data.codeData.code,
 				id: data.data.id,
 				SUBId: data.data.SUBId,
-				subPrompt: data.data.subPrompt
+				subPrompt: data.data.subPrompt,
+				code: data.codeData.code,
+				codeId: data.data.codeId
 			}
 
 		} catch (error) {
@@ -588,10 +609,11 @@ const UI = ({ params }: { params: any }) => {
 			const data = await createSubPrompt(subPrompt, uiid, selectedVersion.subid, response)
 
 			return {
-				code: data.codeData.code,
 				id: data.data.id,
 				SUBId: data.data.SUBId,
-				subPrompt: data.data.subPrompt
+				subPrompt: data.data.subPrompt,
+				code: data.codeData.code,
+				codeId: data.data.codeId
 			}
 		} catch (error) {
 			console.error('Error generating modified code:', error);
@@ -671,10 +693,11 @@ const UI = ({ params }: { params: any }) => {
 			}
 
 			return {
-				code: data.codeData.code,
 				id: data.data.id,
 				SUBId: data.data.SUBId,
-				subPrompt: data.data.subPrompt
+				subPrompt: data.data.subPrompt,
+				code: data.codeData.code,
+				codeId: data.data.codeId
 			}
 
 		} catch (error) {
@@ -695,7 +718,14 @@ const UI = ({ params }: { params: any }) => {
 		if (prompt === "") return;
 		setLoading(true);
 
-		let promises: Promise<{ code: string; id: string; SUBId?: string; subPrompt?: string; } | undefined>[];
+		let promises: Promise<{ 
+			id: string; 
+			SUBId: string; 
+			subPrompt: string; 
+			code: string; 
+			codeId: string;
+		} | undefined>[];
+
 		const previousSubId = selectedVersion.subid;
 
 		if (ui?.subPrompts.length === 0) {
@@ -712,7 +742,13 @@ const UI = ({ params }: { params: any }) => {
 			const resolved = await Promise.allSettled(promises);
 			
 			const successfulResults = resolved.filter(
-				(result): result is PromiseFulfilledResult<{ code: string; id: string; SUBId?: string; subPrompt?: string; } | undefined> => 
+				(result): result is PromiseFulfilledResult<{  
+					id: string; 
+					SUBId: string; 
+					subPrompt: string; 
+					code: string;
+					codeId: string;
+				} | undefined> => 
 				result.status === 'fulfilled' && result.value !== undefined
 			).map(result => result.value);
 
@@ -732,6 +768,7 @@ const UI = ({ params }: { params: any }) => {
 								SUBId: result!.SUBId!,
 								createdAt: new Date(),
 								subPrompt: result!.subPrompt!,
+								codeId: result!.codeId,
 								code: result!.code
 							}))
 						);
@@ -742,6 +779,7 @@ const UI = ({ params }: { params: any }) => {
 							SUBId: successfulResults[0]!.SUBId!,
 							createdAt: new Date(),
 							subPrompt: successfulResults[0]!.subPrompt!,
+							codeId: successfulResults[0]!.codeId,
 							code: successfulResults[0]!.code
 						}]);
 						setMode("precise");
@@ -852,7 +890,7 @@ const UI = ({ params }: { params: any }) => {
 
 	return (
 		<div className="overflow-hidden h-screen">
-			<UIHeader mainPrompt={ui?.prompt!} uiId={uiid} />
+			<UIHeader loading={loading} mainPrompt={ui?.prompt!} uiId={uiid} />
 			<div className="flex h-screen border-collapse overflow-hidden">
 				<Sidebar subid={selectedVersion.subid} setVersion={setVersion} subPrompts={ui?.subPrompts} />
 				<div className="flex-1 px-4 py-2 space-y-2">
@@ -862,7 +900,7 @@ const UI = ({ params }: { params: any }) => {
 								UIId={uiid}
 								views={ui?.viewCount!}
 								subid={selectedVersion.subid}
-								username={ui?.user?.username!}
+								userimg={ui?.user?.imageUrl!}
 								subPrompt={selectedVersion.prompt}
 								setPanelView={setPanelView}
 								uiState={uiState}

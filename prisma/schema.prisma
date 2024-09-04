@@ -44,15 +44,15 @@ model SubPrompt {
   SUBId     String   @unique
   createdAt DateTime @default(now())
   subPrompt String
-  code      Code[]
+  codeId    String   @db.ObjectId
+  code      Code     @relation(fields: [codeId], references: [id], onDelete: Cascade)
   UI        UI       @relation(fields: [UIId], references: [id], onDelete: Cascade)
 }
 
-model Code{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  promptId String @db.ObjectId @unique
-  code String
-  prompt SubPrompt @relation(fields: [promptId], references: [id], onDelete: Cascade)
+model Code {
+  id      String      @id @default(auto()) @map("_id") @db.ObjectId
+  code    String
+  prompts SubPrompt[] // A Code can be used by multiple SubPrompts
 }
 
 model Like {

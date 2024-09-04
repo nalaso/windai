@@ -12,7 +12,7 @@ export const getUIs = async (mode:string, start:number, limit: number) => {
             break;
         case 'most_liked':
             orderBy = [
-                { likeCount: 'desc' },  
+                { likesCount: 'desc' },  
                 { createdAt: 'asc' }  
             ];
             break;

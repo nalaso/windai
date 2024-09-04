@@ -16,14 +16,16 @@ const suggestions = [
 const Suggestions = () => {
 
 	const router = useRouter();
-	const { input, setInput } = useUIState();
+	const { setLoading, setInput } = useUIState();
 	const { toggle } = useAuthModal()
 	const { userId, isSignedIn } = useAuth();
 
 	const handleClick = async (suggestion:string) => {
 		setInput(suggestion)
 		if (isSignedIn) {
+			setLoading(true)
 			const ui = await createUI(suggestion, userId, "")
+			setLoading(false)
 			router.push(`/ui/${ui.id}`);
 		} else {
 			toggle()

@@ -23,7 +23,7 @@ const UIRigthHeader = ({
     views,
     subPrompt,
     subid,
-    username,
+    userimg,
     setPanelView,
     uiState,
     setMode,
@@ -36,7 +36,7 @@ const UIRigthHeader = ({
     views: number,
     subPrompt: string,
     subid: string,
-    username: string,
+    userimg: string,
     setPanelView: (type: string) => void,
     uiState: {
         [key: string]: {
@@ -90,7 +90,7 @@ const UIRigthHeader = ({
         <div className="w-full bg-white flex justify-between items-center p-2 rounded-t-xl">
             <div className="flex space-x-2 items-center">
                 <Avatar className="w-6 h-6">
-                    <AvatarImage src={`https://github.com/${username}.png`} />
+                    <AvatarImage src={userimg} />
                     <AvatarFallback>NS</AvatarFallback>
                 </Avatar>
                 <Separator className="h-6" orientation="vertical" />

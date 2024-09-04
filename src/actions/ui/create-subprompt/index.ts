@@ -2,22 +2,24 @@
 
 import { db } from "@/lib/db";
 
-export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUBId: string, code: string) => {     
+export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUBId: string, code: string) => {    
+    
+    console.log(subPrompt, UIId, parentSUBId, code);
 
     if(subPrompt.startsWith("precise-") || subPrompt.startsWith("balanced-") || subPrompt.startsWith("creative-")) {     
            
+        const codeData = await db.code.create({
+            data: {
+                code: code
+            }
+        });
+        
         const data = await db.subPrompt.create({
             data: {
                 UIId: UIId,
                 subPrompt: subPrompt,
-                SUBId: parentSUBId
-            },
-        });
-    
-        const codeData = await db.code.create({
-            data: {
-                promptId: data.id,
-                code: code
+                SUBId: parentSUBId,
+                codeId: codeData.id
             },
         });
 
@@ -67,18 +69,18 @@ export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUB
         }
     }
 
+    const codeData = await db.code.create({
+        data: {
+            code: code
+        },
+    });
+
     const data = await db.subPrompt.create({
         data: {
             UIId: UIId,
             subPrompt: subPrompt,
-            SUBId: newSUBId
-        },
-    });
-
-    const codeData = await db.code.create({
-        data: {
-            promptId: data.id,
-            code: code
+            SUBId: newSUBId,
+            codeId: codeData.id
         },
     });
 

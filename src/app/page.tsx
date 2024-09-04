@@ -7,19 +7,22 @@ import { Button, Card, Input } from "@/components/ui";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { useUIState } from "@/hooks/useUIState";
 import { useAuth, useClerk, useUser } from "@clerk/nextjs";
-import { SendHorizontal } from "lucide-react";
+import { LoaderCircle, SendHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Home() {
     const router = useRouter();
-    const { input, setInput } = useUIState();
+    const { input, setInput,loading, setLoading } = useUIState();
     const { toggle } = useAuthModal()
     const { userId, isSignedIn } = useAuth();
 
     const generateUI = async() => {
         if (!input) return;
         if (isSignedIn) {
+            setLoading(true)
             const ui = await createUI(input, userId, "")
+			setLoading(false)
             router.push(`/ui/${ui.id}`);
         } else {
             toggle()
@@ -48,7 +51,13 @@ export default function Home() {
                         <Button
                             onClick={() => generateUI()}
                             variant="ghost" size="icon" className="rounded-md w-12 h-12 text-gray-200 bg-black hover:bg-black hover:text-gray-600">
-                            <SendHorizontal />
+                            {
+                                loading?(
+                                    <LoaderCircle className="h-4 w-4 ml-1 animate-spin" />
+                                ):(
+                                    <SendHorizontal />
+                                )
+                            }
                         </Button>
                     </Card>
                     <Suggestions />

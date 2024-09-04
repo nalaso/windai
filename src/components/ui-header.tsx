@@ -11,7 +11,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { forkUI } from "@/actions/ui/fork-ui";
 
-const UIHeader = ({ mainPrompt, uiId }: { mainPrompt: string; uiId: string }) => {
+const UIHeader = ({ mainPrompt, uiId, loading }: { mainPrompt: string; uiId: string, loading: boolean }) => {
     const router = useRouter();
     const { toggle } = useAuthModal();
     const [isForking, setIsForking] = useState(false);
@@ -19,13 +19,14 @@ const UIHeader = ({ mainPrompt, uiId }: { mainPrompt: string; uiId: string }) =>
 
     const handleFork = async () => {
         setIsForking(true);
+        if(loading) return;
         try {
             const forkedUI = await forkUI(uiId, userId!);
             toast.success('UI forked successfully');
             router.push(`/ui/${forkedUI.id}`);
         } catch (error) {
             console.error('Error forking UI:', error);
-            toast.error('Failed to fork UI');
+            toast.error(""+error);
         } finally {
             setIsForking(false);
         }
@@ -54,12 +55,12 @@ const UIHeader = ({ mainPrompt, uiId }: { mainPrompt: string; uiId: string }) =>
                 </Badge>
             </div>
             <div className="flex space-x-2 h-8 items-center">
-                <Button onClick={() => router.push("/")} variant="default" className="rounded-3xl">New Generation</Button>
                 <SignedIn>
-                    <Button onClick={handleFork} variant="outline" className="rounded-3xl" disabled={isForking}>
+                    <Button onClick={handleFork} variant="outline" className="rounded-3xl" disabled={isForking||loading}>
                         {isForking ? 'Forking...' : 'Fork UI'}
                     </Button>
                 </SignedIn>
+                <Button onClick={() => router.push("/")} variant="default" className="rounded-3xl">New Generation</Button>
                 <SignedOut>
                     <Button onClick={() => toggle()} variant="default">Sign In</Button>
                 </SignedOut>

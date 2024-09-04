@@ -1,7 +1,6 @@
 'use server'
 
 import { db } from "@/lib/db";
-import { createSubPrompt } from "../create-subprompt";
 
 export const updateSubPrompt = async (UIId: string, code: string, subid?: string) => {
     try {
@@ -15,18 +14,24 @@ export const updateSubPrompt = async (UIId: string, code: string, subid?: string
         if (!existingSubPrompt) {
             return null;
         }
-        
-        const codeData = await db.code.update({
-            where: {
-                promptId: existingSubPrompt.id
-            },
+
+        const codeData = await db.code.create({
             data: {
                 code: code
+            }
+        });
+        
+        const data = await db.subPrompt.update({
+            where: {
+                id: existingSubPrompt.id
+            },
+            data: {
+                codeId: codeData.id
             },
         });
 
         return { 
-            data: existingSubPrompt,
+            data: data,
             codeData
          };
     } catch (error) {
