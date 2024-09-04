@@ -1,4 +1,4 @@
-import { ImageResponse } from 'next/server'
+import { ImageResponse } from 'next/og'
  
 // Image metadata
 export const size = {
@@ -9,8 +9,9 @@ export const contentType = 'image/png'
  
 // Image generation
 export default function Icon() {
-  return {
-    body: (
+  return new ImageResponse(
+    (
+      // ImageResponse JSX element
       <div
         style={{
           fontSize: 24,
@@ -23,12 +24,14 @@ export default function Icon() {
           color: 'white',
         }}
       >
-        AI
+        A
       </div>
     ),
-    headers: {
-      'Content-Type': contentType,
-      'Content-Length': `${size.width}x${size.height}`,
-    },
-  }
+    // ImageResponse options
+    {
+      // For convenience, we can re-use the exported icons size metadata
+      // config to also set the ImageResponse's width and height.
+      ...size,
+    }
+  )
 }
