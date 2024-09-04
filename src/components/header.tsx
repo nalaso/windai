@@ -12,7 +12,10 @@ const Header = () => {
 	return (
 		<div className="w-full bg-white flex justify-between items-center p-4">
 			<div className="flex">
-				<Button onClick={() => router.push("/")} variant={"ghost"} className="text-xl font-bold">WindAI</Button>
+				<Button onClick={() => router.push("/")} variant={"ghost"} className="text-xl font-bold">
+					<img src={"icon.png"} alt="" width={20} />
+					WindAI
+				</Button>
 				<Button onClick={() => router.push("/explore")} variant={"outline"} className="text-xl font-semibold">Explore</Button>
 			</div>
 			{

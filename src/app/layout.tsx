@@ -24,7 +24,8 @@ export default function RootLayout({
       <TooltipProvider>
         <html lang="en">
           <head>
-            <Script
+          <link rel="icon" href="/icon" type="image/png" sizes="32x32" />
+          <Script
               type="module"
               src={"https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"}
               strategy="afterInteractive" 
