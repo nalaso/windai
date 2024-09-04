@@ -9,7 +9,6 @@ import { useUIState } from "@/hooks/useUIState";
 import { useAuth, useClerk, useUser } from "@clerk/nextjs";
 import { LoaderCircle, SendHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export default function Home() {
     const router = useRouter();
@@ -38,7 +37,7 @@ export default function Home() {
                         Generate. Ship. Done.
                     </p>
                     <p>
-                        Generate UI with shadcn/ui from text prompts and <del>images 😢</del>.
+                        Generate UI with shadcn/ui from text prompts.
                     </p>
                     <Card className="flex w-full space-x-2 bg-black items-center">
                         <Input

@@ -54,6 +54,7 @@ const UI = ({ params }: { params: any }) => {
 		createdAt: Date;
 		likesCount: number;
 		viewCount: number;
+		forkedFrom: string;
 	} | null>(null)
 
 	const [uiState, setUiState] = useState<{
@@ -204,7 +205,10 @@ const UI = ({ params }: { params: any }) => {
 						...fetchedUI,
 						subPrompts: []
 					};
-					setUi(filterfetchedUI);
+					setUi({
+						...filterfetchedUI,
+						forkedFrom: filterfetchedUI.forkedFrom || ""
+					});
 					setBackendCheck(1);
 					return
 				}
@@ -265,7 +269,10 @@ const UI = ({ params }: { params: any }) => {
 					...fetchedUI,
 					subPrompts: combinedSubPrompts
 				};
-				setUi(filterfetchedUI);
+				setUi({
+					...filterfetchedUI,
+					forkedFrom: filterfetchedUI.forkedFrom || ""
+				});
 				setBackendCheck(1);
 			} catch (error) {
 				console.error('Error fetching UI:', error);
@@ -890,7 +897,7 @@ const UI = ({ params }: { params: any }) => {
 
 	return (
 		<div className="overflow-hidden h-screen">
-			<UIHeader loading={loading} mainPrompt={ui?.prompt!} uiId={uiid} />
+			<UIHeader loading={loading} mainPrompt={ui?.prompt!} uiId={uiid} forkedFrom={ui?.forkedFrom} />
 			<div className="flex h-screen border-collapse overflow-hidden">
 				<Sidebar subid={selectedVersion.subid} setVersion={setVersion} subPrompts={ui?.subPrompts} />
 				<div className="flex-1 px-4 py-2 space-y-2">

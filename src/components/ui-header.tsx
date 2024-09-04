@@ -1,4 +1,4 @@
-import { LockOpen } from "lucide-react";
+import { GitFork, LockOpen } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
@@ -11,7 +11,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { forkUI } from "@/actions/ui/fork-ui";
 
-const UIHeader = ({ mainPrompt, uiId, loading }: { mainPrompt: string; uiId: string, loading: boolean }) => {
+const UIHeader = ({ mainPrompt, uiId, loading, forkedFrom }: { mainPrompt: string; uiId: string, loading: boolean, forkedFrom?: string }) => {
     const router = useRouter();
     const { toggle } = useAuthModal();
     const [isForking, setIsForking] = useState(false);
@@ -19,14 +19,14 @@ const UIHeader = ({ mainPrompt, uiId, loading }: { mainPrompt: string; uiId: str
 
     const handleFork = async () => {
         setIsForking(true);
-        if(loading) return;
+        if (loading) return;
         try {
             const forkedUI = await forkUI(uiId, userId!);
             toast.success('UI forked successfully');
             router.push(`/ui/${forkedUI.id}`);
         } catch (error) {
             console.error('Error forking UI:', error);
-            toast.error(""+error);
+            toast.error("" + error);
         } finally {
             setIsForking(false);
         }
@@ -53,10 +53,18 @@ const UIHeader = ({ mainPrompt, uiId, loading }: { mainPrompt: string; uiId: str
                     <LockOpen size={14} />
                     <p>Public</p>
                 </Badge>
+                {
+                    forkedFrom && (
+                        <Badge onClick={()=>router.push(`/ui/${forkedFrom}`)} variant={"outline"} className="rounded-xl space-x-1 cursor-pointer">
+                            <GitFork size={14} />
+                            <p>From : {forkedFrom}</p>
+                        </Badge>
+                    )
+                }
             </div>
             <div className="flex space-x-2 h-8 items-center">
                 <SignedIn>
-                    <Button onClick={handleFork} variant="outline" className="rounded-3xl" disabled={isForking||loading}>
+                    <Button onClick={handleFork} variant="outline" className="rounded-3xl" disabled={isForking || loading}>
                         {isForking ? 'Forking...' : 'Fork UI'}
                     </Button>
                 </SignedIn>
