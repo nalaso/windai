@@ -6,19 +6,20 @@ import Suggestions from "@/components/suggestions";
 import { Button, Card, Input } from "@/components/ui";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { useUIState } from "@/hooks/useUIState";
-import { useAuth, useClerk, useUser } from "@clerk/nextjs";
 import { LoaderCircle, SendHorizontal } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
     const router = useRouter();
     const { input, setInput,loading, setLoading } = useUIState();
     const { toggle } = useAuthModal()
-    const { userId, isSignedIn } = useAuth();
+    const { data: session, status } = useSession()
+    const userId = session?.user?.id
 
     const generateUI = async() => {
         if (!input) return;
-        if (isSignedIn) {
+        if (status==="authenticated" && userId) {
             setLoading(true)
             const ui = await createUI(input, userId, "")
 			setLoading(false)

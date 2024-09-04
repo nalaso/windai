@@ -8,7 +8,6 @@ import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { useEffect, useState } from "react";
 import LikeButton from "./like-button";
 import { toggleLike } from "@/actions/ui/toggle-like-ui";
-import { useAuth } from "@clerk/nextjs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { embededCode } from "@/lib/code";
 import PromptBadge from "./prompt-badge";
@@ -17,6 +16,7 @@ import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight as theme } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useSession } from "next-auth/react";
 
 const UIRigthHeader = ({
     UIId,
@@ -51,7 +51,9 @@ const UIRigthHeader = ({
     isLastSubprompt: boolean
 }) => {
     const [type, setType] = useState("desktop")
-    const { userId } = useAuth()
+    const { data: session, status } = useSession()
+    const userId = session?.user?.id
+
     const { toggle } = useAuthModal()
     const [liked, setLiked] = useState(false)
 
@@ -90,7 +92,7 @@ const UIRigthHeader = ({
         <div className="w-full bg-white flex justify-between items-center p-2 rounded-t-xl">
             <div className="flex space-x-2 items-center">
                 <Avatar className="w-6 h-6">
-                    <AvatarImage src={userimg} />
+                    <AvatarImage src={session?.user?.imageUrl} />
                     <AvatarFallback>NS</AvatarFallback>
                 </Avatar>
                 <Separator className="h-6" orientation="vertical" />

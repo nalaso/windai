@@ -6,7 +6,6 @@ import UIBody from "@/components/ui-body"
 import UIHeader from "@/components/ui-header"
 import UIRigthHeader from "@/components/ui-right-header"
 import { useUIState } from "@/hooks/useUIState"
-import { useAuth, useUser } from "@clerk/nextjs"
 import html2canvas from 'html2canvas';
 
 import { LoaderCircle, SendHorizontal } from "lucide-react"
@@ -19,11 +18,14 @@ import { getCodeFromId } from "@/actions/ui/get-code"
 import { toast } from "sonner"
 import { updateSubPrompt } from "@/actions/ui/update-subprompt"
 import { isParent } from "@/lib/helper"
+import { useSession } from "next-auth/react"
 
 const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);
 	const captureRef = useRef<HTMLDivElement>(null);
-	const { userId } = useAuth()
+	const { data: session, status } = useSession()
+    const userId = session?.user?.id
+
 	const router = useRouter()
 
 	const [selectedVersion, setSelectedVersion] = useState({
@@ -37,7 +39,10 @@ const UI = ({ params }: { params: any }) => {
 	const [backendCheck, setBackendCheck] = useState(0)
 	const uiid = params.uiid
 	const [ui, setUi] = useState<{
-		user?: { username: string; imageUrl: string } | undefined;
+		user?: {
+			username: string;
+			imageUrl: string
+		} | undefined;
 		subPrompts: {
 			id: string;
 			UIId: string;
@@ -54,7 +59,7 @@ const UI = ({ params }: { params: any }) => {
 		createdAt: Date;
 		likesCount: number;
 		viewCount: number;
-		forkedFrom: string;
+		forkedFrom: string | null;
 	} | null>(null)
 
 	const [uiState, setUiState] = useState<{
@@ -207,7 +212,11 @@ const UI = ({ params }: { params: any }) => {
 					};
 					setUi({
 						...filterfetchedUI,
-						forkedFrom: filterfetchedUI.forkedFrom || ""
+						forkedFrom: filterfetchedUI.forkedFrom || "",
+						user: {
+							...filterfetchedUI.user,
+							imageUrl: filterfetchedUI.user.imageUrl || ""
+						}
 					});
 					setBackendCheck(1);
 					return
@@ -229,14 +238,14 @@ const UI = ({ params }: { params: any }) => {
 					}, {
 						...subPromptMap["c-0"],
 						code: ""
-					}] as { 
-						id: string; 
-						UIId: string; 
-						SUBId: string; 
-						createdAt: Date; 
-						subPrompt: string; 
+					}] as {
+						id: string;
+						UIId: string;
+						SUBId: string;
+						createdAt: Date;
+						subPrompt: string;
 						codeId: string;
-						code: string; 
+						code: string;
 					}[]
 				];
 
@@ -253,14 +262,14 @@ const UI = ({ params }: { params: any }) => {
 					...sortedRemainingSubPrompts.map(subPrompt => [{
 						...subPrompt,
 						code: ""
-					}] as { 
-						id: string; 
-						UIId: string; 
-						SUBId: string; 
-						createdAt: Date; 
-						subPrompt: string; 
+					}] as {
+						id: string;
+						UIId: string;
+						SUBId: string;
+						createdAt: Date;
+						subPrompt: string;
 						codeId: string;
-						code: string; 
+						code: string;
 					}[]
 					)
 				];
@@ -271,7 +280,11 @@ const UI = ({ params }: { params: any }) => {
 				};
 				setUi({
 					...filterfetchedUI,
-					forkedFrom: filterfetchedUI.forkedFrom || ""
+					forkedFrom: filterfetchedUI.forkedFrom || "",
+					user: {
+						...filterfetchedUI.user,
+						imageUrl: filterfetchedUI.user.imageUrl || ""
+					}
 				});
 				setBackendCheck(1);
 			} catch (error) {
@@ -638,10 +651,10 @@ const UI = ({ params }: { params: any }) => {
 
 	const reGenerateModifiedCode = async () => {
 		try {
-			if(!selectedVersion.subid) return
+			if (!selectedVersion.subid) return
 
 			const parent = isParent(selectedVersion.subid, ui?.subPrompts)
-			if(parent) {
+			if (parent) {
 				toast.error("Cannot regenerate parent subprompt")
 				return
 			}
@@ -725,11 +738,11 @@ const UI = ({ params }: { params: any }) => {
 		if (prompt === "") return;
 		setLoading(true);
 
-		let promises: Promise<{ 
-			id: string; 
-			SUBId: string; 
-			subPrompt: string; 
-			code: string; 
+		let promises: Promise<{
+			id: string;
+			SUBId: string;
+			subPrompt: string;
+			code: string;
 			codeId: string;
 		} | undefined>[];
 
@@ -745,18 +758,18 @@ const UI = ({ params }: { params: any }) => {
 			promises = [generateModifiedCode()];
 		}
 
-		try {			
+		try {
 			const resolved = await Promise.allSettled(promises);
-			
+
 			const successfulResults = resolved.filter(
-				(result): result is PromiseFulfilledResult<{  
-					id: string; 
-					SUBId: string; 
-					subPrompt: string; 
+				(result): result is PromiseFulfilledResult<{
+					id: string;
+					SUBId: string;
+					subPrompt: string;
 					code: string;
 					codeId: string;
-				} | undefined> => 
-				result.status === 'fulfilled' && result.value !== undefined
+				} | undefined> =>
+					result.status === 'fulfilled' && result.value !== undefined
 			).map(result => result.value);
 
 			if (successfulResults.length === 0) {
@@ -820,7 +833,7 @@ const UI = ({ params }: { params: any }) => {
 		setLoading(true);
 		const previousSubId = selectedVersion.subid;
 		try {
-			const result = await reGenerateModifiedCode();			
+			const result = await reGenerateModifiedCode();
 			if (result) {
 				setUi((prevUi) => {
 					if (prevUi) {
@@ -897,7 +910,7 @@ const UI = ({ params }: { params: any }) => {
 
 	return (
 		<div className="overflow-hidden h-screen">
-			<UIHeader loading={loading} mainPrompt={ui?.prompt!} uiId={uiid} forkedFrom={ui?.forkedFrom} />
+			<UIHeader loading={loading} mainPrompt={ui?.prompt!} uiId={uiid} forkedFrom={ui?.forkedFrom??""} />
 			<div className="flex h-screen border-collapse overflow-hidden">
 				<Sidebar subid={selectedVersion.subid} setVersion={setVersion} subPrompts={ui?.subPrompts} />
 				<div className="flex-1 px-4 py-2 space-y-2">
@@ -915,7 +928,7 @@ const UI = ({ params }: { params: any }) => {
 								mode={mode}
 								code={code}
 								regenerateCode={regenerateCode}
-								isLastSubprompt={!!(selectedVersion?.subid && !selectedVersion.subid.endsWith("0") 
+								isLastSubprompt={!!(selectedVersion?.subid && !selectedVersion.subid.endsWith("0")
 									// && selectedVersion.subid === ui?.subPrompts[ui.subPrompts.length - 1][0].SUBId
 								)}
 							/>
@@ -923,7 +936,7 @@ const UI = ({ params }: { params: any }) => {
 						<UIBody isloading={uiState[mode!].loading} code={code} ref={ref} captureRef={captureRef} />
 					</Card>
 					{
-						ui?.userId === userId && (
+						status==="authenticated" && ui?.userId === userId && (
 							<Card className="flex w-full max-w-lg space-x-2 bg-black items-center m-auto">
 								<Input
 									disabled={loading}

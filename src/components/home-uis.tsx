@@ -15,9 +15,10 @@ interface UI {
     createdAt: Date;
     likesCount: number;
     viewCount: number;
+    forkedFrom?: string | null;
     user: {
         username: string;
-        imageUrl: string;
+        imageUrl: string | null;
     }
 }
 
@@ -46,7 +47,7 @@ const HomeUICards = () => {
                         <Tooltip>
                             <TooltipTrigger>
                                 <Avatar className="border-2 border-primary h-5 w-5">
-                                    <AvatarImage src={ui.user.imageUrl} />
+                                    <AvatarImage src={ui.user.imageUrl??""} />
                                     <AvatarFallback>{ui.user.username.substring(0, 2)}</AvatarFallback>
                                 </Avatar>
                             </TooltipTrigger>

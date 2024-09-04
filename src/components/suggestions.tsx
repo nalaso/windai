@@ -1,10 +1,11 @@
 import { MoveUpRight } from "lucide-react"
 import { Badge } from "./ui"
 import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { useUIState } from "@/hooks/useUIState";
 import { createUI } from "@/actions/ui/create-ui";
+import { useSession } from "next-auth/react";
+
 const suggestions = [
 	"login page for netflix",
 	"product detail card for sneakers",
@@ -14,15 +15,19 @@ const suggestions = [
 ]
 
 const Suggestions = () => {
-
 	const router = useRouter();
 	const { setLoading, setInput } = useUIState();
 	const { toggle } = useAuthModal()
-	const { userId, isSignedIn } = useAuth();
+	const { data: session, status } = useSession()
+    const userId = session?.user?.id
 
 	const handleClick = async (suggestion:string) => {
 		setInput(suggestion)
-		if (isSignedIn) {
+		if (status==="authenticated") {
+			if(!userId) {
+				toggle()
+				return;
+			}
 			setLoading(true)
 			const ui = await createUI(suggestion, userId, "")
 			setLoading(false)

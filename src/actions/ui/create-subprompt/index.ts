@@ -3,9 +3,6 @@
 import { db } from "@/lib/db";
 
 export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUBId: string, code: string) => {    
-    
-    console.log(subPrompt, UIId, parentSUBId, code);
-
     if(subPrompt.startsWith("precise-") || subPrompt.startsWith("balanced-") || subPrompt.startsWith("creative-")) {     
            
         const codeData = await db.code.create({

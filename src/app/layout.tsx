@@ -1,10 +1,4 @@
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
-} from '@clerk/nextjs'
+import { SessionProvider } from "next-auth/react"
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -26,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <SessionProvider>      
       <TooltipProvider>
         <html lang="en">
           <head>
@@ -48,6 +42,6 @@ export default function RootLayout({
           </body>
         </html>
       </TooltipProvider>
-    </ClerkProvider>
+    </SessionProvider>
   );
 }
