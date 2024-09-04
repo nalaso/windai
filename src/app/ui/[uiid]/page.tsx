@@ -51,8 +51,8 @@ const UI = ({ params }: { params: any }) => {
 		prompt: string;
 		img: string;
 		createdAt: Date;
-		likes: number;
-		views: number;
+		likeCount: number;
+		viewCount: number;
 	} | null>(null)
 
 	const [uiState, setUiState] = useState<{
@@ -196,12 +196,11 @@ const UI = ({ params }: { params: any }) => {
 					return;
 				}
 
-				const subPrompts = fetchedUI.subPrompt || [];
+				const subPrompts = fetchedUI.subPrompts || [];
 
 				if (!subPrompts.find(sp => sp.SUBId === "a-0")) {
 					const filterfetchedUI = {
 						...fetchedUI,
-						subPrompt: undefined,
 						subPrompts: []
 					};
 					setUi(filterfetchedUI);
@@ -246,7 +245,6 @@ const UI = ({ params }: { params: any }) => {
 
 				const filterfetchedUI = {
 					...fetchedUI,
-					subPrompt: undefined,
 					subPrompts: combinedSubPrompts
 				};
 				setUi(filterfetchedUI);
@@ -710,12 +708,8 @@ const UI = ({ params }: { params: any }) => {
 			promises = [generateModifiedCode()];
 		}
 
-		try {
-			console.log("Generating code...");
-			
+		try {			
 			const resolved = await Promise.allSettled(promises);
-
-			console.log(resolved);
 			
 			const successfulResults = resolved.filter(
 				(result): result is PromiseFulfilledResult<{ code: string; id: string; SUBId?: string; subPrompt?: string; } | undefined> => 
@@ -783,7 +777,6 @@ const UI = ({ params }: { params: any }) => {
 		try {
 			const result = await reGenerateModifiedCode();			
 			if (result) {
-				console.log("-------------------", result);
 				setUi((prevUi) => {
 					if (prevUi) {
 						const updatedSubPrompts = prevUi.subPrompts.map((subPromptArray) =>
@@ -859,7 +852,7 @@ const UI = ({ params }: { params: any }) => {
 
 	return (
 		<div className="overflow-hidden h-screen">
-			<UIHeader mainPrompt={ui?.prompt!} />
+			<UIHeader mainPrompt={ui?.prompt!} uiId={uiid} />
 			<div className="flex h-screen border-collapse overflow-hidden">
 				<Sidebar subid={selectedVersion.subid} setVersion={setVersion} subPrompts={ui?.subPrompts} />
 				<div className="flex-1 px-4 py-2 space-y-2">
@@ -867,8 +860,9 @@ const UI = ({ params }: { params: any }) => {
 						<div className="flex justify-between items-center">
 							<UIRigthHeader
 								UIId={uiid}
-								views={ui?.views!}
+								views={ui?.viewCount!}
 								subid={selectedVersion.subid}
+								username={ui?.user?.username!}
 								subPrompt={selectedVersion.prompt}
 								setPanelView={setPanelView}
 								uiState={uiState}

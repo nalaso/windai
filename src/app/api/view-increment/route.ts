@@ -33,7 +33,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         id: UIId,
       },
       data: {
-        views: {
+        viewCount: {
           increment: 1,
         },
       },

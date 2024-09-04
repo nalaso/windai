@@ -25,16 +25,17 @@ model User {
 }
 
 model UI {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @unique
-  prompt    String
-  img       String
-  createdAt DateTime @default(now())
-  likes     Int      @default(0)
-  views     Int      @default(0)
-  subPrompt SubPrompt[]
-  like      Like[]
-  user      User     @relation(fields: [userId], references: [userId])
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique
+  prompt      String
+  img         String
+  createdAt   DateTime @default(now())
+  likesCount       Int      @default(0)
+  viewCount       Int      @default(0)
+  subPrompts   SubPrompt[]
+  likes        Like[]
+  user        User     @relation(fields: [userId], references: [userId])
+  forkedFrom  String?  @db.ObjectId
 }
 
 model SubPrompt {

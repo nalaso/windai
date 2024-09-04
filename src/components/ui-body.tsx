@@ -9,7 +9,6 @@ const UIBody = forwardRef((props: { isloading: boolean, code: string, captureRef
     const panelRef = useRef<ImperativePanelHandle>(null)
 
     useEffect(() => {
-		console.log(layout);
         const panel = panelRef?.current;
 		if (!panel) return;
         if (!layout) return;

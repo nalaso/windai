@@ -12,13 +12,13 @@ export const getUIs = async (mode:string, start:number, limit: number) => {
             break;
         case 'most_liked':
             orderBy = [
-                { likes: 'desc' },  
+                { likeCount: 'desc' },  
                 { createdAt: 'asc' }  
             ];
             break;
         case 'most_viewed':
             orderBy = [
-                { views: 'desc' },    
+                { viewCount: 'desc' },    
                 { createdAt: 'asc' }  
             ];
             break;
@@ -54,7 +54,7 @@ export const getUI = async (UIId: string) => {
                     imageUrl: true,
                 },
             },
-            subPrompt: true
+            subPrompts: true
         },
     });
     return ui;

@@ -7,10 +7,7 @@ export const createUI = async (prompt:string, userId: string, img:string) => {
         data: {
             userId: userId,
             prompt: prompt,
-            img: img,
-            createdAt: new Date(),
-            likes: 0,
-            views: 0,
+            img: img
           },
     });
     return data;

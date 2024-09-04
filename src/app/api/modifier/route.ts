@@ -25,8 +25,6 @@ export async function POST(req: Request): Promise<Response> {
 
     const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '').replace("asChild", " ").replace("fixed","absolute");
 
-    console.log("code", code);
-
     return new Response(JSON.stringify(code), {
       headers: {
         'content-type': 'application/json',

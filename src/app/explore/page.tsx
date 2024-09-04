@@ -23,8 +23,8 @@ const Page = () => {
         prompt: string;
         img: string;
         createdAt: Date;
-        likes: number;
-        views: number;
+        likeCount: number;
+        viewCount: number;
         user: {
             username: string;
             imageUrl: string;
@@ -126,14 +126,14 @@ const Page = () => {
                                                 className="flex items-center rounded-s-full font-semibold px-2"
                                             >
                                                 <Eye className="h-4 w-4 mr-1" />
-                                                <p className="text-xs text-gray-600">{ui.views}</p>
+                                                <p className="text-xs text-gray-600">{ui.viewCount}</p>
                                             </Badge>
                                             <Badge
                                                 variant={"secondary"}
                                                 className="flex items-center rounded-e-full font-semibold px-2"
                                             >
                                                 <Heart className="h-4 w-4 mr-1" />
-                                                <p className="text-xs text-gray-600">{ui.likes}</p>
+                                                <p className="text-xs text-gray-600">{ui.likeCount}</p>
                                             </Badge>
                                         </div>
                                         <p className="text-xs text-gray-600 whitespace-nowrap ml-2 flex-shrink-0">
