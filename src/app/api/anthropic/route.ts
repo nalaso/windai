@@ -21,7 +21,7 @@ export async function POST(req: Request): Promise<Response> {
     });
 
     const { text } = result;
-    const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '').replace("asChild"," ");
+    const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '').replace("asChild"," ").replace("fixed","absolute");
 
     return new Response(JSON.stringify(code), {
       headers: {
