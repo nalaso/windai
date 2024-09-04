@@ -41,7 +41,7 @@ const UIHeader = ({ mainPrompt, uiId, loading, forkedFrom }: { mainPrompt: strin
     return (
         <div className="w-full bg-white flex justify-between items-center p-4">
             <div className="flex space-x-2 h-8 items-center">
-                <Button onClick={() => router.push("/")} variant={"ghost"} className="text-xl font-bold p-0">V1</Button>
+                <Button onClick={() => router.push("/")} variant={"ghost"} className="text-xl font-bold p-0">WindAI</Button>
                 <Separator orientation="vertical" />
                 <Tooltip>
                     <TooltipTrigger className='rounded-full font-semibold ml-2 flex-1 text-ellipsis overflow-hidden whitespace-nowrap'>
