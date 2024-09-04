@@ -3,8 +3,9 @@
 import { db } from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
-export const getUIs = async (mode:string, start:number, limit: number) => {
+export const getUIs = async (mode: string, start: number, limit: number, timeRange: string) => {
     let orderBy: Prisma.UIOrderByWithRelationInput | Prisma.UIOrderByWithRelationInput[] | undefined;
+    let where: Prisma.UIWhereInput = {};
 
     switch (mode) {
         case 'latest':
@@ -25,9 +26,32 @@ export const getUIs = async (mode:string, start:number, limit: number) => {
         default:
             orderBy = { createdAt: 'desc' };
     }
+
+    const now = new Date();
+    if(mode !== 'latest') {
+        switch (timeRange) {
+            case '1h':
+                where.createdAt = { gte: new Date(now.getTime() - 60 * 60 * 1000) };
+                break;
+            case '24h':
+                where.createdAt = { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000) };
+                break;
+            case '7d':
+                where.createdAt = { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) };
+                break;
+            case '30d':
+                where.createdAt = { gte: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000) };
+                break;
+            case 'all':
+            default:
+                break;
+        }
+    }
+
     const uis = await db.uI.findMany({
         take: limit, 
         skip: start, 
+        where,
         orderBy,
         include: {
             user: {

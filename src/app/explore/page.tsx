@@ -2,7 +2,7 @@
 import { getUIs } from '@/actions/ui/get-uis';
 import Header from '@/components/header';
 import PromptBadge from '@/components/prompt-badge';
-import { Avatar, AvatarFallback, AvatarImage, Badge, Button, Card, CardContent, CardFooter, Tabs, TabsContent, TabsList, TabsTrigger, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
+import { Avatar, AvatarFallback, AvatarImage, Badge, Button, Card, CardContent, CardFooter, Tabs, TabsContent, TabsList, TabsTrigger, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
 import { timeAgo } from '@/lib/time';
 import { Eye, Heart, RefreshCcw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 
 const Page = () => {
     const [mode, setMode] = useState<string>("latest");
+    const [timeRange, setTimeRange] = useState<string>("all");
     const [uis, setUis] = useState<UI[]>([]);
     const [start, setStart] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false)
@@ -34,7 +35,7 @@ const Page = () => {
     useEffect(() => {
         const fetchUIs = async () => {
             setIsLoading(true)
-            const fetchedUIs = await getUIs(mode, start, limit);
+            const fetchedUIs = await getUIs(mode, start, limit, timeRange);
             if (fetchedUIs.length === 0) {
                 setMaxReached(true)
             }
@@ -47,12 +48,19 @@ const Page = () => {
         };
 
         fetchUIs();
-    }, [mode, start]);
+    }, [mode, start, timeRange]);
 
     const handleTabChange = (value: string) => {
         setMaxReached(false)
         setUis([])
         setMode(value);
+        setStart(0);
+    };
+
+    const handleTimeRangeChange = (value: string) => {
+        setMaxReached(false)
+        setUis([])
+        setTimeRange(value);
         setStart(0);
     };
 
@@ -79,13 +87,34 @@ const Page = () => {
         <div className="bg-gray-100 min-h-screen">
             <Header />
             <div className="max-w-7xl mx-auto pt-5">
-                <h1 className="text-3xl font-bold">Explore</h1>
-                <Tabs defaultValue={mode} className="w-full mb-8 mt-5" onValueChange={handleTabChange}>
-                    <TabsList className="bg-gray-300 rounded-lg shadow-sm p-2 px-1 h-10">
-                        <TabsTrigger value="latest" className="px-4 py-2 text-sm font-medium">Latest</TabsTrigger>
-                        <TabsTrigger value="most_viewed" className="px-4 py-2 text-sm font-medium">Most Viewed</TabsTrigger>
-                        <TabsTrigger value="most_liked" className="px-4 py-2 text-sm font-medium">Most Liked</TabsTrigger>
-                    </TabsList>
+                <Tabs defaultValue={mode} className="w-full mb-4" onValueChange={handleTabChange}>
+                    <div className='flex justify-between py-2 '>
+                        <h1 className="text-3xl font-bold">Explore</h1>
+                        <div className='flex gap-4'>
+                        {
+                            mode!== 'latest' && (
+                                <Select onValueChange={handleTimeRangeChange} defaultValue={timeRange}>
+                                    <SelectTrigger className="w-[180px] h-10 rounded-lg shadow-sm p-2 px-1focus-visible:outline-none">
+                                        <SelectValue placeholder="Select time range" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="1h">Last 1 Hour</SelectItem>
+                                        <SelectItem value="24h">Last 24 Hours</SelectItem>
+                                        <SelectItem value="7d">This Week</SelectItem>
+                                        <SelectItem value="30d">This Month</SelectItem>
+                                        <SelectItem value="all">All Time</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            )
+                        }
+                        <TabsList className="bg-gray-300 rounded-lg shadow-sm p-2 px-1 h-10">
+                            <TabsTrigger value="latest" className="px-4 py-2 text-sm font-medium">Latest</TabsTrigger>
+                            <TabsTrigger value="most_viewed" className="px-4 py-2 text-sm font-medium">Most Viewed</TabsTrigger>
+                            <TabsTrigger value="most_liked" className="px-4 py-2 text-sm font-medium">Most Liked</TabsTrigger>
+                        </TabsList>
+                        </div>
+                    </div>
+
                     <TabsContent value={mode}>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {uis && uis.map((ui) => (
@@ -141,7 +170,6 @@ const Page = () => {
                                         </p>
                                     </CardContent>
                                 </Card>
-
                             ))}
                             {
                                 isLoading && [1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
@@ -162,14 +190,6 @@ const Page = () => {
                         </div>
                     </TabsContent>
                 </Tabs>
-                {/* <div className="flex justify-center mt-8">
-                    <Button variant="outline" className="bg-primary text-white hover:bg-primary-dark hover:text-gray-200 transition-colors" onClick={handleLoadMore}>
-                        <div className="flex items-center gap-2">
-                            <RefreshCcw />
-                            <span>Load More</span>
-                        </div>
-                    </Button>
-                </div> */}
             </div>
         </div>
     );
