@@ -27,7 +27,6 @@ export const getGenerationPrompt = (codeDescription: string) => {
             Always generate text color based on its bg color. So when bg color is dark, text color should be light and vice versa.
             The response should be just React JSX code without import statements or function declarations. Assume all necessary components are already imported.
             For any shadcn/ui components that require client-side interactivity (like Dropdown, Dialog, etc.), wrap them in a client-side component using the 'use client' directive at the top of the code block.
-            Use Tailwind CSS classes for additional styling and layout. use tailwind propertied to create responsive design which works for desktop, tablet, and mobile. Responsive design is the highest priority.eg-if there is card componenets in row, it should be in column in mobile view.
             Now generate React JSX code for this: ${codeDescription}        
         `
     )
@@ -105,5 +104,5 @@ export const getModifierPromt = (precode: string, modifyDescription: string) => 
             Use Tailwind CSS classes for additional styling and layout.
             Now modify React JSX code: ${precode} based on this description: ${modifyDescription}      
         `
-    ) 
+    )
 }

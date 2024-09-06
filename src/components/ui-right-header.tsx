@@ -92,8 +92,8 @@ const UIRigthHeader = ({
         <div className="w-full bg-white flex justify-between items-center p-2 rounded-t-xl">
             <div className="flex space-x-2 items-center">
                 <Avatar className="w-6 h-6">
-                    <AvatarImage src={session?.user?.imageUrl} />
-                    <AvatarFallback>NS</AvatarFallback>
+                    <AvatarImage src={userimg} />
+                    <AvatarFallback>A</AvatarFallback>
                 </Avatar>
                 <Separator className="h-6" orientation="vertical" />
                 <Badge variant={"secondary"} className="rounded-xl p-0 m-0">

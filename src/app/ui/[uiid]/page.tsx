@@ -829,6 +829,10 @@ const UI = ({ params }: { params: any }) => {
 	}
 
 	const regenerateCode = async () => {
+		if(userId !== ui?.userId){
+			toast.warning("Fork the UI to modify the code");
+			return;
+		}
 		if (loading) return;
 		setLoading(true);
 		const previousSubId = selectedVersion.subid;
