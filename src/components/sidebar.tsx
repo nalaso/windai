@@ -86,8 +86,6 @@ export default function Sidebar({ subPrompts, setVersion, subid }: any) {
 						subPrompts.map((subPrompt: any, i: number) => {
 							const rightColor = generateColor(subPrompt[0].SUBId, false);
 							const leftColor = generateColor(getPredecessor(subPrompt[0].SUBId), false);
-							console.log(subPrompt[0].SUBId, getPredecessor(subPrompt[0].SUBId));
-							console.log(leftColor, rightColor);
 
 							return (
 								<Button

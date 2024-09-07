@@ -34,7 +34,6 @@ const Suggestions = () => {
 					throw new Error('Failed to fetch suggestions');
 				}
 				const data = await res.json();
-				console.log(data);
 
 				if (Array.isArray(data) && data.length > 0) {
 					setSuggestions(data);
