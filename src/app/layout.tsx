@@ -7,6 +7,7 @@ import { TooltipProvider } from '@/components/ui';
 import { Toaster } from '@/components/ui/sonner';
 import AuthModal from '@/components/auth-modal';
 import MAINTENANCE from "./maintenance/page";
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,19 +21,6 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    if (process.env.MAINTENANCE === "MAINTENANCE") {
-        return (
-            <html lang="en">
-                <head>
-                    <link rel="icon" href="favicon.ico" type="image/ico" sizes="32x32" />
-                </head>
-                <body className={inter.className}>
-                    <MAINTENANCE />
-                </body>
-            </html>
-        )
-    }
-
     return (
         <SessionProvider>
             <TooltipProvider>
@@ -51,9 +39,18 @@ export default function RootLayout({
                         />
                     </head>
                     <body className={inter.className}>
-                        {children}
+                        {
+                            (process.env.MAINTENANCE === "MAINTENANCE")?(
+                                <MAINTENANCE />
+                            ):(
+                                <>
+                                {children}
+                                <AuthModal />
+                                </>
+                            )
+                        }
                         <Toaster richColors expand />
-                        <AuthModal />
+                        <Analytics />
                     </body>
                 </html>
             </TooltipProvider>
