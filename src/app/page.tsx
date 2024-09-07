@@ -9,6 +9,7 @@ import { useUIState } from "@/hooks/useUIState";
 import { LoaderCircle, SendHorizontal } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Home() {
     const router = useRouter();
@@ -19,14 +20,18 @@ export default function Home() {
 
     const generateUI = async() => {
         if (!input) return;
-        if (status==="authenticated" && userId) {
-            setLoading(true)
-            const ui = await createUI(input, userId, "")
-			setLoading(false)
-            router.push(`/ui/${ui.id}`);
-        } else {
-            toggle()
-        }
+        try {
+            if (status==="authenticated" && userId) {
+                setLoading(true)
+                const ui = await createUI(input, userId, "")
+                setLoading(false)
+                router.push(`/ui/${ui.id}`);
+            } else {
+                toggle()
+            }
+        } catch (error) {
+            toast.error("Failed to generate UI")
+        }  
     }
 
     return (

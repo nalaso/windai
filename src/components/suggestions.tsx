@@ -6,6 +6,7 @@ import { useUIState } from "@/hooks/useUIState";
 import { createUI } from "@/actions/ui/create-ui";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const Suggestions = () => {
 	const router = useRouter();
@@ -47,17 +48,21 @@ const Suggestions = () => {
 
 	const handleClick = async (suggestion: string) => {
 		setInput(suggestion)
-		if (status === "authenticated") {
-			if (!userId) {
+		try {
+			if (status === "authenticated") {
+				if (!userId) {
+					toggle()
+					return;
+				}
+				setLoading(true)
+				const ui = await createUI(suggestion, userId, "")
+				setLoading(false)
+				router.push(`/ui/${ui.id}`);
+			} else {
 				toggle()
-				return;
 			}
-			setLoading(true)
-			const ui = await createUI(suggestion, userId, "")
-			setLoading(false)
-			router.push(`/ui/${ui.id}`);
-		} else {
-			toggle()
+		} catch (error) {
+			toast.error('Failed to create UI');
 		}
 	}
 
