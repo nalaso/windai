@@ -11,7 +11,7 @@ const PromptBadge = ({className, variant, prompt}:{className:string, variant:"de
 
   return (
     <Badge variant={variant} className={className} onClick={()=>copyPrompt()}>
-        {prompt}
+        <span className="truncate mr-1">{prompt}</span>
     </Badge>
   )
 }

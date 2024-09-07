@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
 import { db } from "@/lib/db";
 import { z } from "zod";
+import { headers } from "next/headers";
 
 const redis = Redis.fromEnv();
 
@@ -9,14 +10,30 @@ const inputSchema = z.object({
   uiid: z.string().min(1, "UIId is required"),
 });
 
+const getIp = () => {
+  const forwardedFor = headers().get('x-forwarded-for');
+  const realIp = headers().get('x-real-ip');
+
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0].trim();
+  }
+
+  if (realIp) {
+    return realIp.trim();
+  }
+
+  return'0.0.0.0';
+}
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body = await req.json();
     const { uiid: UIId } = inputSchema.parse(body);
 
-    const ip = req.ip;
+    const ip = getIp();
+    
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
-    const hash = Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    const hash = Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");    
 
     const isNew = await redis.set(["deduplicate", hash, UIId].join(":"), true, {
       nx: true,
