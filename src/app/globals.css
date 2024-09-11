@@ -59,6 +59,213 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  .Default {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --radius: 0.5rem;
+  }
+
+  .Ruby {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 346.8 77.2% 49.8%;
+    --primary-foreground: 355.7 100% 99%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 45%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 346.8 77.2% 49.8%;
+    --radius: 0.5rem;
+  }
+
+  .Sapphire {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 44%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .Emerald {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 142 86% 28%;
+    --primary-foreground: 356 29% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 45%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142 86% 28%;
+    --radius: 0.5rem;
+  }
+
+  .Windows98 {
+    --background: 0 0% 85%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 95%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 0 0% 80%;
+    --primary-foreground: 0 0% 10%;
+    --secondary: 0 0% 70%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 75%;
+    --muted-foreground: 0 0% 10%;
+    --accent: 240 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 32%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 60%;
+    --input: 0 0% 60%;
+    --ring: 0 0% 10%;
+    --radius: 0rem;
+  }
+
+  .Daylight {
+    --background: 36 39% 88%;
+    --foreground: 36 45% 15%;
+    --card: 36 46% 82%;
+    --card-foreground: 36 45% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 36 45% 70%;
+    --primary-foreground: 36 45% 11%;
+    --secondary: 40 35% 77%;
+    --secondary-foreground: 36 45% 25%;
+    --muted: 36 33% 75%;
+    --muted-foreground: 36 45% 25%;
+    --accent: 36 64% 57%;
+    --accent-foreground: 36 72% 17%;
+    --destructive: 0 84% 37%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 36 45% 60%;
+    --input: 36 45% 60%;
+    --ring: 36 45% 30%;
+    --radius: 0rem;
+  }
+
+  .Midnight {
+    --background: 240 5% 6%;
+    --foreground: 60 5% 90%;
+    --card: 240 4% 10%;
+    --card-foreground: 60 5% 90%;
+    --popover: 240 5% 15%;
+    --popover-foreground: 60 5% 85%;
+    --primary: 240 0% 90%;
+    --primary-foreground: 60 0% 0%;
+    --secondary: 240 4% 15%;
+    --secondary-foreground: 60 5% 85%;
+    --muted: 240 5% 25%;
+    --muted-foreground: 60 5% 85%;
+    --accent: 240 0% 13%;
+    --accent-foreground: 60 0% 100%;
+    --destructive: 0 60% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 6% 20%;
+    --input: 240 6% 25%;
+    --ring: 240 6% 30%;
+    --radius: 0.5rem;
+  }
+
+  .Pastel {
+    --background: 210 100% 97%;
+    --foreground: 339 20% 20%;
+    --card: 210 100% 97%;
+    --card-foreground: 210 22% 22%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 341 20% 22%;
+    --primary: 308 56% 85%;
+    --primary-foreground: 210 22% 22%;
+    --secondary: 196 75% 88%;
+    --secondary-foreground: 210 22% 22%;
+    --muted: 210 100% 95%;
+    --muted-foreground: 210 22% 22%;
+    --accent: 211 86% 70%;
+    --accent-foreground: 210 22% 22%;
+    --destructive: 0 93% 73%;
+    --destructive-foreground: 210 22% 22%;
+    --border: 210 40% 80%;
+    --input: 210 40% 56%;
+    --ring: 210 40% 60%;
+    --radius: 1rem;
+  }
+
+  .DeepSea {
+    --background: 210 100% 6%;
+    --foreground: 180 100% 90%;
+    --card: 210 100% 12%;
+    --card-foreground: 180 100% 90%;
+    --popover: 210 100% 15%;
+    --popover-foreground: 180 100% 90%;
+    --primary: 200 100% 28%;
+    --primary-foreground: 180 100% 90%;
+    --secondary: 203 23% 30%;
+    --secondary-foreground: 180 100% 90%;
+    --muted: 200 50% 30%;
+    --muted-foreground: 180 100% 90%;
+    --accent: 198 70% 50%;
+    --accent-foreground: 185 10% 13%;
+    --destructive: 0 98% 44%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 50% 40%;
+    --input: 210 50% 40%;
+    --ring: 180 100% 90%;
+    --radius: 0rem;
+  }
 }
 
 @layer base {

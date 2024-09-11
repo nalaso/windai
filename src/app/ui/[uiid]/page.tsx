@@ -24,7 +24,7 @@ const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);
 	const captureRef = useRef<HTMLDivElement>(null);
 	const { data: session, status } = useSession()
-    const userId = session?.user?.id
+	const userId = session?.user?.id
 
 	const router = useRouter()
 
@@ -331,6 +331,20 @@ const UI = ({ params }: { params: any }) => {
 			generateCode()
 		}
 	}, [input, prompt])
+
+	useEffect(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Enter' && !loading) {
+				event.preventDefault();
+				generateCode();
+			}
+		};
+		window.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown);
+		};
+	}, [])
 
 	useEffect(() => {
 		if (!uiState[mode].loading) {
@@ -730,11 +744,13 @@ const UI = ({ params }: { params: any }) => {
 					loading: false
 				}
 			}))
-			throw error; // Re-throw the error to be caught by the caller
+			throw error;
 		}
 	}
 
 	const generateCode = async () => {
+		if (status !== "authenticated") return;
+		if (ui?.userId !== userId) return;
 		if (prompt === "") return;
 		setLoading(true);
 
@@ -829,7 +845,7 @@ const UI = ({ params }: { params: any }) => {
 	}
 
 	const regenerateCode = async () => {
-		if(userId !== ui?.userId){
+		if (userId !== ui?.userId) {
 			toast.warning("Fork the UI to modify the code");
 			return;
 		}
@@ -914,7 +930,7 @@ const UI = ({ params }: { params: any }) => {
 
 	return (
 		<div className="overflow-hidden h-screen">
-			<UIHeader loading={loading} mainPrompt={ui?.prompt!} uiId={uiid} forkedFrom={ui?.forkedFrom??""} />
+			<UIHeader loading={loading} mainPrompt={ui?.prompt!} uiId={uiid} forkedFrom={ui?.forkedFrom ?? ""} />
 			<div className="flex h-screen border-collapse overflow-hidden">
 				<Sidebar subid={selectedVersion.subid} setVersion={setVersion} subPrompts={ui?.subPrompts} />
 				<div className="flex-1 px-4 py-2 space-y-2">
@@ -940,7 +956,7 @@ const UI = ({ params }: { params: any }) => {
 						<UIBody isloading={uiState[mode!].loading} code={code} ref={ref} captureRef={captureRef} />
 					</Card>
 					{
-						status==="authenticated" && ui?.userId === userId && (
+						status === "authenticated" && ui?.userId === userId && (
 							<Card className="flex w-full max-w-lg space-x-2 bg-black items-center m-auto">
 								<Input
 									disabled={loading}

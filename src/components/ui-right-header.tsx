@@ -15,8 +15,10 @@ import { useAuthModal } from "@/hooks/useAuthModal";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneLight as theme } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useSession } from "next-auth/react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import useTheme from "@/hooks/useTheme";
 
 const UIRigthHeader = ({
     UIId,
@@ -56,6 +58,7 @@ const UIRigthHeader = ({
 
     const { toggle } = useAuthModal()
     const [liked, setLiked] = useState(false)
+    const { theme, setTheme } = useTheme()
 
     useEffect(() => {
         setPanelView(type)
@@ -189,6 +192,22 @@ const UIRigthHeader = ({
                         )
                     }
                 </ToggleGroup>
+                <Select value={theme} onValueChange={setTheme}>
+                    <SelectTrigger className="w-min">
+                        <SelectValue placeholder="Select a theme" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Default">Default</SelectItem>
+                        <SelectItem value="Ruby">Ruby</SelectItem>
+                        <SelectItem value="Sapphire">Sapphire</SelectItem>
+                        <SelectItem value="Emerald">Emerald</SelectItem>
+                        <SelectItem value="Windows98">Windows 98</SelectItem>
+                        <SelectItem value="Daylight">Daylight</SelectItem>
+                        <SelectItem value="Midnight">Midnight</SelectItem>
+                        <SelectItem value="Pastel">Pastel</SelectItem>
+                        <SelectItem value="DeepSea">Deep Sea</SelectItem>
+                    </SelectContent>
+                </Select>
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button variant="default" className="rounded-lg">
@@ -206,7 +225,7 @@ const UIRigthHeader = ({
                             </DialogDescription>
                         </DialogHeader>
                         <div className="py-4 max-h-[70vh] overflow-y-auto">
-                            <SyntaxHighlighter language="jsx" style={theme} >
+                            <SyntaxHighlighter language="jsx" style={oneLight} >
                                 {embededCode(code)}
                             </SyntaxHighlighter>
                         </div>

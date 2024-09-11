@@ -25,7 +25,7 @@ export async function GET(req: Request): Promise<Response> {
         }),
       },
       toolChoice: 'required',
-      prompt: `Generate 5 unique prompts for creating innovative UI components for a web or mobile application. Each prompt should encourage creativity and offer specific design or functional requirements.Each prompt should not be more thatn 60 characters. Generate alternatives for these - 
+      prompt: `${Math.random() * 10000} Generate 5 very very simple prompts for creating innovative UI components for a web or mobile application. The propmts should be only contain ui request and not the functionality. Each prompt should not be more that 60 characters. simple examples are - 
                 [login page for netflix,
                 product detail card for sneakers,
                 ecommerce checkout page,
