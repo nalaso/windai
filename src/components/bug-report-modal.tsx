@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
@@ -11,12 +12,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useBugReportModal } from "@/hooks/useBugReportModal";
-import { RadioGroup, RadioGroupItem } from './ui';
+import { Badge, RadioGroup, RadioGroupItem } from './ui';
 import { submitBugReport } from "@/actions/ui/submit-bug-report";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useSession } from 'next-auth/react';
 import { useAuthModal } from '@/hooks/useAuthModal';
 import { toast } from "@/components/ui/use-toast";
+import { useRouter } from 'next/navigation';
+import { GitFork } from 'lucide-react';
 
 export const BugReportModal = () => {
     const bugReportModal = useBugReportModal();
@@ -31,6 +34,7 @@ export const BugReportModal = () => {
     const { data: session } = useSession()
     const userId = session?.user?.id
     const { toggle } = useAuthModal();
+    const router = useRouter();
 
     const validateForm = () => {
         const newErrors: {[key: string]: string} = {};
@@ -123,9 +127,15 @@ export const BugReportModal = () => {
         <Dialog open={bugReportModal.isOpen} onOpenChange={bugReportModal.toggle}>
             <DialogContent className="sm:max-w-[700px]">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-center text-gray-800 max-h-[100vh] overflow-y-auto border-b p-4 border-gray-200">
+                    <DialogTitle className="text-2xl font-bold text-center text-gray-800 max-h-[100vh] overflow-y-auto  p-4 border-gray-200">
                         Bug Report / Feature Request
                     </DialogTitle>
+                    <DialogDescription className='border-b flex justify-center pb-2'>
+                        <Badge onClick={()=>router.push(`/ui/66e08d3ddc002b277b1f3421`)} variant={"outline"} className="rounded-xl space-x-1 cursor-pointer">
+                            <GitFork size={14} />
+                            <p>From : 66e08d3ddc002b277b1f3421</p>
+                        </Badge>
+                    </DialogDescription>
                 </DialogHeader>
                 <div className="bg-gray-100 flex items-center justify-center">
                     <div className="bg-white rounded-lg w-full max-w-2xl">
