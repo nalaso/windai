@@ -19,6 +19,9 @@ import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useSession } from "next-auth/react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import useTheme from "@/hooks/useTheme";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { getCss } from "@/lib/globalCss";
+import { themes } from "@/lib/themes";
 
 const UIRigthHeader = ({
     UIId,
@@ -59,10 +62,17 @@ const UIRigthHeader = ({
     const { toggle } = useAuthModal()
     const [liked, setLiked] = useState(false)
     const { theme, setTheme } = useTheme()
+    const [activeTab, setActiveTab] = useState("code")
+    const [cssCode, setCssCode] = useState("")
 
     useEffect(() => {
         setPanelView(type)
     }, [type])
+
+    useEffect(() => {
+        const globalCss = getCss(themes.find(t => t.id === theme)!)
+        setCssCode(globalCss)
+    }, [theme])
 
     const toggleLikeClick = async () => {
         if (!userId) {
@@ -89,6 +99,16 @@ const UIRigthHeader = ({
         } else {
             toast.info("Regeneration is only available for the last generated subprompt.");
         }
+    }
+
+    const handleCopyCode = () => {
+        const contentToCopy = activeTab === "code" ? embededCode(code) : cssCode;
+        navigator.clipboard.writeText(contentToCopy).then(() => {
+            toast.success(`${activeTab === "code" ? "React" : "CSS"} code copied to clipboard!`);
+        }).catch((err) => {
+            console.error('Failed to copy code: ', err);
+            toast.error("Failed to copy code. Please try again.");
+        });
     }
 
     return (
@@ -197,15 +217,15 @@ const UIRigthHeader = ({
                         <SelectValue placeholder="Select a theme" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="Default">Default</SelectItem>
-                        <SelectItem value="Ruby">Ruby</SelectItem>
-                        <SelectItem value="Sapphire">Sapphire</SelectItem>
-                        <SelectItem value="Emerald">Emerald</SelectItem>
-                        <SelectItem value="Windows98">Windows 98</SelectItem>
-                        <SelectItem value="Daylight">Daylight</SelectItem>
-                        <SelectItem value="Midnight">Midnight</SelectItem>
-                        <SelectItem value="Pastel">Pastel</SelectItem>
-                        <SelectItem value="DeepSea">Deep Sea</SelectItem>
+                        <SelectItem value="default">Default</SelectItem>
+                        <SelectItem value="ruby">Ruby</SelectItem>
+                        <SelectItem value="sapphire">Sapphire</SelectItem>
+                        <SelectItem value="emerald">Emerald</SelectItem>
+                        <SelectItem value="windows98">Windows 98</SelectItem>
+                        <SelectItem value="daylight">Daylight</SelectItem>
+                        <SelectItem value="midnight">Midnight</SelectItem>
+                        <SelectItem value="pastel">Pastel</SelectItem>
+                        <SelectItem value="deepsea">Deep Sea</SelectItem>
                     </SelectContent>
                 </Select>
                 <Dialog>
@@ -217,20 +237,35 @@ const UIRigthHeader = ({
                     </DialogTrigger>
                     <DialogContent className="max-w-[75vw] overflow-hidden">
                         <DialogHeader>
-                            <DialogTitle>React code</DialogTitle>
+                            <DialogTitle>Code View</DialogTitle>
                             <DialogDescription>
                                 <PromptBadge variant={"secondary"} className="rounded-xl"
                                     prompt={subPrompt}
                                 />
                             </DialogDescription>
                         </DialogHeader>
-                        <div className="py-4 max-h-[70vh] overflow-y-auto">
-                            <SyntaxHighlighter language="jsx" style={oneLight} >
-                                {embededCode(code)}
-                            </SyntaxHighlighter>
-                        </div>
+                        <Tabs defaultValue="code" className="w-full" onValueChange={setActiveTab}>
+                            <TabsList>
+                                <TabsTrigger value="code">React Code</TabsTrigger>
+                                <TabsTrigger value="css">globals.css</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="code">
+                                <div className="py-4 max-h-[70vh] overflow-y-auto">
+                                    <SyntaxHighlighter language="jsx" style={oneLight} >
+                                        {embededCode(code)}
+                                    </SyntaxHighlighter>
+                                </div>
+                            </TabsContent>
+                            <TabsContent value="css">
+                                <div className="py-4 max-h-[70vh] overflow-y-auto">
+                                    <SyntaxHighlighter language="css" style={oneLight} >
+                                        {cssCode}
+                                    </SyntaxHighlighter>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
                         <DialogFooter>
-                            <Button type="submit">Copy Code</Button>
+                            <Button onClick={handleCopyCode}>Copy {activeTab === "code" ? "React" : "CSS"} Code</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>

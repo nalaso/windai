@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-type Theme = 'Default' | 'Ruby' | 'Sapphire' | 'Emerald' | 'Windows98' | 'Daylight' | 'Midnight' | 'Pastel' | 'DeepSea'
+type Theme = 'default' | 'ruby' | 'sapphire' | 'emerald' | 'windows98' | 'daylight' | 'midnight' | 'pastel' | 'deepsea'
 
 interface ThemeState {
   theme: Theme
@@ -8,7 +8,7 @@ interface ThemeState {
 }
 
 const useTheme = create<ThemeState>((set) => ({
-  theme: 'Default',
+  theme: 'default',
   setTheme: (theme: Theme) => set({ theme }),
 }))
 

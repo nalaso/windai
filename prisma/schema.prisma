@@ -25,6 +25,7 @@ model User {
   sessions      Session[]
 
   UI        UI[]
+  bugReports BugReport[]
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -109,4 +110,17 @@ model Like {
   UIId      String   @db.ObjectId
   createdAt DateTime @default(now())
   ui      UI     @relation(fields: [UIId], references: [id], onDelete: Cascade)
+}
+
+model BugReport {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  reportType  String
+  severity    String
+  steps       String?
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
