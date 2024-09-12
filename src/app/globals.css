@@ -60,7 +60,7 @@
     --chart-5: 340 75% 55%;
   }
 
-  .Default {
+  .default {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -83,7 +83,7 @@
     --radius: 0.5rem;
   }
 
-  .Ruby {
+  .ruby {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -106,7 +106,7 @@
     --radius: 0.5rem;
   }
 
-  .Sapphire {
+  .sapphire {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -129,7 +129,7 @@
     --radius: 0.5rem;
   }
 
-  .Emerald {
+  .emerald {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -152,7 +152,7 @@
     --radius: 0.5rem;
   }
 
-  .Windows98 {
+  .windows98 {
     --background: 0 0% 85%;
     --foreground: 0 0% 10%;
     --card: 0 0% 95%;
@@ -175,7 +175,7 @@
     --radius: 0rem;
   }
 
-  .Daylight {
+  .daylight {
     --background: 36 39% 88%;
     --foreground: 36 45% 15%;
     --card: 36 46% 82%;
@@ -198,7 +198,7 @@
     --radius: 0rem;
   }
 
-  .Midnight {
+  .midnight {
     --background: 240 5% 6%;
     --foreground: 60 5% 90%;
     --card: 240 4% 10%;
@@ -221,7 +221,7 @@
     --radius: 0.5rem;
   }
 
-  .Pastel {
+  .pastel {
     --background: 210 100% 97%;
     --foreground: 339 20% 20%;
     --card: 210 100% 97%;
@@ -244,7 +244,7 @@
     --radius: 1rem;
   }
 
-  .DeepSea {
+  .deepsea {
     --background: 210 100% 6%;
     --foreground: 180 100% 90%;
     --card: 210 100% 12%;
