@@ -21,17 +21,48 @@ export const getGenerationPrompt = (codeDescription: string) => {
 
             Icons: For icons, use the ionicons library eg- (<ion-icon size="large" name="logoname"></ion-icon>). Do not use any other icon libraries.
 
-            Fine tune:
+            Tailwind themes:
+            Only use tailwind css variables while styling background and text colors. Also asign component border radius to radius.
+            eg- <p classNmae="bg-primary text-primary">Hello World</p>
+            All necessary css variables eg are -
+            background: "0 0% 100%",
+            foreground: "240 10% 3.9%",
+            card: "0 0% 100%",
+            card-foreground: "240 10% 3.9%",
+            popover: "0 0% 100%",
+            popover-foreground: "240 10% 3.9%",
+            primary: "240 5.9% 10%",
+            primary-foreground: "0 0% 98%",
+            secondary: "240 4.8% 95.9%",
+            secondary-foreground: "240 5.9% 10%",
+            muted: "240 4.8% 95.9%",
+            muted-foreground: "240 3.8% 46.1%",
+            accent: "240 4.8% 95.9%",
+            accent-foreground: "240 5.9% 10%",
+            destructive: "0 84.2% 60.2%",
+            destructive-foreground: "0 0% 98%",
+            border: "240 5.9% 90%",
+            input: "240 5.9% 90%",
+            ring: "240 10% 3.9%",
+            radius: "0.5rem"      
+
+            Shadcn Components:
+            Use shadcn components whenever possible. Go through the list of components and use them whenever necessary. The list of components are - ${components}
+
+            Responsiveness:
+            Ensure that the UI is responsive across all devices.
+            Use Flexbox and Grid for layout and positioning.
+            Use Breakpoint prefix like sm: for small screens, md: for medium screens, lg: for large screens, xl: for extra large screens with all the necessary elements. So generate classnames for all the Breakpoints to make the UI responsive.
+            eg- cases like when there are cards in a row, ensure that the cards are stacked on top of each other on smaller screens.
+            
+            Fine-tune:
+            Only use css variables when necessary else generate appropriate colors. Use of css variables is encouraged for background color and text color.
             Ensure than none of the element contains 'asChild' as attribute.
             When using icons with text, ensure that it is inside a Flex container with items center and add some gap between icon and the text so that icon and text are vertically aligned.
             Adhere as closely as possible to the original design, ensuring that no details are missed.
             Add rich but not cluttered UI visual elements or color matching.
-            Always generate text color based on its bg color. So when bg color is dark, text color should be light and vice versa.
+            Ensure a visually consistent and appealing presentation across all devices.
 
-            Helpers:
-            All necessary css variables eg are - [background, foreground, card, card-foreground, popover, popover-foreground, primary, primary-foreground, secondary, secondary-foreground, muted, muted-foreground, accent, accent-foreground, destructive, destructive-foreground, border, input, ring, radius]
-            Use shadcn components whenever possible. The list of components are - ${components}
-            
             ----
             Now generate React JSX code for this: ${codeDescription}        
         `
@@ -41,8 +72,9 @@ export const getGenerationPrompt = (codeDescription: string) => {
 
 export const getCreativePrompt = (prompt: string) => {
     return (`
-            generate a detailed description of the UI features for prompt- ${prompt}.
-            include the following key points such as what all key sections/part should be there and what all features and elements should be there in each section.
+            Generate a highly detailed description of the UI features for prompt- ${prompt}.
+            Ensure that the design aligns closely with user choices and preferences.
+            Include the following key points such as what all key sections/part should be there and what all features and elements should be there in each section.
             also include the color schemes and background colors to match the branding.
             Produce a detailed description of each component required in the UI,
             ensuring that all key aspects are covered and that the information is clear and comprehensive.
@@ -84,30 +116,46 @@ export const getBalancedPrompt = (prompt: string) => {
 
 export const getModifierPromt = (precode: string, modifyDescription: string) => {
     return (`
+            Instructions:
             Act as a React developer using shadcn/ui components and TailwindCSS.
             Design pages or components with beautiful styles using shadcn/ui components wherever possible.
-            Most important - Dont change the code unnecessarily, just modify the code to match the description.
-            The desrired description is provided at the end of the prompt.
-            Also if the requesting description is not clear or isn't possible to implement, then return the code as it is.
-            Do not add any code comments.
-            Do not add any import statements.
-            do not add any function declarations.
-            do not enclose in backticks or quotes.
-            do not add statements like use client, use server, etc.
-            just provide the JSX code as string.
-            DO not provide any explanation or comments like here is the code.
-            No elements should be neither touching each other nor overflwowing other elements.
+            Do not add any code comments, import statements,function declarations. Assume all necessary components are already imported.
+            Do not enclose in quotes, backticks or markdown. Just provide the JSX code as string.
+            Do not add statements like use client, use server, etc.
             Provide only the React JSX code without any quotes and in string format, without any explanations or inline comments.
-            Based on the component details provided, return the corresponding React code using shadcn/ui components in a triple backtick code block.
-            When images are required, check if you can genrate those images else utilize the img tag with picsum.photos as the source.
-            For icons, use the ionicons library eg- (<ion-icon size="large" name="logoname"></ion-icon>). Do not use any other icon libraries.
-            If a user provides an image of a web page design, implement the design using shadcn/ui components, Tailwind CSS, and React JSX.
-            if using DropdownMenuTrigger with DropdownMenu, ensure that the DropdownMenuTrigger doesn't contain asChild as attribute.
-            if using CollapsibleTrigger with Collapsible, ensure that the CollapsibleTrigger doesn't contain asChild as attribute.
-            When using icons with text, ensure that it is inside a Flex container with items center and add some gap between icon and the text.
+
+            About the UI:
+            Only use tailwind css while styling.
+            Add rich colors and visual elements to the UI.
+            Add necessary padding and margin to the elements.
+            Add necessary spacing between each elements.
+            No elements should be neither touching each other nor overflowing other elements unless required.
+
+            Images: When images are required, check if you can genrate those images else utilize the img tag with picsum.photos as the source.
+
+            Icons: For icons, use the ionicons library eg- (<ion-icon size="large" name="logoname"></ion-icon>). Do not use any other icon libraries.
+
+            Helpers:
+            Only use tailwind css variables while styling background and text colors. Also asign component border radius to radius.
+            All tailwind css variables eg are - [background, foreground, card, card-foreground, popover, popover-foreground, primary, primary-foreground, secondary, secondary-foreground, muted, muted-foreground, accent, accent-foreground, destructive, destructive-foreground, border, input, ring, radius]
+            Use shadcn components whenever possible. The list of components are - ${components}
+
+            Responsiveness:
+            Ensure that the UI is responsive across all devices.
+            Use Flexbox and Grid for layout and positioning.
+            Use Breakpoint prefix like sm: for small screens, md: for medium screens, lg: for large screens, xl: for extra large screens with all the necessary elements. So generate classnames for all the Breakpoints to make the UI responsive.
+            eg- cases like when there are cards in a row, ensure that the cards are stacked on top of each other on smaller screens.
+
+            Fine-tune:
+            Only use css variables when necessary else generate appropriate colors. Use of css variables is encouraged for background color and text color.
+            Ensure than none of the element contains 'asChild' as attribute.
+            When using icons with text, ensure that it is inside a Flex container with items center and add some gap between icon and the text so that icon and text are vertically aligned.
             Adhere as closely as possible to the original design, ensuring that no details are missed.
-            The response should be just React JSX code without import statements or function declarations. Assume all necessary components are already imported.
-            Use Tailwind CSS classes for additional styling and layout.
+            Add rich but not cluttered UI visual elements or color matching.
+            Ensure a visually consistent and appealing presentation across all devices.
+
+            ----
+            Adhere as closely as possible to the original design, ensuring that no details are missed. Only make changes based on the description provided.
             Now modify React JSX code: ${precode} based on this description: ${modifyDescription}      
         `
     )

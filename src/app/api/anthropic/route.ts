@@ -21,6 +21,7 @@ export async function POST(req: Request): Promise<Response> {
     });
 
     const { text } = result;
+    //TODO revert 'fixed' to 'absolute' after fixing the bug in iframe
     const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '').replace("asChild"," ").replace("fixed","absolute");
 
     return new Response(JSON.stringify(code), {
