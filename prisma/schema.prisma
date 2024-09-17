@@ -15,112 +15,114 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  username      String          @unique
-  name          String?
-  email         String?         @unique
-  emailVerified DateTime?
-  imageUrl      String?
-  accounts      Account[]
-  sessions      Session[]
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  username          String     @unique
+  name              String?
+  email             String?    @unique
+  emailVerified     DateTime?
+  imageUrl          String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 
-  UI        UI[]
-  bugReports BugReport[]
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  accounts          Account[]
+  sessions          Session[]
+  UI                UI[]
+  bugReports        BugReport[]
 }
- 
+
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String     @db.ObjectId
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
+  refresh_token     String?    @db.String
+  access_token      String?    @db.String
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.String
+  id_token          String?    @db.String
   session_state     String?
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
- 
+
 model Session {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  sessionToken String   @unique
-  userId       String   @db.ObjectId
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken      String     @unique
+  userId            String     @db.ObjectId
+  expires           DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
- 
+
 model VerificationToken {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  identifier String
-  token      String
-  expires    DateTime
- 
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  identifier        String
+  token             String
+  expires           DateTime
+
   @@unique([identifier, token])
 }
 
 model UI {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @unique @db.ObjectId
-  prompt      String
-  img         String
-  createdAt   DateTime @default(now())
-  likesCount       Int      @default(0)
-  viewCount       Int      @default(0)
-  subPrompts   SubPrompt[]
-  likes        Like[]
-  user        User     @relation(fields: [userId], references: [id])
-  forkedFrom  String?  @db.ObjectId
+  id                String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String     @unique @db.ObjectId
+  prompt            String
+  img               String
+  createdAt         DateTime   @default(now())
+  likesCount        Int        @default(0)
+  viewCount         Int        @default(0)
+  subPrompts        SubPrompt[]
+  likes             Like[]
+  forkedFrom        String?    @db.ObjectId
+
+  user              User       @relation(fields: [userId], references: [id])
 }
 
 model SubPrompt {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  UIId      String   @db.ObjectId
-  SUBId     String   @unique
-  createdAt DateTime @default(now())
-  subPrompt String
-  codeId    String   @db.ObjectId
-  code      Code     @relation(fields: [codeId], references: [id], onDelete: Cascade)
-  UI        UI       @relation(fields: [UIId], references: [id], onDelete: Cascade)
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  UIId             String     @db.ObjectId
+  SUBId            String     @unique
+  createdAt        DateTime   @default(now())
+  subPrompt        String
+  codeId           String     @db.ObjectId
+
+  code             Code       @relation(fields: [codeId], references: [id], onDelete: Cascade)
+  UI               UI         @relation(fields: [UIId], references: [id], onDelete: Cascade)
 }
 
 model Code {
-  id      String      @id @default(auto()) @map("_id") @db.ObjectId
-  code    String
-  prompts SubPrompt[]
+  id               String      @id @default(auto()) @map("_id") @db.ObjectId
+  code             String
+  prompts          SubPrompt[]
 }
 
 model Like {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String
-  UIId      String   @db.ObjectId
-  createdAt DateTime @default(now())
-  ui      UI     @relation(fields: [UIId], references: [id], onDelete: Cascade)
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String
+  UIId             String     @db.ObjectId
+  createdAt        DateTime   @default(now())
+
+  ui               UI         @relation(fields: [UIId], references: [id], onDelete: Cascade)
 }
 
 model BugReport {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
-  reportType  String
-  severity    String
-  steps       String?
-  userId      String   @db.ObjectId
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  description      String
+  reportType       String
+  severity         String
+  steps            String?
+  userId           String     @db.ObjectId
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

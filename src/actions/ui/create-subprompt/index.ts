@@ -26,11 +26,10 @@ export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUB
         };
     }
 
-    const baseSubId = parentSUBId.split('-').slice(0, -1).join('-'); // Base part before the last number
-    const currentNumber = parseInt(parentSUBId.split('-').pop()!, 10); // Extract the last number
-    const nextSubIdBase = `${baseSubId}-${currentNumber + 1}`; // Generate the next potential base SUBId
+    const baseSubId = parentSUBId.split('-').slice(0, -1).join('-'); 
+    const currentNumber = parseInt(parentSUBId.split('-').pop()!, 10);
+    const nextSubIdBase = `${baseSubId}-${currentNumber + 1}`;
 
-    // Check if the next potential base SUBId already exists
     const existingNextSub = await db.subPrompt.findFirst({
         where: {
             UIId: UIId,
@@ -40,7 +39,7 @@ export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUB
 
     let newSUBId: string;
     if (!existingNextSub) {
-        newSUBId = nextSubIdBase; // If the next base SUBId doesn't exist, use it as is
+        newSUBId = nextSubIdBase;
     } else {
         const existingSubPrompts = await db.subPrompt.findMany({
             where: {

@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/sonner';
 import AuthModal from '@/components/auth-modal';
 import MAINTENANCE from "./maintenance/page";
 import { Analytics } from "@vercel/analytics/react"
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -51,6 +52,7 @@ export default function RootLayout({
                         }
                         <Toaster richColors expand />
                         <Analytics />
+                        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />
                     </body>
                 </html>
             </TooltipProvider>

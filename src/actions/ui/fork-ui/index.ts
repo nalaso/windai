@@ -15,7 +15,6 @@ export async function forkUI(uiId: string, userId: string) {
 				subPrompts: true
 			}
 		});
-
 		
 		if (!originalUI) {
 			throw new Error("UI not found");

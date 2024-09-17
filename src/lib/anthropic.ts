@@ -9,7 +9,7 @@ const googleAuth = new GoogleAuth({
     }
 });
 
-export const anthropic = createAnthropicVertex({
+export const anthropic = createAnthropicVertex({   // full docs here: ✦ https://github.com/nalaso/anthropic-vertex-ai
     projectId: process.env.Vertex_Ai_ProjectID,
     region: process.env.Vertex_Ai_Location,
     headers: {
