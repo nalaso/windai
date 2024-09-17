@@ -28,7 +28,7 @@ export default function RootLayout({
                 <html lang="en">
                     <head>
                         <link rel="icon" href="favicon.ico" type="image/ico" sizes="32x32" />
-                        //TODO remove scripts after fixing the bug in iframe
+                        {/* //TODO remove scripts after fixing the bug in iframe */}
                         <Script
                             type="module"
                             src={"https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"}
