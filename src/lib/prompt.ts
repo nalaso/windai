@@ -1,56 +1,38 @@
+const components = `[Accordion,AccordionItem,AccordionTrigger,AccordionContent,AlertDialog,AlertDialogPortal,AlertDialogOverlay,AlertDialogTrigger,AlertDialogContent,AlertDialogHeader,AlertDialogFooter,AlertDialogTitle,AlertDialogDescription,AlertDialogAction,AlertDialogCancel,Alert,AlertTitle,AlertDescription,AspectRatio,Avatar,AvatarFallback,AvatarImage,Badge,Breadcrumb,BreadcrumbList,BreadcrumbItem,BreadcrumbLink,BreadcrumbPage,BreadcrumbSeparator,BreadcrumbEllipsis,Button,Calendar,Card,CardHeader,CardFooter,CardTitle,CardDescription,CardContent,Carousel,CarouselContent,CarouselItem,CarouselPrevious,CarouselNext,ChartContainer,ChartTooltip,ChartTooltipContent,ChartLegend,ChartLegendContent,Checkbox,Collapsible,CollapsibleContent,CollapsibleTrigger,Command,CommandDialog,CommandInput,CommandList,CommandEmpty,CommandGroup,CommandItem,CommandShortcut,CommandSeparator,ContextMenu,ContextMenuTrigger,ContextMenuContent,ContextMenuItem,ContextMenuCheckboxItem,ContextMenuRadioItem,ContextMenuLabel,ContextMenuSeparator,ContextMenuShortcut,ContextMenuGroup,ContextMenuPortal,ContextMenuSub,ContextMenuSubContent,ContextMenuSubTrigger,ContextMenuRadioGroup,Dialog,DialogPortal,DialogOverlay,DialogTrigger,DialogClose,DialogContent,DialogHeader,DialogFooter,DialogTitle,DialogDescription,Drawer,DrawerPortal,DrawerOverlay,DrawerTrigger,DrawerClose,DrawerContent,DrawerHeader,DrawerFooter,DrawerTitle,DrawerDescription,DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem,DropdownMenuCheckboxItem,DropdownMenuRadioItem,DropdownMenuLabel,DropdownMenuSeparator,DropdownMenuShortcut,DropdownMenuGroup,DropdownMenuPortal,DropdownMenuSub,DropdownMenuSubContent,DropdownMenuSubTrigger,DropdownMenuRadioGroup,HoverCard,HoverCardTrigger,HoverCardContent,Input,InputOTP,InputOTPGroup,InputOTPSlot,InputOTPSeparator,Label,Menubar,MenubarMenu,MenubarTrigger,MenubarContent,MenubarItem,MenubarSeparator,MenubarLabel,MenubarCheckboxItem,MenubarRadioGroup,MenubarRadioItem,MenubarPortal,MenubarSubContent,MenubarSubTrigger,MenubarGroup,MenubarSub,MenubarShortcut,NavigationMenu,NavigationMenuList,NavigationMenuItem,NavigationMenuContent,NavigationMenuTrigger,NavigationMenuLink,NavigationMenuIndicator,NavigationMenuViewport,Pagination,PaginationContent,PaginationLink,PaginationItem,PaginationPrevious,PaginationNext,PaginationEllipsis,Popover,PopoverTrigger,PopoverContent,PopoverAnchor,Progress,RadioGroup,RadioGroupItem,ResizablePanelGroup,ResizablePanel,ResizableHandle,ScrollArea,ScrollBar,Select,SelectGroup,SelectValue,SelectTrigger,SelectContent,SelectLabel,SelectItem,SelectSeparator,SelectScrollUpButton,SelectScrollDownButton,Separator,Sheet,SheetPortal,SheetOverlay,SheetTrigger,SheetClose,SheetContent,SheetHeader,SheetFooter,SheetTitle,SheetDescription,Skeleton,Slider,Switch,Toaster,Table,TableHeader,TableBody,TableFooter,TableHead,TableRow,TableCell,TableCaption,Tabs,TabsList,TabsTrigger,TabsContent,Textarea,Toast,Toggle,ToggleGroup,ToggleGroupItem,Tooltip,TooltipTrigger,TooltipContent,TooltipProvider]`
+
 export const getGenerationPrompt = (codeDescription: string) => {
     return (`
+            Instructions:
             Act as a React developer using shadcn/ui components and TailwindCSS.
             Design pages or components with beautiful styles using shadcn/ui components wherever possible.
-            Do not add any code comments.
-            Do not add any import statements.
-            do not add any function declarations.
-            do not enclose in backticks or quotes.
-            do not add statements like use client, use server, etc.
-            just provide the JSX code as string.
-            DO not provide any explanation or comments like here is the code.
-            Only provide the HTML code without any .
+            Do not add any code comments, import statements,function declarations. Assume all necessary components are already imported.
+            Do not enclose in quotes, backticks or markdown. Just provide the JSX code as string.
+            Do not add statements like use client, use server, etc.
+            Provide only the React JSX code without any quotes and in string format, without any explanations or inline comments.
+
+            About the UI:
+            Only use tailwind css while styling.
             Add rich colors and visual elements to the UI.
             Add necessary padding and margin to the elements.
-            Add necessary spacing between elements.
-            No elements should be neither touching each other nor overflwowing other elements.
-            Provide only the React JSX code without any quotes and in string format, without any explanations or inline comments.
-            Based on the component details provided, return the corresponding React code using shadcn/ui components in a triple backtick code block.
-            When images are required, check if you can genrate those images else utilize the img tag with picsum.photos as the source.
-            For icons, use the ionicons library eg- (<ion-icon size="large" name="logoname"></ion-icon>). Do not use any other icon libraries.
-            If a user provides an image of a web page design, implement the design using shadcn/ui components, Tailwind CSS, and React JSX.
-            if using DropdownMenuTrigger with DropdownMenu, ensure that the DropdownMenuTrigger doesn't contain asChild as attribute.
-            if using CollapsibleTrigger with Collapsible, ensure that the CollapsibleTrigger doesn't contain asChild as attribute.
-            When using icons with text, ensure that it is inside a Flex container with items center and add some margin between icon and the text.
+            Add necessary spacing between each elements.
+            No elements should be neither touching each other nor overflowing other elements unless required.
+
+            Images: When images are required, check if you can genrate those images else utilize the img tag with picsum.photos as the source.
+
+            Icons: For icons, use the ionicons library eg- (<ion-icon size="large" name="logoname"></ion-icon>). Do not use any other icon libraries.
+
+            Fine tune:
+            Ensure than none of the element contains 'asChild' as attribute.
+            When using icons with text, ensure that it is inside a Flex container with items center and add some gap between icon and the text so that icon and text are vertically aligned.
             Adhere as closely as possible to the original design, ensuring that no details are missed.
             Add rich but not cluttered UI visual elements or color matching.
             Always generate text color based on its bg color. So when bg color is dark, text color should be light and vice versa.
-            The response should be just React JSX code without import statements or function declarations. Assume all necessary components are already imported.
-            For any shadcn/ui components that require client-side interactivity (like Dropdown, Dialog, etc.), wrap them in a client-side component using the 'use client' directive at the top of the code block.
-            ____
-            Only use tailwind css variables while styling text and background.
-            All necessary css variables eg are -
-            background: "0 0% 100%",
-            foreground: "240 10% 3.9%",
-            card: "0 0% 100%",
-            card-foreground: "240 10% 3.9%",
-            popover: "0 0% 100%",
-            popover-foreground: "240 10% 3.9%",
-            primary: "240 5.9% 10%",
-            primary-foreground: "0 0% 98%",
-            secondary: "240 4.8% 95.9%",
-            secondary-foreground: "240 5.9% 10%",
-            muted: "240 4.8% 95.9%",
-            muted-foreground: "240 3.8% 46.1%",
-            accent: "240 4.8% 95.9%",
-            accent-foreground: "240 5.9% 10%",
-            destructive: "0 84.2% 60.2%",
-            destructive-foreground: "0 0% 98%",
-            border: "240 5.9% 90%",
-            input: "240 5.9% 90%",
-            ring: "240 10% 3.9%",
-            radius: "0.5rem"
-            ______
+
+            Helpers:
+            All necessary css variables eg are - [background, foreground, card, card-foreground, popover, popover-foreground, primary, primary-foreground, secondary, secondary-foreground, muted, muted-foreground, accent, accent-foreground, destructive, destructive-foreground, border, input, ring, radius]
+            Use shadcn components whenever possible. The list of components are - ${components}
+            
+            ----
             Now generate React JSX code for this: ${codeDescription}        
         `
     )

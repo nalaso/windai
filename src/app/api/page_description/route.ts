@@ -1,4 +1,4 @@
-import { anthropic } from '@/lib/anthropic';
+import { anthropicModel } from '@/lib/anthropic';
 import { getBalancedPrompt, getCreativePrompt } from '@/lib/prompt';
 import { generateText } from 'ai';
 import { z } from 'zod';
@@ -27,7 +27,7 @@ export async function POST(req: Request): Promise<Response> {
     const { codeCommand, type } = inputSchema.parse(body);
 
     const result = await generateText({
-      model: anthropic('claude-3-5-sonnet@20240620'),
+      model: anthropicModel('anthropicVertex:claude-3-5-sonnet@20240620'),
       prompt: generateContent(codeCommand, type),
     });
 

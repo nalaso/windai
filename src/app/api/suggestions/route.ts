@@ -1,4 +1,4 @@
-import { anthropic } from '@/lib/anthropic';
+import { anthropicModel } from '@/lib/anthropic';
 import { generateText, tool } from 'ai';
 import { z } from 'zod';
 
@@ -10,7 +10,8 @@ export async function GET(req: Request): Promise<Response> {
     const ideas: string[] = [];
 
     await generateText({
-      model: anthropic('claude-3-5-sonnet@20240620'),
+      model: anthropicModel(),
+      temperature: 1,
       tools: {
         appIdea: tool({
           description: 'Generate an array of 5 app ideas for a web or mobile application or specific functionality within an app',
@@ -18,7 +19,6 @@ export async function GET(req: Request): Promise<Response> {
             suggestions: z.array(z.string().describe('A list of app ideas')),
           }),
           execute: async ({ suggestions }: { suggestions: string[] }) => {
-            // Example implementation: push suggestions into ideas array
             suggestions.forEach((suggestion) => ideas.push(suggestion));
             return { suggestions };
           },

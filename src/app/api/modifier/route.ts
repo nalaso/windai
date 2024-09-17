@@ -1,7 +1,7 @@
 import { generateText } from 'ai';
 import { getModifierPromt } from '@/lib/prompt';
-import { anthropic } from '@/lib/anthropic';
 import { z } from 'zod';
+import { anthropicModel } from '@/lib/anthropic';
 
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
@@ -17,7 +17,7 @@ export async function POST(req: Request): Promise<Response> {
     const { modifyDescription, precode } = inputSchema.parse(body);
 
     const result = await generateText({
-      model: anthropic('claude-3-5-sonnet@20240620'),
+      model: anthropicModel('anthropicVertex:claude-3-5-sonnet@20240620'),
       prompt: getModifierPromt(precode, modifyDescription),
     });
 
