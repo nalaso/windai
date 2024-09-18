@@ -80,15 +80,15 @@ const UIRigthHeader = ({
         setCssCode(globalCss)
     }, [theme])
 
-    useEffect(() => {
-        if(!theme) return
-        if (typeof window !== 'undefined') {
-            const storedThemes = window.localStorage.getItem('customThemes')
-            if (storedThemes) {
-                setCustomThemes(JSON.parse(storedThemes))
-            }
-        }
-    }, [theme])
+    // useEffect(() => {
+    //     if(!theme) return
+    //     if (typeof window !== 'undefined') {
+    //         const storedThemes = window.localStorage.getItem('customThemes')
+    //         if (storedThemes) {
+    //             setCustomThemes(JSON.parse(storedThemes))
+    //         }
+    //     }
+    // }, [theme])
 
     const toggleLikeClick = async () => {
         if (!userId) {
