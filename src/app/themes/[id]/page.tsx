@@ -48,7 +48,7 @@ export default function ThemeCustomizer({ params }: { params: { id: string } }) 
 
   useEffect(() => {
     const loadTheme = () => {
-      const savedTheme = localStorage.getItem(`theme_${params.id}`)
+      const savedTheme = window.localStorage.getItem(`theme_${params.id}`)
       if (savedTheme) {
         const parsedTheme = JSON.parse(savedTheme)
         setProperties(parsedTheme.properties)
@@ -56,7 +56,7 @@ export default function ThemeCustomizer({ params }: { params: { id: string } }) 
         setBody(parsedTheme.body)
         setRadius(parsedTheme.radius)
       } else {
-        const customThemes = JSON.parse(localStorage.getItem('customThemes') || '[]')
+        const customThemes = JSON.parse(window.localStorage.getItem('customThemes') || '[]')
         const themeExists = [...defaultThemes, ...customThemes].some(theme => theme.id === params.id)
         
         if (!themeExists) {
@@ -95,7 +95,7 @@ export default function ThemeCustomizer({ params }: { params: { id: string } }) 
       body,
       radius
     }
-    localStorage.setItem(`theme_${params.id}`, JSON.stringify(themeData))
+    window.localStorage.setItem(`theme_${params.id}`, JSON.stringify(themeData))
     alert("Theme saved successfully!")
   }
 

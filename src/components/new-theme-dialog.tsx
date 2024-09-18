@@ -23,7 +23,7 @@ export function NewThemeDialog({ onThemeCreate }: NewThemeDialogProps) {
         toast.error('Please enter a Theme ID and Theme Name.');
         return;
     }
-    const customThemes = JSON.parse(localStorage.getItem('customThemes') || '[]');
+    const customThemes = JSON.parse(window.localStorage.getItem('customThemes') || '[]');
     const themeExists = [...defaultThemes, ...customThemes].some(theme => theme.id.toLowerCase() === themeId.toLowerCase());
 
     if (themeExists) {

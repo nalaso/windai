@@ -16,7 +16,7 @@ export default function ThemeSelector() {
   const [customThemes, setCustomThemes] = useState<Theme[]>([])
 
   useEffect(() => {
-    const storedThemes = localStorage.getItem('customThemes')
+    const storedThemes = window.localStorage.getItem('customThemes')
     if (storedThemes) {
       setCustomThemes(JSON.parse(storedThemes))
     }
@@ -52,7 +52,7 @@ export default function ThemeSelector() {
     }
     const updatedThemes = [...customThemes, newTheme]
     setCustomThemes(updatedThemes)
-    localStorage.setItem('customThemes', JSON.stringify(updatedThemes))
+    window.localStorage.setItem('customThemes', JSON.stringify(updatedThemes))
     router.push(`/themes/${themeId}`)
   }
 
@@ -60,7 +60,7 @@ export default function ThemeSelector() {
     e.stopPropagation();
     const updatedThemes = customThemes.filter(theme => theme.id !== themeId)
     setCustomThemes(updatedThemes)
-    localStorage.setItem('customThemes', JSON.stringify(updatedThemes))
+    window.localStorage.setItem('customThemes', JSON.stringify(updatedThemes))
     toast.success('Theme deleted successfully')
   }
 
@@ -73,7 +73,7 @@ export default function ThemeSelector() {
     }
     const updatedThemes = [...customThemes, forkedTheme]
     setCustomThemes(updatedThemes)
-    localStorage.setItem('customThemes', JSON.stringify(updatedThemes))
+    window.localStorage.setItem('customThemes', JSON.stringify(updatedThemes))
     toast.success('Theme forked successfully')
     router.push(`/themes/${newId}`)
   }

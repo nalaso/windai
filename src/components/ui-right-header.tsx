@@ -81,11 +81,12 @@ const UIRigthHeader = ({
     }, [theme])
 
     useEffect(() => {
-        const storedThemes = localStorage.getItem('customThemes')
+        if(!theme) return
+        const storedThemes = window.localStorage.getItem('customThemes')
         if (storedThemes) {
             setCustomThemes(JSON.parse(storedThemes))
         }
-    }, [])
+    }, [theme])
 
     const toggleLikeClick = async () => {
         if (!userId) {

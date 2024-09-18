@@ -24,8 +24,8 @@ export default function LLMSettingsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    const storedAzureModels = JSON.parse(localStorage.getItem('azureModels') || '[]') as Model[];
-    const storedOllamaModels = JSON.parse(localStorage.getItem('ollamaModels') || '[]') as Model[];
+    const storedAzureModels = JSON.parse(window.localStorage.getItem('azureModels') || '[]') as Model[];
+    const storedOllamaModels = JSON.parse(window.localStorage.getItem('ollamaModels') || '[]') as Model[];
     setAzureModels(storedAzureModels);
     setOllamaModels(storedOllamaModels);
   }, []);
@@ -37,10 +37,10 @@ export default function LLMSettingsPage() {
     
     if (modelType === 'azure') {
       setAzureModels(updatedModels);
-      localStorage.setItem('azureModels', JSON.stringify(updatedModels));
+      window.localStorage.setItem('azureModels', JSON.stringify(updatedModels));
     } else {
       setOllamaModels(updatedModels);
-      localStorage.setItem('ollamaModels', JSON.stringify(updatedModels));
+      window.localStorage.setItem('ollamaModels', JSON.stringify(updatedModels));
     }
 
     setNewModel({ modelId: '', model: '' });
@@ -51,11 +51,11 @@ export default function LLMSettingsPage() {
     if (type === 'azure') {
       const updatedModels = azureModels.filter(model => model.modelId !== modelId);
       setAzureModels(updatedModels);
-      localStorage.setItem('azureModels', JSON.stringify(updatedModels));
+      window.localStorage.setItem('azureModels', JSON.stringify(updatedModels));
     } else if (type === 'ollama') {
       const updatedModels = ollamaModels.filter(model => model.modelId !== modelId);
       setOllamaModels(updatedModels);
-      localStorage.setItem('ollamaModels', JSON.stringify(updatedModels));
+      window.localStorage.setItem('ollamaModels', JSON.stringify(updatedModels));
     }
   };
 
