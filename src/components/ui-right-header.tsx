@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import useTheme from "@/hooks/useTheme";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { getCss } from "@/lib/globalCss";
-import { themes } from "@/lib/themes";
+import { themes as defaultThemes } from "@/lib/themes";
 
 const UIRigthHeader = ({
     UIId,
@@ -64,15 +64,18 @@ const UIRigthHeader = ({
     const { theme, setTheme } = useTheme()
     const [activeTab, setActiveTab] = useState("code")
     const [cssCode, setCssCode] = useState("")
+    const [customThemes, setCustomThemes] = useState<any[]>([])
 
     useEffect(() => {
         setPanelView(type)
     }, [type])
 
     useEffect(() => {
-        const globalCss = getCss(themes.find(t => t.id === theme)!)
-        setCssCode(globalCss)
-    }, [theme])
+        const storedThemes = localStorage.getItem('customThemes')
+        if (storedThemes) {
+            setCustomThemes(JSON.parse(storedThemes))
+        }
+    }, [])
 
     const toggleLikeClick = async () => {
         if (!userId) {
@@ -217,15 +220,12 @@ const UIRigthHeader = ({
                         <SelectValue placeholder="Select a theme" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="default">Default</SelectItem>
-                        <SelectItem value="ruby">Ruby</SelectItem>
-                        <SelectItem value="sapphire">Sapphire</SelectItem>
-                        <SelectItem value="emerald">Emerald</SelectItem>
-                        <SelectItem value="windows98">Windows 98</SelectItem>
-                        <SelectItem value="daylight">Daylight</SelectItem>
-                        <SelectItem value="midnight">Midnight</SelectItem>
-                        <SelectItem value="pastel">Pastel</SelectItem>
-                        <SelectItem value="deepsea">Deep Sea</SelectItem>
+                        {defaultThemes.map((t) => (
+                            <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                        ))}
+                        {customThemes.map((t) => (
+                            <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
                 <Dialog>
