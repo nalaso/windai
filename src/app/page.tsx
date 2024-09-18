@@ -3,7 +3,8 @@ import { createUI } from "@/actions/ui/create-ui";
 import Header from "@/components/header";
 import HomeUICards from "@/components/home-uis";
 import Suggestions from "@/components/suggestions";
-import { Button, Card, Input } from "@/components/ui";
+import { TipsCarousel } from "@/components/tips-carousel";
+import { Badge, Button, Card, Input } from "@/components/ui";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { useUIState } from "@/hooks/useUIState";
 import { LoaderCircle, SendHorizontal } from "lucide-react";
@@ -66,6 +67,12 @@ export default function Home() {
                         </Button>
                     </Card>
                     <Suggestions />
+                    <div className="pt-20">
+                        {/* <TipsCarousel /> */}
+                        <Badge onClick={()=>router.push("/settings/llm")} variant="default" className="text-sm border-spacing-1 cursor-pointer">Try different models from settings for faster response</Badge>
+                        <Badge onClick={()=>window.open("https://git.new/windai")} variant="secondary" className="absolute border-2 border-black border-spacing-4 top-40 left-5 -rotate-45 text-sm cursor-pointer">To be open-sourced soon.</Badge>
+                        <Badge onClick={()=>window.open("https://dub.sh/windai-discord")} variant="secondary" className="absolute bg-[#6570fd] hover:bg-black text-white bottom-56 right-5 rotate-45 text-sm cursor-pointer">Welcoming everyone to the WindAI Discord.</Badge>
+                    </div>
                 </div>
             </div>
             <HomeUICards />

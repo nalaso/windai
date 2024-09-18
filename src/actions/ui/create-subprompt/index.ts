@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 
-export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUBId: string, code: string) => {    
+export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUBId: string, code: string, modelId: string) => {    
     if(subPrompt.startsWith("precise-") || subPrompt.startsWith("balanced-") || subPrompt.startsWith("creative-")) {     
            
         const codeData = await db.code.create({
@@ -16,7 +16,8 @@ export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUB
                 UIId: UIId,
                 subPrompt: subPrompt,
                 SUBId: parentSUBId,
-                codeId: codeData.id
+                codeId: codeData.id,
+                modelId: modelId
             },
         });
 
@@ -76,7 +77,8 @@ export const createSubPrompt = async (subPrompt: string, UIId: string, parentSUB
             UIId: UIId,
             subPrompt: subPrompt,
             SUBId: newSUBId,
-            codeId: codeData.id
+            codeId: codeData.id,
+            modelId: modelId
         },
     });
 

@@ -7,6 +7,7 @@ import { createUI } from "@/actions/ui/create-ui";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useModel } from "@/hooks/useModel";
 
 const Suggestions = () => {
 	const router = useRouter();
@@ -14,6 +15,7 @@ const Suggestions = () => {
 	const { toggle } = useAuthModal()
 	const { data: session, status } = useSession()
 	const userId = session?.user?.id
+	const { initialModel } = useModel();
 	const [suggestions, setSuggestions] = useState([
 		"login page for netflix",
 		"product detail card for sneakers",
@@ -25,7 +27,7 @@ const Suggestions = () => {
 	useEffect(() => {
 		const fetchSuggestions = async () => {
 			try {
-				const res = await fetch('/api/suggestions', {
+				const res = await fetch(`/api/suggestions?modelId=${encodeURIComponent(initialModel)}`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
@@ -44,7 +46,7 @@ const Suggestions = () => {
 			}
 		}
 		fetchSuggestions()
-	}, [])
+	}, [initialModel])
 
 	const handleClick = async (suggestion: string) => {
 		setInput(suggestion)

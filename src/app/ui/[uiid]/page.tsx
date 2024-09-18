@@ -19,6 +19,8 @@ import { toast } from "sonner"
 import { updateSubPrompt } from "@/actions/ui/update-subprompt"
 import { isParent } from "@/lib/helper"
 import { useSession } from "next-auth/react"
+import { useModel } from "@/hooks/useModel"
+import { isModelSupported } from "@/lib/supportedllm"
 
 const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);
@@ -27,10 +29,13 @@ const UI = ({ params }: { params: any }) => {
 	const userId = session?.user?.id
 
 	const router = useRouter()
+	const {modifierModel, descriptiveModel, initialModel} = useModel()
 
 	const [selectedVersion, setSelectedVersion] = useState({
 		prompt: "",
-		subid: ""
+		subid: "",
+		modelId: "",
+		createdAt: ""
 	})
 	const [prompt, setPrompt] = useState("")
 	const [code, setCode] = useState("")
@@ -50,6 +55,7 @@ const UI = ({ params }: { params: any }) => {
 			createdAt: Date;
 			subPrompt: string;
 			codeId: string;
+			modelId?: string;
 			code: string;
 		}[][];
 		id: string;
@@ -116,7 +122,9 @@ const UI = ({ params }: { params: any }) => {
 
 			setSelectedVersion({
 				prompt: subPrompt[0].subPrompt,
-				subid: subid
+				subid: subid,
+				modelId: subPrompt[0].modelId||"",
+				createdAt: subPrompt[0].createdAt.toLocaleString()
 			})
 
 			var preciseCode = subPrompt[0].code
@@ -245,6 +253,7 @@ const UI = ({ params }: { params: any }) => {
 						createdAt: Date;
 						subPrompt: string;
 						codeId: string;
+						modelId?: string;
 						code: string;
 					}[]
 				];
@@ -269,6 +278,7 @@ const UI = ({ params }: { params: any }) => {
 						createdAt: Date;
 						subPrompt: string;
 						codeId: string;
+						modelId?: string;
 						code: string;
 					}[]
 					)
@@ -314,7 +324,9 @@ const UI = ({ params }: { params: any }) => {
 		if (ui?.subPrompts.length === 0) {
 			setSelectedVersion({
 				prompt: ui?.prompt!,
-				subid: "0"
+				subid: "0",
+				modelId: initialModel,
+				createdAt: ui?.createdAt.toLocaleString()
 			})
 		} else {
 			const lastGeneratedSubPrompt = ui?.subPrompts[ui?.subPrompts.length - 1][0]
@@ -370,7 +382,9 @@ const UI = ({ params }: { params: any }) => {
 			if (!selectedSubPrompt || !selectedSubPrompt[0] == null || !selectedSubPrompt[0]?.SUBId) return
 			setSelectedVersion({
 				prompt: selectedSubPrompt[idx!].subPrompt!,
-				subid: selectedSubPrompt[idx!].SUBId!
+				subid: selectedSubPrompt[idx!].SUBId!,
+				modelId: selectedSubPrompt[idx!].modelId||"",
+				createdAt: selectedSubPrompt[idx!].createdAt.toLocaleString()
 			})
 		}
 	}, [mode])
@@ -393,12 +407,12 @@ const UI = ({ params }: { params: any }) => {
 				}
 			}))
 
-			const res = await fetch('/api/anthropic', {
+			const res = await fetch('/api/generate-code', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ codeDescription: prompt }),
+				body: JSON.stringify({ codeDescription: prompt, modelId:initialModel  }),
 			});
 
 			if (!res.ok) {
@@ -417,14 +431,15 @@ const UI = ({ params }: { params: any }) => {
 
 			const subPromptText = "precise-" + prompt
 			const parentSUBId = "a-0"
-			const data = await createSubPrompt(subPromptText, uiid, parentSUBId, response)
+			const data = await createSubPrompt(subPromptText, uiid, parentSUBId, response, initialModel)
 
 			return {
 				id: data.data.id,
 				SUBId: data.data.SUBId,
 				subPrompt: data.data.subPrompt,
 				code: data.codeData.code,
-				codeId: data.data.codeId
+				codeId: data.data.codeId,
+				modelId: data.data.modelId
 			}
 
 		} catch (error) {
@@ -458,7 +473,8 @@ const UI = ({ params }: { params: any }) => {
 				},
 				body: JSON.stringify({
 					codeCommand: prompt,
-					type: "creative"
+					type: "creative",
+					modelId:descriptiveModel
 				}),
 			});
 
@@ -468,12 +484,12 @@ const UI = ({ params }: { params: any }) => {
 
 			const codeDescription = await description.json();
 
-			const res = await fetch('/api/anthropic', {
+			const res = await fetch('/api/generate-code', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ codeDescription }),
+				body: JSON.stringify({ codeDescription,modelId:initialModel }),
 			});
 
 			if (!res.ok) {
@@ -484,7 +500,7 @@ const UI = ({ params }: { params: any }) => {
 
 			const subPrompt = "creative-" + prompt
 			const parentSUBId = "c-0"
-			const data = await createSubPrompt(subPrompt, uiid, parentSUBId, response)
+			const data = await createSubPrompt(subPrompt, uiid, parentSUBId, response, initialModel)
 
 			setUiState(preuis => ({
 				...preuis,
@@ -499,7 +515,8 @@ const UI = ({ params }: { params: any }) => {
 				SUBId: data.data.SUBId,
 				subPrompt: data.data.subPrompt,
 				code: data.codeData.code,
-				codeId: data.data.codeId
+				codeId: data.data.codeId,
+				modelId: data.data.modelId
 			}
 
 		} catch (error) {
@@ -533,7 +550,8 @@ const UI = ({ params }: { params: any }) => {
 				},
 				body: JSON.stringify({
 					codeCommand: prompt,
-					type: "balanced"
+					type: "balanced",
+					modelId:descriptiveModel
 				}),
 			});
 
@@ -543,12 +561,12 @@ const UI = ({ params }: { params: any }) => {
 
 			const codeDescription = await description.json();
 
-			const res = await fetch('/api/anthropic', {
+			const res = await fetch('/api/generate-code', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ codeDescription }),
+				body: JSON.stringify({ codeDescription, modelId:initialModel }),
 			});
 
 			if (!res.ok) {
@@ -559,7 +577,7 @@ const UI = ({ params }: { params: any }) => {
 
 			const subPrompt = "balanced-" + prompt
 			const parentSUBId = "b-0"
-			const data = await createSubPrompt(subPrompt, uiid, parentSUBId, response)
+			const data = await createSubPrompt(subPrompt, uiid, parentSUBId, response, initialModel)
 
 			setUiState(preuis => ({
 				...preuis,
@@ -574,7 +592,8 @@ const UI = ({ params }: { params: any }) => {
 				SUBId: data.data.SUBId,
 				subPrompt: data.data.subPrompt,
 				code: data.codeData.code,
-				codeId: data.data.codeId
+				codeId: data.data.codeId,
+				modelId: data.data.modelId
 			}
 
 		} catch (error) {
@@ -608,7 +627,8 @@ const UI = ({ params }: { params: any }) => {
 				},
 				body: JSON.stringify({
 					modifyDescription: prompt,
-					precode: uiState[mode]?.code
+					precode: uiState[mode]?.code,
+					modelId: modifierModel
 				}),
 			});
 
@@ -640,14 +660,15 @@ const UI = ({ params }: { params: any }) => {
 			}))
 
 			const subPrompt = prompt
-			const data = await createSubPrompt(subPrompt, uiid, selectedVersion.subid, response)
+			const data = await createSubPrompt(subPrompt, uiid, selectedVersion.subid, response, modifierModel)
 
 			return {
 				id: data.data.id,
 				SUBId: data.data.SUBId,
 				subPrompt: data.data.subPrompt,
 				code: data.codeData.code,
-				codeId: data.data.codeId
+				codeId: data.data.codeId,
+				modelId: data.data.modelId
 			}
 		} catch (error) {
 			console.error('Error generating modified code:', error);
@@ -688,7 +709,8 @@ const UI = ({ params }: { params: any }) => {
 				},
 				body: JSON.stringify({
 					modifyDescription: selectedVersion.prompt,
-					precode: uiState[mode]?.code
+					precode: uiState[mode]?.code,
+					modelId: modifierModel
 				}),
 			});
 
@@ -719,7 +741,7 @@ const UI = ({ params }: { params: any }) => {
 				}
 			}))
 
-			const data = await updateSubPrompt(uiid, response, selectedVersion.subid)
+			const data = await updateSubPrompt(uiid, response, modifierModel, selectedVersion.subid)
 
 			if (!data) {
 				toast.error("Error regenerating modified code")
@@ -731,7 +753,8 @@ const UI = ({ params }: { params: any }) => {
 				SUBId: data.data.SUBId,
 				subPrompt: data.data.subPrompt,
 				code: data.codeData.code,
-				codeId: data.data.codeId
+				codeId: data.data.codeId,
+				modelId: data.data.modelId
 			}
 
 		} catch (error) {
@@ -765,11 +788,28 @@ const UI = ({ params }: { params: any }) => {
 		const previousSubId = selectedVersion.subid;
 
 		if (ui?.subPrompts.length === 0) {
+			if(!isModelSupported(initialModel)){
+				toast.error("InitialModel not supported! Choose another model");
+				router.push("/settings/llm")
+				return
+			}
+			if(!isModelSupported(descriptiveModel)){
+				toast.error("DescriptiveModel not supported! Choose another model");
+				router.push("/settings/llm")
+				return
+			}
 			promises = [generatePreciseCode(), generateBalancedCode(), generateCreativeCode()];
 		} else {
+			if(!isModelSupported(modifierModel)){
+				toast.error("ModifierModel not supported! Choose another model");
+				router.push("/settings/llm")
+				return
+			}
 			setSelectedVersion({
 				prompt: prompt,
-				subid: "1"
+				subid: "1",
+				modelId: modifierModel,
+				createdAt: new Date().toLocaleString()
 			})
 			promises = [generateModifiedCode()];
 		}
@@ -784,6 +824,7 @@ const UI = ({ params }: { params: any }) => {
 					subPrompt: string;
 					code: string;
 					codeId: string;
+					modelId?: string;
 				} | undefined> =>
 					result.status === 'fulfilled' && result.value !== undefined
 			).map(result => result.value);
@@ -805,6 +846,7 @@ const UI = ({ params }: { params: any }) => {
 								createdAt: new Date(),
 								subPrompt: result!.subPrompt!,
 								codeId: result!.codeId,
+								modelId: result!.modelId||"",
 								code: result!.code
 							}))
 						);
@@ -816,6 +858,7 @@ const UI = ({ params }: { params: any }) => {
 							createdAt: new Date(),
 							subPrompt: successfulResults[0]!.subPrompt!,
 							codeId: successfulResults[0]!.codeId,
+							modelId: successfulResults[0]!.modelId||"",
 							code: successfulResults[0]!.code
 						}]);
 						setMode("precise");
@@ -832,7 +875,9 @@ const UI = ({ params }: { params: any }) => {
 			setPrompt("");
 			setSelectedVersion({
 				prompt: prompt,
-				subid: successfulResults[0]!.SUBId!
+				subid: successfulResults[0]!.SUBId!,
+				modelId: successfulResults[0]!.modelId||"",
+				createdAt: selectedVersion.createdAt
 			})
 			setLoading(false);
 			capture();
@@ -850,6 +895,11 @@ const UI = ({ params }: { params: any }) => {
 			return;
 		}
 		if (loading) return;
+		if(!isModelSupported(modifierModel)){
+			toast.error("ModifierModel not supported! Choose another model");
+			router.push("/settings/llm")
+			return
+		}
 		setLoading(true);
 		const previousSubId = selectedVersion.subid;
 		try {
@@ -876,7 +926,9 @@ const UI = ({ params }: { params: any }) => {
 				});
 				setSelectedVersion({
 					prompt: result.subPrompt!,
-					subid: result.SUBId!
+					subid: result.SUBId!,
+					modelId: result.modelId||"",
+					createdAt: new Date().toLocaleString()
 				});
 				setCode(result.code);
 				capture();
@@ -937,6 +989,8 @@ const UI = ({ params }: { params: any }) => {
 					<Card className="flex flex-col bg-secondary">
 						<div className="flex justify-between items-center">
 							<UIRigthHeader
+								modelId={selectedVersion.modelId}
+								createdAt={selectedVersion.createdAt}
 								UIId={uiid}
 								views={ui?.viewCount!}
 								subid={selectedVersion.subid}

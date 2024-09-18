@@ -74,6 +74,7 @@ model VerificationToken {
 model UI {
   id                String     @id @default(auto()) @map("_id") @db.ObjectId
   userId            String     @unique @db.ObjectId
+  public            Boolean    @default(true)
   prompt            String
   img               String
   createdAt         DateTime   @default(now())
@@ -92,6 +93,7 @@ model SubPrompt {
   SUBId            String     @unique
   createdAt        DateTime   @default(now())
   subPrompt        String
+  modelId          String?
   codeId           String     @db.ObjectId
 
   code             Code       @relation(fields: [codeId], references: [id], onDelete: Cascade)

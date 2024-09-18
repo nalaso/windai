@@ -1,4 +1,4 @@
-import { anthropicModel } from '@/lib/anthropic';
+import { llm } from '@/lib/llm';
 import { getBalancedPrompt, getCreativePrompt } from '@/lib/prompt';
 import { generateText } from 'ai';
 import { z } from 'zod';
@@ -11,6 +11,7 @@ const inputSchema = z.object({
   type: z.enum(["creative", "balanced"], {
     errorMap: () => ({ message: "Type must be either 'creative' or 'balanced'" })
   }),
+  modelId: z.string(),
 });
 
 const generateContent = (prompt: string, type: string) => {
@@ -24,10 +25,11 @@ const generateContent = (prompt: string, type: string) => {
 export async function POST(req: Request): Promise<Response> {
   try {
     const body = await req.json();
-    const { codeCommand, type } = inputSchema.parse(body);
+    
+    const { codeCommand, type, modelId } = inputSchema.parse(body);
 
     const result = await generateText({
-      model: anthropicModel('anthropicVertex:claude-3-5-sonnet@20240620'),
+      model: llm(modelId),
       prompt: generateContent(codeCommand, type),
     });
 

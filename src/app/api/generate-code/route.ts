@@ -1,4 +1,4 @@
-import { anthropicModel } from '@/lib/anthropic';
+import { llm } from '@/lib/llm';
 import { getGenerationPrompt } from '@/lib/prompt';
 import { generateText } from 'ai';
 import { z } from 'zod';
@@ -8,15 +8,16 @@ export const dynamic = 'force-dynamic';
 
 const inputSchema = z.object({
   codeDescription: z.string().min(1, "Code description is required"),
+  modelId: z.string(),
 });
 
 export async function POST(req: Request): Promise<Response> {
   try {
     const body = await req.json();
-    const { codeDescription } = inputSchema.parse(body);
+    const { codeDescription, modelId } = inputSchema.parse(body);
 
     const result = await generateText({
-      model: anthropicModel('anthropicVertex:claude-3-5-sonnet@20240620'),
+      model: llm("vertex:gemini-1.5-pro"),
       prompt: getGenerationPrompt(codeDescription),
     });
 
@@ -30,7 +31,7 @@ export async function POST(req: Request): Promise<Response> {
       },
     });
   } catch (error) {
-    console.error('Error in anthropic API route:', error);
+    console.error('Error in API route:', error);
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify({ error: 'Invalid input', details: error.errors }), {
         status: 400,

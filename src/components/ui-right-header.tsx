@@ -1,5 +1,5 @@
 "use client"
-import { CodeXml, Cpu, LaptopMinimal, LoaderCircle, PackageSearch, RefreshCw, Scale, Share2, Smartphone, Tablet } from "lucide-react";
+import { CodeXml, Cpu, LaptopMinimal, LoaderCircle, MoreHorizontal, PackageSearch, RefreshCw, Scale, Share2, Smartphone, Tablet } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
@@ -21,7 +21,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import useTheme from "@/hooks/useTheme";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { getCss } from "@/lib/globalCss";
-import { themes as defaultThemes } from "@/lib/themes";
+import { themes as defaultThemes, themes } from "@/lib/themes";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 const UIRigthHeader = ({
     UIId,
@@ -34,6 +35,8 @@ const UIRigthHeader = ({
     setMode,
     mode,
     code,
+    modelId,
+    createdAt,
     regenerateCode,
     isLastSubprompt
 }: {
@@ -52,6 +55,8 @@ const UIRigthHeader = ({
     setMode: (mode: string) => void,
     mode: string,
     code: string,
+    modelId?: string,
+    createdAt?: string,
     regenerateCode: () => void,
     isLastSubprompt: boolean
 }) => {
@@ -69,6 +74,11 @@ const UIRigthHeader = ({
     useEffect(() => {
         setPanelView(type)
     }, [type])
+
+    useEffect(() => {
+        const globalCss = getCss(themes.find(t => t.id === theme)!)
+        setCssCode(globalCss)
+    }, [theme])
 
     useEffect(() => {
         const storedThemes = localStorage.getItem('customThemes')
@@ -147,7 +157,24 @@ const UIRigthHeader = ({
                     </Button>
                 </Badge>
 
-                <Badge variant={"secondary"} className="rounded-xl text-xs text-gray-500 whitespace-nowrap">{views} views</Badge>
+                <Badge variant={"secondary"} className="rounded-sm text-xs text-gray-500 whitespace-nowrap">{views} views</Badge>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem className="flex gap-3">
+                            <p className="text-gray-400">ModelId </p>
+                            <Badge variant={"secondary"}>{modelId || "anthropicVertex:claude-3-5-sonnet@20240620"}</Badge>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex gap-3">
+                            <p className="text-gray-400">Created At </p>
+                            <Badge variant={"secondary"}>{createdAt||""}</Badge>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
             <div className="flex space-x-2 items-center ">
                 <LikeButton liked={liked} toggleLikeClick={toggleLikeClick} />

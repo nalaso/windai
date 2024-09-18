@@ -1,7 +1,7 @@
 import { generateText } from 'ai';
 import { getModifierPromt } from '@/lib/prompt';
 import { z } from 'zod';
-import { anthropicModel } from '@/lib/anthropic';
+import { llm } from '@/lib/llm';
 
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
@@ -9,15 +9,17 @@ export const dynamic = 'force-dynamic';
 const inputSchema = z.object({
   modifyDescription: z.string().min(1, "Modify description is required"),
   precode: z.string().min(1, "Pre-code is required"),
+  modelId: z.string(),
 });
 
 export async function POST(req: Request): Promise<Response> {
   try {
     const body = await req.json();
-    const { modifyDescription, precode } = inputSchema.parse(body);
+
+    const { modifyDescription, precode,modelId } = inputSchema.parse(body);
 
     const result = await generateText({
-      model: anthropicModel('anthropicVertex:claude-3-5-sonnet@20240620'),
+      model: llm(modelId),
       prompt: getModifierPromt(precode, modifyDescription),
     });
 

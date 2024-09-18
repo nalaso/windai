@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 
-export const updateSubPrompt = async (UIId: string, code: string, subid?: string) => {
+export const updateSubPrompt = async (UIId: string, code: string, modelId: string, subid?: string) => {
     try {
         const existingSubPrompt = await db.subPrompt.findFirst({
             where: {
@@ -26,7 +26,8 @@ export const updateSubPrompt = async (UIId: string, code: string, subid?: string
                 id: existingSubPrompt.id
             },
             data: {
-                codeId: codeData.id
+                codeId: codeData.id,
+                modelId: modelId
             },
         });
 

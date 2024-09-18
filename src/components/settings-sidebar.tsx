@@ -8,7 +8,7 @@ const sidebarItems = [
   { name: 'Account', href: '/settings/account' },
   { name: 'Themes', href: '/themes' },
   { name: 'UI', href: '/settings/ui' },
-  { name: 'LLMs', href: '/settings/llms' },
+  { name: 'LLM', href: '/settings/llm' }, // Updated this line
   { name: 'Environment Variables', href: '/settings/environment-variables' },
   { name: 'About', href: '/settings/about' },
 ]

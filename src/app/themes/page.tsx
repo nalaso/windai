@@ -134,7 +134,7 @@ export default function ThemeSelector() {
         ))}
       </div>
       <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-4">Custom Themes</h2>
+        <h2 className="text-2xl font-bold mb-4">Custom Themes (coming soon)</h2>
         {customThemes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {customThemes.map((theme) => (
