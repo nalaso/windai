@@ -24,7 +24,13 @@ const Header = () => {
 					<Button onClick={() => router.push("/explore")} variant={"outline"} className="text-xl font-semibold">Explore</Button>
 				</div>
 				<div className="flex space-x-2 items-center">
-					<Button onClick={toggleBugReport} variant="secondary">Bug Report / Feature Request</Button>
+					{status === "authenticated" && (
+						<Button onClick={toggleBugReport} variant="secondary">Bug Report / Feature Request</Button>
+					)}
+					<Button onClick={() => window.open("https://github.com/nalaso/windai")} variant="default">Github</Button>
+					{status === "authenticated" && (
+						<Button onClick={() => window.open("https://discord.gg/QEy6YVwuP8")} className="bg-[#6570fd]">Discord</Button>
+					)}
 					{status === "unauthenticated" && (
 						<Button onClick={toggleAuth} variant="default">Sign In</Button>
 					)}

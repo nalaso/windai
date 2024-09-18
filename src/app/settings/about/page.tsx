@@ -28,22 +28,10 @@ export default function AboutPage() {
         </CardHeader>
         <CardContent className='flex flex-col gap-2'>
           <p><strong>Github: </strong><Link href='https://github.com/nalaso/windai'> https://github.com/nalaso/windai</Link></p>
+          <p><strong>Discord: </strong><Link href='https://discord.gg/QEy6YVwuP8'> https://discord.gg/QEy6YVwuP8</Link></p>
           <p><strong>Mission:</strong> To make ui development smooth.:/</p>
         </CardContent>
       </Card>
-
-      {/* <Card>
-        <CardHeader>
-          <CardTitle>Contact Information</CardTitle>
-          <CardDescription>How to reach us for support or inquiries.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p><strong>Support Email:</strong> support@example.com</p>
-          <p><strong>Sales Email:</strong> sales@example.com</p>
-          <p><strong>Phone:</strong> +1 (555) 123-4567</p>
-          <p><strong>Address:</strong> 123 Tech Street, San Francisco, CA 94105</p>
-        </CardContent>
-      </Card> */}
     </div>
   )
 }
