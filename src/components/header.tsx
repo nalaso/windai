@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "./ui";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { useBugReportModal } from "@/hooks/useBugReportModal";

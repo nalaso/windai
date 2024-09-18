@@ -2,6 +2,7 @@ import { LogOut, Settings } from "lucide-react";
 import { User } from "next-auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "./ui/button";
 import {
 	DropdownMenu,
@@ -43,10 +44,12 @@ export default function UserButton({ user }: UserButtonProps) {
 				<DropdownMenuLabel>@{user.username}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem>
-						<Settings className="mr-2 h-4 w-4" />
-						<span>Settings</span>
-					</DropdownMenuItem>
+					<Link href="/settings" passHref>
+						<DropdownMenuItem>
+							<Settings className="mr-2 h-4 w-4" />
+							<span>Settings</span>
+						</DropdownMenuItem>
+					</Link>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
