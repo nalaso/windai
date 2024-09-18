@@ -27,8 +27,8 @@ export default function AboutPage() {
           <CardTitle>Info</CardTitle>
         </CardHeader>
         <CardContent className='flex flex-col gap-2'>
-          <p><strong>Github: </strong><Link href='https://github.com/nalaso/windai'> https://github.com/nalaso/windai</Link></p>
-          <p><strong>Discord: </strong><Link href='https://discord.gg/QEy6YVwuP8'> https://discord.gg/QEy6YVwuP8</Link></p>
+          <p><strong>Github: </strong><Link href='https://git.new/windai'> https://github.com/nalaso/windai</Link></p>
+          <p><strong>Discord: </strong><Link href='https://dub.sh/windai-discord'> https://discord.gg/QEy6YVwuP8</Link></p>
           <p><strong>Mission:</strong> To make ui development smooth.:/</p>
         </CardContent>
       </Card>
