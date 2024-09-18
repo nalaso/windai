@@ -125,7 +125,7 @@ export default function GeneralSettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="experimental-features" className="font-medium">Experimental Features</Label>
-                <p className="text-sm text-gray-500">Try out new experimental features before they're released.</p>
+                <p className="text-sm text-gray-500">Try out new experimental features before they&apos;re released.</p>
               </div>
               <Switch
                 id="experimental-features"
