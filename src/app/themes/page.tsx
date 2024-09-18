@@ -191,7 +191,7 @@ export default function ThemeSelector() {
         ) : (
           <Card className="p-6 text-center">
             <p className="text-sm text-muted-foreground mb-4">
-              You haven't created any custom theme yet.
+              You haven&apos;t created any custom theme yet.
             </p>
             <NewThemeDialog onThemeCreate={handleThemeCreate} />
           </Card>
