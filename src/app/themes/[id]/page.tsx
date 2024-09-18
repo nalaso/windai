@@ -48,19 +48,24 @@ export default function ThemeCustomizer({ params }: { params: { id: string } }) 
 
   useEffect(() => {
     const loadTheme = () => {
-      const savedTheme = window.localStorage.getItem(`theme_${params.id}`)
-      if (savedTheme) {
-        const parsedTheme = JSON.parse(savedTheme)
-        setProperties(parsedTheme.properties)
-        setHeading(parsedTheme.heading)
-        setBody(parsedTheme.body)
-        setRadius(parsedTheme.radius)
-      } else {
-        const customThemes = JSON.parse(window.localStorage.getItem('customThemes') || '[]')
-        const themeExists = [...defaultThemes, ...customThemes].some(theme => theme.id === params.id)
-        
-        if (!themeExists) {
-          router.push('/themes')
+      if (typeof window !== 'undefined') {
+        console.log('window.innerHeight', window.innerHeight);
+        const savedTheme = window.localStorage.getItem(`theme_${params.id}`)
+        if (savedTheme) {
+          const parsedTheme = JSON.parse(savedTheme)
+          setProperties(parsedTheme.properties)
+          setHeading(parsedTheme.heading)
+          setBody(parsedTheme.body)
+          setRadius(parsedTheme.radius)
+        } else {
+          if (typeof window !== 'undefined') {
+            const customThemes = JSON.parse(window.localStorage.getItem('customThemes') || '[]')
+            const themeExists = [...defaultThemes, ...customThemes].some(theme => theme.id === params.id)
+            
+            if (!themeExists) {
+              router.push('/themes')
+            }
+          }
         }
       }
     }
@@ -95,7 +100,9 @@ export default function ThemeCustomizer({ params }: { params: { id: string } }) 
       body,
       radius
     }
-    window.localStorage.setItem(`theme_${params.id}`, JSON.stringify(themeData))
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(`theme_${params.id}`, JSON.stringify(themeData))
+    }
     alert("Theme saved successfully!")
   }
 

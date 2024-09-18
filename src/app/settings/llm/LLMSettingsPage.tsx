@@ -24,10 +24,12 @@ export default function LLMSettingsPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    const storedAzureModels = JSON.parse(window.localStorage.getItem('azureModels') || '[]') as Model[];
-    const storedOllamaModels = JSON.parse(window.localStorage.getItem('ollamaModels') || '[]') as Model[];
-    setAzureModels(storedAzureModels);
-    setOllamaModels(storedOllamaModels);
+    if (typeof window !== 'undefined') {
+        const storedAzureModels = JSON.parse(window.localStorage.getItem('azureModels') || '[]') as Model[];
+        const storedOllamaModels = JSON.parse(window.localStorage.getItem('ollamaModels') || '[]') as Model[];
+        setAzureModels(storedAzureModels);
+        setOllamaModels(storedOllamaModels);
+    }
   }, []);
 
   const addModel = () => {
@@ -37,10 +39,14 @@ export default function LLMSettingsPage() {
     
     if (modelType === 'azure') {
       setAzureModels(updatedModels);
-      window.localStorage.setItem('azureModels', JSON.stringify(updatedModels));
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('azureModels', JSON.stringify(updatedModels));
+        }
     } else {
       setOllamaModels(updatedModels);
-      window.localStorage.setItem('ollamaModels', JSON.stringify(updatedModels));
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('ollamaModels', JSON.stringify(updatedModels));
+        }
     }
 
     setNewModel({ modelId: '', model: '' });
@@ -51,11 +57,15 @@ export default function LLMSettingsPage() {
     if (type === 'azure') {
       const updatedModels = azureModels.filter(model => model.modelId !== modelId);
       setAzureModels(updatedModels);
-      window.localStorage.setItem('azureModels', JSON.stringify(updatedModels));
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('azureModels', JSON.stringify(updatedModels));
+    }
     } else if (type === 'ollama') {
       const updatedModels = ollamaModels.filter(model => model.modelId !== modelId);
       setOllamaModels(updatedModels);
-      window.localStorage.setItem('ollamaModels', JSON.stringify(updatedModels));
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('ollamaModels', JSON.stringify(updatedModels));
+    }
     }
   };
 

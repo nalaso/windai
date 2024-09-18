@@ -82,9 +82,11 @@ const UIRigthHeader = ({
 
     useEffect(() => {
         if(!theme) return
-        const storedThemes = window.localStorage.getItem('customThemes')
-        if (storedThemes) {
-            setCustomThemes(JSON.parse(storedThemes))
+        if (typeof window !== 'undefined') {
+            const storedThemes = window.localStorage.getItem('customThemes')
+            if (storedThemes) {
+                setCustomThemes(JSON.parse(storedThemes))
+            }
         }
     }, [theme])
 
