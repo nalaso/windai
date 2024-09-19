@@ -20,7 +20,7 @@ const getLocalStorageItem = (key: string, defaultValue: string): string => {
 export const useModel = create<ModelStore>((set) => ({
     initialModel: getLocalStorageItem('initialModel', 'anthropicVertex:claude-3-5-sonnet@20240620'),
     modifierModel: getLocalStorageItem('modifierModel', 'groq:llama-3.1-70b-versatile'),
-    descriptiveModel: getLocalStorageItem('descriptiveModel', 'anthropicVertex:claude-3-5-haiku@20240620'),
+    descriptiveModel: getLocalStorageItem('descriptiveModel', 'anthropicVertex:claude-3-5-sonnet@20240620'),
     setInitialModel: (model) => set(() => {
         localStorage.setItem('initialModel', model);
         return { initialModel: model };
