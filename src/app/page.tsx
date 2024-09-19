@@ -20,10 +20,7 @@ export default function Home() {
     const { data: session, status } = useSession()
     const userId = session?.user?.id
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    console.log(imageBase64);
-    
+    const fileInputRef = useRef<HTMLInputElement>(null);    
     
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
