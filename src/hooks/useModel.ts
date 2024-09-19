@@ -10,10 +10,17 @@ interface ModelStore {
     setDescriptiveModel: (model: string) => void;
 }
 
+const getLocalStorageItem = (key: string, defaultValue: string): string => {
+    if (typeof window !== 'undefined') {
+        return window.localStorage.getItem(key) || defaultValue;
+    }
+    return defaultValue;
+};
+
 export const useModel = create<ModelStore>((set) => ({
-    initialModel: localStorage.getItem('initialModel') || 'anthropicVertex:claude-3-5-sonnet@20240620',
-    modifierModel: localStorage.getItem('modifierModel') || 'groq:llama-3.1-70b-versatile',
-    descriptiveModel: localStorage.getItem('descriptiveModel') || 'anthropicVertex:claude-3-5-haiku@20240620',
+    initialModel: getLocalStorageItem('initialModel', 'anthropicVertex:claude-3-5-sonnet@20240620'),
+    modifierModel: getLocalStorageItem('modifierModel', 'groq:llama-3.1-70b-versatile'),
+    descriptiveModel: getLocalStorageItem('descriptiveModel', 'anthropicVertex:claude-3-5-haiku@20240620'),
     setInitialModel: (model) => set(() => {
         localStorage.setItem('initialModel', model);
         return { initialModel: model };
