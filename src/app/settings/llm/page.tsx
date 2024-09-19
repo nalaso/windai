@@ -16,7 +16,7 @@ interface Model {
 }
 
 export default function LLMSettingsPage() {
-  const { initialModel, modifierModel, descriptiveModel, setInitialModel, setModifierModel, setDescriptiveModel } = useModel();
+  const { initialModel, modifierModel, descriptiveModel, imageModel, setInitialModel, setModifierModel, setDescriptiveModel, setImageModel } = useModel();
   const [azureModels, setAzureModels] = useState<Model[]>([]);
   const [ollamaModels, setOllamaModels] = useState<Model[]>([]);
   const [newModel, setNewModel] = useState<Model>({ modelId: '', model: '' });
@@ -77,6 +77,31 @@ export default function LLMSettingsPage() {
             <h3 className="text-lg font-semibold mb-2">Initial Model</h3>
             <p className="text-sm text-gray-600 mb-2">Used in the initial state. This model generates the basic struture of the UI.</p>
             <Select value={initialModel} onValueChange={setInitialModel}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select initial model" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(allModels).map(([provider, modelList]) => (
+                  <SelectGroup key={provider}>
+                    <SelectLabel>{provider.charAt(0).toUpperCase() + provider.slice(1)}</SelectLabel>
+                    {modelList.map((model) => (
+                      <SelectItem 
+                        key={model.modelId} 
+                        value={model.modelId}
+                        disabled={!isModelSupported(model.modelId)}
+                      >
+                        {model.model}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Image Model</h3>
+            <p className="text-sm text-gray-600 mb-2">Used in screenshot to code generation. This model generates the identifies elements property from the image.</p>
+            <Select value={imageModel} onValueChange={setImageModel}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select initial model" />
               </SelectTrigger>

@@ -57,7 +57,7 @@ const Suggestions = () => {
 					return;
 				}
 				setLoading(true)
-				const ui = await createUI(suggestion, userId, "")
+				const ui = await createUI(suggestion, userId)
 				setLoading(false)
 				router.push(`/ui/${ui.id}`);
 			} else {

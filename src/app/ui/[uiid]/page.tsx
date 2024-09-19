@@ -29,7 +29,7 @@ const UI = ({ params }: { params: any }) => {
 	const userId = session?.user?.id
 
 	const router = useRouter()
-	const {modifierModel, descriptiveModel, initialModel} = useModel()
+	const {modifierModel, descriptiveModel, initialModel, imageModel} = useModel()
 
 	const [selectedVersion, setSelectedVersion] = useState({
 		prompt: "",
@@ -88,7 +88,13 @@ const UI = ({ params }: { params: any }) => {
 		},
 	});
 
-	const { input, setInput } = useUIState();
+	const modeMap: { [key: number]: string } = {
+		0: "Precise",
+		1: "Balanced",
+		2: "Creative"
+	}
+	
+	const { input, setInput, imageBase64, setImageBase64 } = useUIState();
 
 	const getCode = async (id: string, iidx: number, jidx: number) => {
 		try {
@@ -108,7 +114,7 @@ const UI = ({ params }: { params: any }) => {
 			return code!
 		} catch (error) {
 			console.error('Error fetching code:', error);
-			toast.error('Failed to fetch code. Please try again.');
+			toast.error(`Failed to fetch code for ${modeMap[jidx]}. Please try again.`);
 			return '';
 		}
 	}
@@ -124,7 +130,7 @@ const UI = ({ params }: { params: any }) => {
 				prompt: subPrompt[0].subPrompt,
 				subid: subid,
 				modelId: subPrompt[0].modelId||"",
-				createdAt: subPrompt[0].createdAt.toLocaleString()
+				createdAt: subPrompt[0].createdAt?.toLocaleString()
 			})
 
 			var preciseCode = subPrompt[0].code
@@ -326,7 +332,7 @@ const UI = ({ params }: { params: any }) => {
 				prompt: ui?.prompt!,
 				subid: "0",
 				modelId: initialModel,
-				createdAt: ui?.createdAt.toLocaleString()
+				createdAt: ui?.createdAt?.toLocaleString()
 			})
 		} else {
 			const lastGeneratedSubPrompt = ui?.subPrompts[ui?.subPrompts.length - 1][0]
@@ -340,7 +346,11 @@ const UI = ({ params }: { params: any }) => {
 	useEffect(() => {
 		if (input != "" && prompt != "") {
 			setInput("")
-			generateCode()
+			if(imageBase64!==""){
+				generateCodeFromScreenshot()
+			}else{
+				generateCode()
+			}
 		}
 	}, [input, prompt])
 
@@ -384,7 +394,7 @@ const UI = ({ params }: { params: any }) => {
 				prompt: selectedSubPrompt[idx!].subPrompt!,
 				subid: selectedSubPrompt[idx!].SUBId!,
 				modelId: selectedSubPrompt[idx!].modelId||"",
-				createdAt: selectedSubPrompt[idx!].createdAt.toLocaleString()
+				createdAt: selectedSubPrompt[idx!].createdAt?.toLocaleString()
 			})
 		}
 	}, [mode])
@@ -768,6 +778,195 @@ const UI = ({ params }: { params: any }) => {
 				}
 			}))
 			throw error;
+		}
+	}
+
+	const generateScreenCode = async () => {
+		try {
+			setUiState(preuis => ({
+				...preuis,
+				precise: {
+					...preuis.precise,
+					loading: true
+				}
+			}))
+
+			toast.success("Generating code from screenshot. This may take a few seconds.")
+
+			const propertiesResponse = await fetch('/api/element-property', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					refine: false,
+					imageBase64: imageBase64,
+					imageModelId: imageModel
+				}),
+			});
+
+			if (!propertiesResponse.ok) {
+				throw new Error('Failed to generate properties from screenshot');
+			}
+
+			toast.success("Properties generated from screenshot.")
+
+			const properties = await propertiesResponse.json();
+
+			const res = await fetch('/api/generate-code-from-screenshot', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					prompt: prompt,
+					imageBase64: imageBase64,
+					properties: properties,
+					modelId: initialModel
+				}),
+			});
+
+			if (!res.ok) {
+				throw new Error('Failed to generate code from screenshot');
+			}
+
+			const response = await res.json();
+
+			setUiState(preuis => ({
+				...preuis,
+				precise: {
+					code: response,
+					loading: false
+				}
+			}))
+
+			const subPrompt = "precise-" + prompt
+			const parentSUBId = "a-0"
+			const data = await createSubPrompt(subPrompt, uiid, parentSUBId, response, imageModel+"|"+initialModel)
+
+			return {
+				id: data.data.id,
+				SUBId: data.data.SUBId,
+				subPrompt: data.data.subPrompt,
+				code: data.codeData.code,
+				codeId: data.data.codeId,
+				modelId: data.data.modelId
+			}
+		} catch (error) {
+			console.error('Error generating code from screenshot:', error);
+			toast.error('Failed to generate code from screenshot. Please try again.');
+			setUiState(preuis => ({
+				...preuis,
+				precise: {
+					...preuis.precise,
+					loading: false
+				}
+			}))
+			throw error;
+		}
+	}
+
+	const generateCodeFromScreenshot = async () => {
+		if(status !== "authenticated") return;
+		if(ui?.userId !== userId) return;
+		if(prompt === "") return;
+		setLoading(true);
+
+		let promises: Promise<{
+			id: string;
+			SUBId: string;
+			subPrompt: string;
+			code: string;
+			codeId: string;
+		} | undefined>[];
+
+		const previousSubId = selectedVersion.subid;
+
+		if(!isModelSupported(imageModel)){
+			toast.error("ImageModel not supported! Choose another model");
+			router.push("/settings/llm")
+			return
+		}
+
+		promises = [generateScreenCode()];
+
+		try {
+			const resolved = await Promise.allSettled(promises);
+
+			const successfulResults = resolved.filter(
+				(result): result is PromiseFulfilledResult<{
+					id: string;
+					SUBId: string;
+					subPrompt: string;
+					code: string;
+					codeId: string;
+					modelId?: string;
+				} | undefined> =>
+					result.status === 'fulfilled' && result.value !== undefined
+			).map(result => result.value);
+
+			if (successfulResults.length === 0) {
+				throw new Error('All code generation attempts failed');
+			}
+
+			setUi((prevUi) => {
+				if (prevUi) {
+					const updatedSubPrompts = [...prevUi.subPrompts];
+
+					// TODO when it is image generation handle this in a better way
+					updatedSubPrompts.push([{
+						id: successfulResults[0]!.id,
+						UIId: uiid,
+						SUBId: successfulResults[0]!.SUBId!,
+						createdAt: new Date(),
+						subPrompt: successfulResults[0]!.subPrompt!,
+						codeId: successfulResults[0]!.codeId,
+						modelId: successfulResults[0]!.modelId||"",
+						code: successfulResults[0]!.code
+					},{
+						id: "",
+						UIId: uiid,
+						SUBId: "b-0",
+						createdAt: new Date(),
+						subPrompt: "",
+						codeId: "",
+						modelId: "",
+						code: ""
+					},{
+						id: "",
+						UIId: uiid,
+						SUBId: "c-0",
+						createdAt: new Date(),
+						subPrompt: "",
+						codeId: "",
+						modelId: "",
+						code: ""
+					}]);
+					setMode("precise");
+
+					return {
+						...prevUi,
+						subPrompts: updatedSubPrompts
+					};
+				} else {
+					return prevUi;
+				}
+			});
+			setPrompt("");
+			setSelectedVersion({
+				prompt: prompt,
+				subid: successfulResults[0]!.SUBId!,
+				modelId: successfulResults[0]!.modelId||"",
+				createdAt: selectedVersion.createdAt
+			})
+			setLoading(false);
+			setImageBase64("")
+			capture();
+		} catch (error) {
+			console.error('Error generating code:', error);
+			toast.error('Failed to generate code. Please try again.');
+			setLoading(false);
+			setVersion(previousSubId);
 		}
 	}
 

@@ -160,3 +160,63 @@ export const getModifierPromt = (precode: string, modifyDescription: string) => 
         `
     )
 }
+
+export const getScreenshotPrompt = (codeDescription: string, properties: string) => {
+    return (`
+            Instructions:
+            Act as a React developer using TailwindCSS.
+            codeDescription: ${codeDescription}
+            Design the exact react page of the provided image and calculated properties using tailwindcss.
+            Do not add any code comments, import statements,function declarations. Assume all necessary components are already imported.
+            Do not enclose in quotes, backticks or markdown. Just provide the JSX code as string.
+            Do not add statements like use client, use server, etc.
+            Provide only the React JSX code without any quotes and in string format, without any explanations or inline comments.
+
+            Images: When images are required, check if you can genrate those images else utilize the img tag with picsum.photos as the source.
+
+            Icons: For icons, use the ionicons library eg- (<ion-icon size="large" name="logoname"></ion-icon>). Do not use any other icon libraries.
+
+            Responsiveness:
+            Primary focus should be on recreating the exact image of component.
+            Also ensure that the UI is responsive across all devices.
+            Use Flexbox and Grid for layout and positioning.
+            Use Breakpoint prefix like sm: for small screens, md: for medium screens, lg: for large screens, xl: for extra large screens with all the necessary elements. 
+            So generate classnames for all the Breakpoints to make the UI responsive.
+            eg- cases like when there are cards in a row, ensure that the cards are stacked on top of each other on smaller screens.
+            
+            -------------
+            now generate jsx to replicate the provided image. Generate detailed analysis before coming up with the jsx. 
+            Ensure that no element is missed and the generated jsx is the exact replica of the image.
+            If you think the properties are not matching with the image then generate element properties based on the image.
+            Assign properties of the body tag to a div with class name 'container' and add all the elements inside the div.
+            Refer the properties below to refer colors of the elements.
+            properties: ${properties}
+    `)
+}
+
+export const getElementProperty = () => {
+    return (`
+        Describe this UI in accurate details in point wise. When you reference a UI element put its name and bounding box in the format: [object name (y_min, x_min, y_max, x_max)]. Also Describe the color of the elements.
+        Do not generate html or react code just give me the properties of each element in this format.
+        For the given image, calculate the properties of each element and provide the details for each element.
+        Also include body tag. Assign maximum occuring color as background color of body.
+        for icons calculate the size of the icon.
+        Response Format:
+        1. [element description (y_min, x_min, y_max, x_max)]
+            - color: value1
+            - background color: value2
+
+        Also for each elements like input, button etc let the element description be its title or placholder to identify it and provide its properties like border, border radius, padding, margin etc along with color and background color
+    `)
+}
+
+export const getRefienedElementProperty = (description:string) => {
+    return (`
+        Compare the described UI elements with the provided image and identify any missing elements or inaccuracies. Also Describe the color of the elements. Provide a refined and accurate description of the UI elements based on this comparison. Here is the initial description: ${description}
+        Add properties for the missing elements and correct any inaccuracies in the initial description. Ensure that the refined description is accurate and comprehensive, covering all key aspects of the UI elements.
+        Do not generate html or react code just give me the properties of each element in this format.
+        Also include body tag. Assign maximum occuring color as background color of body.
+        Also for each elements like input, button etc provide its properties like border, border radius, padding, margin etc.
+        for icons calculate the size of the icon.
+    `)
+}

@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 
-export const createUI = async (prompt: string, userId: string, img: string) => {
+export const createUI = async (prompt: string, userId: string) => {
     const user = await db.user.findUnique({
         where: {
             id: userId
@@ -16,7 +16,7 @@ export const createUI = async (prompt: string, userId: string, img: string) => {
         data: {
             userId: userId,
             prompt: prompt,
-            img: img
+            img: ""
         }
     });
     return data;
