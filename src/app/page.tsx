@@ -128,7 +128,7 @@ export default function Home() {
                             <div className="bg-yellow-50 p-2 rounded-md flex items-start space-x-2 text-yellow-800">
                                 <InfoIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
                                 <p className="text-sm">
-                                Image to code is in Beta. It doesn't support shadcnUI yet.
+                                Image to code is in Beta. It doesn&apos;t support shadcnUI yet.
                                 </p>
                             </div>
                         )
