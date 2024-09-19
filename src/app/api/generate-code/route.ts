@@ -17,7 +17,7 @@ export async function POST(req: Request): Promise<Response> {
     const { codeDescription, modelId } = inputSchema.parse(body);
 
     const result = await generateText({
-      model: llm("vertex:gemini-1.5-pro"),
+      model: llm(modelId),
       prompt: getGenerationPrompt(codeDescription),
     });
 

@@ -16,7 +16,7 @@ export async function POST(req: Request): Promise<Response> {
   try {
     const body = await req.json();
 
-    const { modifyDescription, precode,modelId } = inputSchema.parse(body);
+    const { modifyDescription, precode, modelId } = inputSchema.parse(body);
 
     const result = await generateText({
       model: llm(modelId),
