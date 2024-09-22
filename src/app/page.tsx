@@ -137,8 +137,8 @@ export default function Home() {
                     <div className="pt-20">
                         {/* <TipsCarousel /> */}
                         <Badge onClick={() => router.push("/settings/llm")} variant="default" className="text-sm border-spacing-1 cursor-pointer">Try different models from settings for faster response</Badge>
-                        <Badge onClick={() => window.open("https://git.new/windai")} variant="secondary" className="absolute border-2 border-black border-spacing-4 top-40 left-5 -rotate-45 text-sm cursor-pointer">To be open-sourced soon.</Badge>
-                        <Badge onClick={() => window.open("https://dub.sh/windai-discord")} variant="secondary" className="absolute bg-[#6570fd] hover:bg-black text-white bottom-56 right-5 rotate-45 text-sm cursor-pointer">Welcoming everyone to the WindAI Discord.</Badge>
+                        <Badge onClick={() => window.open("https://git.new/windai")} variant="destructive" className="absolute border-2 border-black border-spacing-4 top-40 left-5 -rotate-45 text-sm cursor-pointer">Star us here.</Badge>
+                        <Badge onClick={() => window.open("https://dub.sh/windai-discord")} variant="secondary" className="absolute bg-[#6570fd] hover:bg-black text-white bottom-56 right-5 rotate-45 text-sm cursor-pointer">Join WindAI official discord server</Badge>
                     </div>
                 </div>
             </div>
