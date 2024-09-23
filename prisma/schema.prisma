@@ -78,6 +78,8 @@ model UI {
   prompt            String
   img               String
   createdAt         DateTime   @default(now())
+  updatedAt         DateTime   
+  uiType            String    
   likesCount        Int        @default(0)
   viewCount         Int        @default(0)
   subPrompts        SubPrompt[]

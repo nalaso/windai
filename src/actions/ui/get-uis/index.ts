@@ -87,7 +87,7 @@ export const getUI = async (UIId: string) => {
 export const getUIHome = async () => {
     const uis = await db.uI.findMany({
         take: 11,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { updatedAt: 'desc' },
         include: {
             user: {
                 select: {
