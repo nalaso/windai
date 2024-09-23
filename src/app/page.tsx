@@ -7,7 +7,7 @@ import { TipsCarousel } from "@/components/tips-carousel";
 import { Badge, Button, Card, DropdownMenu,DropdownMenuItem, Input, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { useUIState } from "@/hooks/useUIState";
-import { Image, InfoIcon, LoaderCircle, SendHorizontal, X } from "lucide-react";
+import { Image, InfoIcon, LoaderCircle, Lock, SendHorizontal, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -132,7 +132,7 @@ export default function Home() {
                                 </SelectTrigger>
                                 <SelectContent className="dark w-min">
                                     <SelectItem value="ionicons">Ion Icons</SelectItem>
-                                    <SelectItem className="whitespace-nowrap" disabled value="lucidereact">Lucide React</SelectItem>
+                                    <SelectItem className="whitespace-nowrap" disabled value="lucidereact"><div className="flex items-center"><p className="mr-2">Lucide React</p> <Lock size={14} /></div></SelectItem>
                                 </SelectContent>
                             </Select>
                             <Select defaultValue="public">
@@ -141,7 +141,7 @@ export default function Home() {
                                 </SelectTrigger>
                                 <SelectContent className="dark w-min">
                                     <SelectItem value="public">Public</SelectItem>
-                                    <SelectItem disabled value="lucidereact">private</SelectItem>
+                                    <SelectItem disabled value="lucidereact"><div className="flex items-center"><p className="mr-2">private</p> <Lock size={14} /></div></SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -170,7 +170,7 @@ export default function Home() {
                     <div className="pt-20"> 
                         {/* <TipsCarousel /> */}
                         <Badge onClick={() => router.push("/settings/llm")} variant="default" className="text-sm border-spacing-1 cursor-pointer">Try different models from settings for faster response</Badge>
-                        <Badge onClick={() => window.open("https://git.new/windai")} variant="destructive" className="absolute border-2 border-black border-spacing-4 top-40 left-5 -rotate-45 text-sm cursor-pointer">Star us here.</Badge>
+                        <Badge onClick={() => window.open("https://git.new/windai")} variant="secondary" className="bg-[#ffeb3b] absolute border-2 border-black border-spacing-4 top-40 left-5 -rotate-45 text-sm cursor-pointer">Star us here.</Badge>
                         <Badge onClick={() => window.open("https://dub.sh/windai-discord")} variant="secondary" className="absolute bg-[#6570fd] hover:bg-black text-white bottom-56 right-5 rotate-45 text-sm cursor-pointer">Join WindAI official discord server</Badge>
                     </div>
                 </div>
