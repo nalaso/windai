@@ -9,6 +9,7 @@ Join discord - [Discord](https://dub.sh/windai-discord)
 
 - UI generation using various AI providers
 - shadcn UI generation
+- NextUI generation
 - Tailwind CSS generation
 - Responsive analyzer
 - Code copy functionality

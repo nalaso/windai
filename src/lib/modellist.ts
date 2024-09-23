@@ -143,6 +143,18 @@ const openaiModels:Model[] = [
 
  const googleModels:Model[] = [
     {
+        modelId: 'google:gemini-1.5-pro-exp-0827',
+        model: 'gemini-1.5-pro-exp-0827',
+    },
+    {
+        modelId: 'google:gemini-1.5-flash-exp-0827',
+        model: 'gemini-1.5-flash-exp-0827',
+    },
+    {
+        modelId: 'google:gemini-1.5-flash-8b-exp-0827',
+        model: 'gemini-1.5-flash-8b-exp-0827',
+    },
+    {
         modelId: 'google:gemini-1.5-pro-latest',
         model: 'gemini-1.5-pro-latest',
     },
@@ -161,6 +173,14 @@ const openaiModels:Model[] = [
  ];
 
  const vertexModels:Model[] = [
+    {
+        modelId: 'vertex:gemini-pro-experimental',
+        model: 'gemini-pro-experimental',
+    },
+    {
+        modelId: 'vertex:gemini-flash-experimental',
+        model: 'gemini-flash-experimental',
+    },
     {
         modelId: 'vertex:gemini-1.5-flash',
         model: 'gemini-1.5-flash',

@@ -1,4 +1,39 @@
-export const embededCode = (htmlCode:string) => {
+export const embededCode = (htmlCode:string, uiType: string) => {
+    if(uiType === "shadcn-react"){
+        return shadcnCode(htmlCode);
+    }else if(uiType === "nextui-react"){        
+        return nextUICode(htmlCode);
+    }
+}
+
+const nextUICode = (htmlCode:string) => {
+
+    const capitalizedTags = new Set<string>();
+
+    // Replace HTML tags with capitalized component names and collect them
+    const jsxCode = htmlCode.replace(/<([A-Z][A-Za-z]*)\b[^>]*>/g, (match:any, p1:any) => {
+        capitalizedTags.add(p1);
+        return match;
+    });
+
+    const Comp = Array.from(capitalizedTags);
+
+    const importCode = `import { ${Comp.join(", ")} } from "@nextui-org/react";`;
+
+
+    return `
+${importCode}
+
+const Component: React.FC = () => {
+return (
+${jsxCode}
+);
+}
+
+export default Component;`;
+}
+
+const shadcnCode = (htmlCode:string) => {
     const componentToModuleMap = {
         Accordion: "accordion",
         AccordionItem: "accordion",

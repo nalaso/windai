@@ -4,10 +4,10 @@ import Header from "@/components/header";
 import HomeUICards from "@/components/home-uis";
 import Suggestions from "@/components/suggestions";
 import { TipsCarousel } from "@/components/tips-carousel";
-import { Badge, Button, Card, Input } from "@/components/ui";
+import { Badge, Button, Card, DropdownMenu,DropdownMenuItem, Input, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { useUIState } from "@/hooks/useUIState";
-import { ArrowLeft, Image, InfoIcon, LoaderCircle, SendHorizontal, Upload, X } from "lucide-react";
+import { Image, InfoIcon, LoaderCircle, SendHorizontal, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -15,12 +15,12 @@ import { useState, useRef } from "react";
 
 export default function Home() {
     const router = useRouter();
-    const { input, setInput, loading, setLoading, imageBase64, setImageBase64 } = useUIState();
+    const { input, setInput, loading, setLoading, imageBase64, setImageBase64, uiType, setUIType } = useUIState();
     const { toggle } = useAuthModal()
     const { data: session, status } = useSession()
     const userId = session?.user?.id
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);    
+    const fileInputRef = useRef<HTMLInputElement>(null);   
     
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -52,7 +52,7 @@ export default function Home() {
         try {
             if (status === "authenticated" && userId) {
                 setLoading(true)
-                const ui = await createUI(input, userId)
+                const ui = await createUI(input, userId, uiType)
                 setLoading(false)
                 router.push(`/ui/${ui.id}`);
             } else {
@@ -72,7 +72,7 @@ export default function Home() {
                         Generate. Ship. Done.
                     </p>
                     <p>
-                        Generate UI with shadcn/ui from text prompts or images.
+                        Generate UI with shadcn/nextui from text prompts or images.
                     </p>
                     <Card className="flex flex-col w-full space-x-2 bg-black items-center ">
                         <div className="flex w-full space-x-2 items-center">
@@ -117,10 +117,33 @@ export default function Home() {
                                     />
                                 </div>
                             )}
-                            <Badge className="text-sm">
-                                <ArrowLeft color="white" size={18} />
-                                 Try image to code
-                            </Badge>
+                            <Select onValueChange={setUIType} value={uiType}>
+                                <SelectTrigger className="dark text-white w-min ring-0 focus:ring-0 h-8">
+                                    <SelectValue placeholder="Select UI Type" />
+                                </SelectTrigger>
+                                <SelectContent className="dark w-min">
+                                    <SelectItem value="shadcn-react">Shadcn/UI</SelectItem>
+                                    <SelectItem value="nextui-react">Next UI</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <Select defaultValue="ionicons">
+                                <SelectTrigger className="dark text-white w-min ring-0 focus:ring-0 h-8">
+                                    <SelectValue placeholder="Icons" />
+                                </SelectTrigger>
+                                <SelectContent className="dark w-min">
+                                    <SelectItem value="ionicons">Ion Icons</SelectItem>
+                                    <SelectItem className="whitespace-nowrap" disabled value="lucidereact">Lucide React</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <Select defaultValue="public">
+                                <SelectTrigger className="dark text-white w-min ring-0 focus:ring-0 h-8">
+                                    <SelectValue placeholder="visibility" />
+                                </SelectTrigger>
+                                <SelectContent className="dark w-min">
+                                    <SelectItem value="public">Public</SelectItem>
+                                    <SelectItem disabled value="lucidereact">private</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </Card>
                     {
@@ -128,13 +151,23 @@ export default function Home() {
                             <div className="bg-yellow-50 p-2 rounded-md flex items-start space-x-2 text-yellow-800">
                                 <InfoIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
                                 <p className="text-sm">
-                                Image to code is in Beta. It doesn&apos;t support shadcnUI yet.
+                                Image to code is in Beta. It doesn&apos;t support ShadcnUI/NextUI yet.
+                                </p>
+                            </div>
+                        )
+                    }
+                    {
+                        uiType==="nextui-react" && (
+                            <div className="bg-yellow-50 p-2 rounded-md flex items-start space-x-2 text-yellow-800">
+                                <InfoIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                                <p className="text-sm">
+                                NextUI is in Beta. May generate unparasarable code thus resulting in error while rendering.
                                 </p>
                             </div>
                         )
                     }
                     <Suggestions />
-                    <div className="pt-20">
+                    <div className="pt-20"> 
                         {/* <TipsCarousel /> */}
                         <Badge onClick={() => router.push("/settings/llm")} variant="default" className="text-sm border-spacing-1 cursor-pointer">Try different models from settings for faster response</Badge>
                         <Badge onClick={() => window.open("https://git.new/windai")} variant="destructive" className="absolute border-2 border-black border-spacing-4 top-40 left-5 -rotate-45 text-sm cursor-pointer">Star us here.</Badge>

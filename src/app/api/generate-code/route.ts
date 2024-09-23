@@ -9,16 +9,17 @@ export const dynamic = 'force-dynamic';
 const inputSchema = z.object({
   codeDescription: z.string().min(1, "Code description is required"),
   modelId: z.string(),
+  uiType: z.string(),
 });
 
 export async function POST(req: Request): Promise<Response> {
   try {
     const body = await req.json();
-    const { codeDescription, modelId } = inputSchema.parse(body);
+    const { codeDescription, modelId, uiType } = inputSchema.parse(body);
 
     const result = await generateText({
       model: llm(modelId),
-      prompt: getGenerationPrompt(codeDescription),
+      prompt: getGenerationPrompt(codeDescription,uiType),
     });
 
     const { text } = result;
