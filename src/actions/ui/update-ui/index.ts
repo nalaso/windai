@@ -8,7 +8,8 @@ export const updateUI = async (UIId:string, payload: object) => {
             id: UIId 
         },
         data: {
-            ...payload
+            ...payload,
+            updatedAt: new Date()
         },
     });
     return data;

@@ -11,11 +11,10 @@ import { useModel } from "@/hooks/useModel";
 
 const Suggestions = () => {
 	const router = useRouter();
-	const { setLoading, setInput } = useUIState();
+	const { setLoading, setInput, uiType } = useUIState();
 	const { toggle } = useAuthModal()
 	const { data: session, status } = useSession()
 	const userId = session?.user?.id
-	const { initialModel } = useModel();
 	const [suggestions, setSuggestions] = useState([
 		"login page for netflix",
 		"product detail card for sneakers",
@@ -27,7 +26,7 @@ const Suggestions = () => {
 	useEffect(() => {
 		const fetchSuggestions = async () => {
 			try {
-				const res = await fetch(`/api/suggestions?modelId=${encodeURIComponent(initialModel)}`, {
+				const res = await fetch(`/api/suggestions?modelId=${encodeURIComponent('google:gemini-1.5-flash-exp-0827')}`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
@@ -46,7 +45,7 @@ const Suggestions = () => {
 			}
 		}
 		fetchSuggestions()
-	}, [initialModel])
+	}, [])
 
 	const handleClick = async (suggestion: string) => {
 		setInput(suggestion)
@@ -57,7 +56,7 @@ const Suggestions = () => {
 					return;
 				}
 				setLoading(true)
-				const ui = await createUI(suggestion, userId)
+				const ui = await createUI(suggestion, userId, uiType);
 				setLoading(false)
 				router.push(`/ui/${ui.id}`);
 			} else {

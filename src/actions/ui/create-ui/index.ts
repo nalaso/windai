@@ -17,6 +17,7 @@ export const createUI = async (prompt: string, userId: string, uiType: string) =
             userId: userId,
             prompt: prompt,
             uiType: uiType,
+            updatedAt: new Date(),
             img: ""
         }
     });
