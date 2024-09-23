@@ -30,6 +30,8 @@ export async function forkUI(uiId: string, userId: string) {
 				prompt: originalUI.prompt,
 				img: originalUI.img,
 				forkedFrom: originalUI.id,
+				updatedAt: new Date(),
+				uiType: originalUI.uiType,
 				subPrompts: {
 					create: originalUI.subPrompts.map(subPrompt => ({
 						SUBId: subPrompt.SUBId,
