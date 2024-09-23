@@ -65,6 +65,11 @@ const mistral = createMistral({
     apiKey: process.env.MISTRAL_API_KEY,
 });
 
+const codestral = createMistral({
+    baseURL: process.env.CODESTRAL_API_URL,
+    apiKey: process.env.CODESTRAL_API_KEY,
+});
+
 const cohere = createCohere({
     baseURL: process.env.COHERE_API_URL,
     apiKey: process.env.COHERE_API_KEY,
@@ -77,6 +82,16 @@ const groq = createOpenAI({
 
 const ollama = createOllama({
     baseURL: process.env.OLLAMA_API_URL,
+});
+
+const githubOpenAI = createOpenAI({
+    baseURL: process.env.GITHUB_OPENAI_API_URL,
+    apiKey: process.env.GITHUB_OPENAI_API_KEY,
+});
+
+const githubMistral = createMistral({
+    baseURL: process.env.GITHUB_MISTRAL_API_URL,
+    apiKey: process.env.GITHUB_MISTRAL_API_KEY,
 });
 
 const anthropicVertex = createAnthropicVertex({   // full documentation here: ✦ https://github.com/nalaso/anthropic-vertex-ai
@@ -97,6 +112,9 @@ const modelRegistry = createProviderRegistry({
     google: google,
     vertex: vertex,
     mistral: mistral,
+    codestral: codestral,
+    githubOpenAI: githubOpenAI,
+    githubMistral: githubMistral,
     cohere: cohere,
     groq: groq,
     ollama: ollama,

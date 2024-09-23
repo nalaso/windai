@@ -201,20 +201,28 @@ const openaiModels:Model[] = [
 
 const mistralModels:Model[] = [
     {
-        modelId: 'mistral:mistral-large-latest',
-        model: 'mistral-large-latest',
+        modelId: 'mistral:codestral-latest',
+        model: 'codestral-latest',
     },
     {
-        modelId: 'mistral:mistral-medium-latest',
-        model: 'mistral-medium-latest',
+        modelId: 'mistral:mistral-large-latest',
+        model: 'mistral-large-latest',
     },
     {
         modelId: 'mistral:mistral-small-latest',
         model: 'mistral-small-latest',
     },
     {
+        modelId: 'mistral:pixtral-12b-2409',
+        model: 'pixtral-12b-2409',
+    },
+    {
         modelId: 'mistral:open-mistral-nemo',
         model: 'open-mistral-nemo',
+    },
+    {
+        modelId: 'mistral:open-codestral-mamba',
+        model: 'open-codestral-mamba',
     },
     {
         modelId: 'mistral:open-mixtral-8x22b',
@@ -227,6 +235,51 @@ const mistralModels:Model[] = [
     {
         modelId: 'mistral:open-mistral-7b',
         model: 'open-mistral-7b',
+    },
+];
+
+const codestralModels:Model[] = [
+    {
+        modelId: 'codestral:codestral-latest',
+        model: 'codestral-latest',
+    }
+];
+
+const githubOpenAIModels:Model[] = [
+    {
+        modelId: 'githubOpenAI:gpt-4o',
+        model: 'gpt-4o',
+    },
+    {
+        modelId: 'githubOpenAI:gpt-4o-mini1',
+        model: 'gpt-4o-mini',
+    },
+    {
+        modelId: 'githubOpenAI:o1-mini',
+        model: 'o1-mini',
+    },
+    {
+        modelId: 'githubOpenAI:o1-preview',
+        model: 'o1-preview',
+    },
+];
+
+const githubMistralModels:Model[] = [
+    {
+        modelId: 'githubMistral:Mistral-large',
+        model: 'Mistral-large',
+    },
+    {
+        modelId: 'githubMistral:Mistral-nemo',
+        model: 'Mistral-nemo',
+    },
+    {
+        modelId: 'githubMistral:Mistral-large-2407',
+        model: 'Mistral-large-2407',
+    },
+    {
+        modelId: 'githubMistral:Mistral-small',
+        model: 'Mistral-small',
     },
 ];
 
@@ -295,6 +348,9 @@ export const models = {
     google: googleModels,
     vertex: vertexModels,
     mistral: mistralModels,
+    codestral: codestralModels,
+    githubOpenAI: githubOpenAIModels,
+    githubMistral: githubMistralModels,
     cohere: cohereModels,
     groq: groqModels,
     ollama: ollamaModels,
