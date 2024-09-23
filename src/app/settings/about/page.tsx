@@ -14,7 +14,7 @@ export default function AboutPage() {
       <Card className='text-center'>
         <CardHeader>
           <CardTitle>Wind AI</CardTitle>
-          <CardDescription>Generate UI with shadcn/ui from text prompts.</CardDescription>
+          <CardDescription>Generate UI with ShadcnUI/NextUI from text prompts.</CardDescription>
         </CardHeader>
         <CardContent>
           <p><strong>Version:</strong> 1.0.0</p>

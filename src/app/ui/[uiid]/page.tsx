@@ -63,6 +63,7 @@ const UI = ({ params }: { params: any }) => {
 		prompt: string;
 		img: string;
 		createdAt: Date;
+		uiType: string;
 		likesCount: number;
 		viewCount: number;
 		forkedFrom: string | null;
@@ -422,7 +423,11 @@ const UI = ({ params }: { params: any }) => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ codeDescription: prompt, modelId:initialModel  }),
+				body: JSON.stringify({ 
+					codeDescription: prompt, 
+					modelId:initialModel,
+					uiType: ui?.uiType, 
+				}),
 			});
 
 			if (!res.ok) {
@@ -499,7 +504,11 @@ const UI = ({ params }: { params: any }) => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ codeDescription,modelId:initialModel }),
+				body: JSON.stringify({ 
+					codeDescription,
+					modelId:initialModel,
+					uiType: ui?.uiType,
+				}),
 			});
 
 			if (!res.ok) {
@@ -576,7 +585,11 @@ const UI = ({ params }: { params: any }) => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ codeDescription, modelId:initialModel }),
+				body: JSON.stringify({ 
+					codeDescription, 
+					modelId:initialModel,
+					uiType: ui?.uiType 
+				}),
 			});
 
 			if (!res.ok) {
@@ -638,7 +651,8 @@ const UI = ({ params }: { params: any }) => {
 				body: JSON.stringify({
 					modifyDescription: prompt,
 					precode: uiState[mode]?.code,
-					modelId: modifierModel
+					modelId: modifierModel,
+					uiType: ui?.uiType,
 				}),
 			});
 
@@ -720,7 +734,8 @@ const UI = ({ params }: { params: any }) => {
 				body: JSON.stringify({
 					modifyDescription: selectedVersion.prompt,
 					precode: uiState[mode]?.code,
-					modelId: modifierModel
+					modelId: modifierModel,
+					uiType: ui?.uiType,
 				}),
 			});
 
@@ -1191,6 +1206,7 @@ const UI = ({ params }: { params: any }) => {
 								modelId={selectedVersion.modelId}
 								createdAt={selectedVersion.createdAt}
 								UIId={uiid}
+								uiType={ui?.uiType!}
 								views={ui?.viewCount!}
 								subid={selectedVersion.subid}
 								userimg={ui?.user?.imageUrl!}
@@ -1206,7 +1222,7 @@ const UI = ({ params }: { params: any }) => {
 								)}
 							/>
 						</div>
-						<UIBody isloading={uiState[mode!].loading} code={code} ref={ref} captureRef={captureRef} />
+						<UIBody isloading={uiState[mode!].loading} code={code} uiType={ui?.uiType || "shadcn-react"} ref={ref} captureRef={captureRef} />
 					</Card>
 					{
 						status === "authenticated" && ui?.userId === userId && (

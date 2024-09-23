@@ -34,6 +34,7 @@ const UIRigthHeader = ({
     uiState,
     setMode,
     mode,
+    uiType,
     code,
     modelId,
     createdAt,
@@ -55,6 +56,7 @@ const UIRigthHeader = ({
     setMode: (mode: string) => void,
     mode: string,
     code: string,
+    uiType: string,
     modelId?: string,
     createdAt?: string,
     regenerateCode: () => void,
@@ -115,8 +117,8 @@ const UIRigthHeader = ({
     }
 
     const handleCopyCode = () => {
-        const contentToCopy = activeTab === "code" ? embededCode(code) : cssCode;
-        navigator.clipboard.writeText(contentToCopy).then(() => {
+        const contentToCopy = activeTab === "code" ? embededCode(code, uiType) : cssCode;
+        navigator.clipboard.writeText(contentToCopy || "").then(() => {
             toast.success(`${activeTab === "code" ? "React" : "CSS"} code copied to clipboard!`);
         }).catch((err) => {
             console.error('Failed to copy code: ', err);
@@ -166,12 +168,16 @@ const UIRigthHeader = ({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuItem className="flex gap-3">
-                            <p className="text-gray-400">ModelId </p>
+                            <p className="text-gray-400">ModelId : </p>
                             <Badge variant={"secondary"}>{modelId || "anthropicVertex:claude-3-5-sonnet@20240620"}</Badge>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="flex gap-3">
-                            <p className="text-gray-400">Created At </p>
+                            <p className="text-gray-400">Created At : </p>
                             <Badge variant={"secondary"}>{createdAt||""}</Badge>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="flex gap-3">
+                            <p className="text-gray-400">UI Type :</p>
+                            <Badge variant={"secondary"}>{uiType}</Badge>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -278,8 +284,8 @@ const UIRigthHeader = ({
                             </TabsList>
                             <TabsContent value="code">
                                 <div className="py-4 max-h-[70vh] overflow-y-auto">
-                                    <SyntaxHighlighter language="jsx" style={oneLight} >
-                                        {embededCode(code)}
+                                    <SyntaxHighlighter language="jsx" style={oneLight}>
+                                        {embededCode(code, uiType) || ""}
                                     </SyntaxHighlighter>
                                 </div>
                             </TabsContent>
@@ -291,7 +297,7 @@ const UIRigthHeader = ({
                                 </div>
                             </TabsContent>
                         </Tabs>
-                        <DialogFooter>
+                        <DialogFooter className="flex sm:justify-start justify-start">
                             <Button onClick={handleCopyCode}>Copy {activeTab === "code" ? "React" : "CSS"} Code</Button>
                         </DialogFooter>
                     </DialogContent>

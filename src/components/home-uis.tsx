@@ -12,7 +12,9 @@ interface UI {
     userId: string;
     prompt: string;
     img: string;
+    uiType: string;
     createdAt: Date;
+    updatedAt: Date;
     likesCount: number;
     viewCount: number;
     forkedFrom?: string | null;
@@ -86,7 +88,7 @@ const HomeUICards = () => {
                         </Badge>
                     </div>
                     <p className="text-xs text-gray-600 whitespace-nowrap ml-2 flex-shrink-0">
-                        {timeAgo(ui.createdAt)}
+                        {timeAgo(ui.updatedAt || ui.createdAt)}
                     </p>
                 </CardContent>
             </Card>

@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
     title: "Wind AI",
-    description: "Generate code using shadcn/UI",
+    description: "Generate code using shadcn/nextui/tailwindcss",
 };
 
 export default function RootLayout({

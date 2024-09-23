@@ -1,10 +1,12 @@
+import {nextui} from '@nextui-org/theme';
 import type { Config } from "tailwindcss"
 
 const config = {
   darkMode: ["class"],
   content: [
-    './src/**/*.{js,ts,jsx,tsx}',
-	],
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@nextui-org/theme/dist/components/(button|ripple|spinner).js"
+  ],
   // pattern: /([a-zA-Z]+)-./,
   prefix: "",
   theme: {
@@ -77,7 +79,7 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),nextui()],
 } satisfies Config
 
 export default config

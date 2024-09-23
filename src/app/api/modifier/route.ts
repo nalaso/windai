@@ -10,17 +10,18 @@ const inputSchema = z.object({
   modifyDescription: z.string().min(1, "Modify description is required"),
   precode: z.string().min(1, "Pre-code is required"),
   modelId: z.string(),
+  uiType: z.string(),
 });
 
 export async function POST(req: Request): Promise<Response> {
   try {
     const body = await req.json();
 
-    const { modifyDescription, precode, modelId } = inputSchema.parse(body);
+    const { modifyDescription, precode, modelId, uiType } = inputSchema.parse(body);
 
     const result = await generateText({
       model: llm(modelId),
-      prompt: getModifierPromt(precode, modifyDescription),
+      prompt: getModifierPromt(precode, modifyDescription, uiType),
     });
 
     const { text } = result;
