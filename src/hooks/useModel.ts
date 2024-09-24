@@ -20,10 +20,10 @@ const getLocalStorageItem = (key: string, defaultValue: string): string => {
 };
 
 export const useModel = create<ModelStore>((set) => ({
-    initialModel: getLocalStorageItem('initialModel', 'anthropicVertex:claude-3-5-sonnet@20240620'),
+    initialModel: getLocalStorageItem('initialModel', 'githubOpenAI:gpt-4o'),
     modifierModel: getLocalStorageItem('modifierModel', 'groq:llama-3.1-70b-versatile'),
-    descriptiveModel: getLocalStorageItem('descriptiveModel', 'anthropicVertex:claude-3-5-sonnet@20240620'),
-    imageModel: getLocalStorageItem('imageModel', 'anthropicVertex:claude-3-5-sonnet@20240620'),
+    descriptiveModel: getLocalStorageItem('descriptiveModel', 'google:gemini-1.5-pro-latest'),
+    imageModel: getLocalStorageItem('imageModel', 'mistral:pixtral-12b-2409'),
     setInitialModel: (model) => set(() => {
         localStorage.setItem('initialModel', model);
         return { initialModel: model };

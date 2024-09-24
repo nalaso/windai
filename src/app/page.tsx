@@ -170,11 +170,19 @@ export default function Home() {
                         )
                     }
                     <Suggestions />
-                    <div className="pt-20"> 
+                    <div className="pt-10"> 
                         {/* <TipsCarousel /> */}
-                        <Badge onClick={() => router.push("/settings/llm")} variant="default" className="text-sm border-spacing-1 cursor-pointer">Try different models from settings for faster response</Badge>
+                        <div className="bg-yellow-50 p-2 rounded-md flex items-start space-x-2 text-yellow-800">
+                            <InfoIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                            <p className="text-sm">
+                                LLMs are subject to rate limits, which can cause some models to fail when attempting to generate UI components. These limitations may result in delayed responses or the inability to complete tasks, especially when multiple users make requests using same models within a short time frame.
+                            </p>
+                        </div>
+                        <div className="flex justify-center mt-3">
+                        <Badge onClick={() => router.push("/settings/llm")} variant="default" className="text-sm border-spacing-1 cursor-pointer">Try different models in the settings for a faster response.</Badge>
+                        </div>
                         <Badge onClick={() => window.open("https://git.new/windai")} variant="secondary" className="bg-[#ffeb3b] absolute border-2 border-black border-spacing-4 top-40 left-5 -rotate-45 text-sm cursor-pointer">Star us here.</Badge>
-                        <Badge onClick={() => window.open("https://dub.sh/windai-discord")} variant="secondary" className="absolute bg-[#6570fd] hover:bg-black text-white bottom-56 right-5 rotate-45 text-sm cursor-pointer">Join WindAI official discord server</Badge>
+                        <Badge onClick={() => window.open("https://dub.sh/windai-discord")} variant="secondary" className="absolute bg-[#6570fd] hover:bg-black text-white bottom-56 right-5 rotate-45 text-sm cursor-pointer">Join the official WindAI Discord server.</Badge>
                     </div>
                 </div>
             </div>
