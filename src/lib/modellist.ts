@@ -283,6 +283,37 @@ const githubMistralModels:Model[] = [
     },
 ];
 
+const openRouterModels:Model[] = [
+    {
+        modelId: 'openRouter:google/gemini-flash-8b-1.5-exp',
+        model: 'gemini-flash-8b-1.5-exp',
+    },
+    {
+        modelId: 'openRouter:google/gemini-flash-1.5-exp',
+        model: 'gemini-flash-1.5-exp',
+    },
+    {
+        modelId: 'openRouter:nousresearch/hermes-3-llama-3.1-405b:free',
+        model: 'hermes-3-llama-3.1-405b:free',
+    },
+    {
+        modelId: 'openRouter:google/gemini-pro-1.5-exp',
+        model: 'gemini-pro-1.5-exp',
+    },
+    {
+        modelId: 'openRouter:meta-llama/llama-3.1-8b-instruct:free',
+        model: 'llama-3.1-8b-instruct:free',
+    },
+    {
+        modelId: 'openRouter:microsoft/phi-3-mini-128k-instruct:free',
+        model: 'phi-3-mini-128k-instruct:free',
+    },
+    {
+        modelId: 'openRouter:microsoft/phi-3-medium-128k-instruct:free',
+        model: 'phi-3-medium-128k-instruct:free',
+    }
+];
+
 const cohereModels:Model[] = [
     {
         modelId: 'cohere:command-light',
@@ -351,6 +382,7 @@ export const models = {
     codestral: codestralModels,
     githubOpenAI: githubOpenAIModels,
     githubMistral: githubMistralModels,
+    openRouter: openRouterModels,
     cohere: cohereModels,
     groq: groqModels,
     ollama: ollamaModels,
