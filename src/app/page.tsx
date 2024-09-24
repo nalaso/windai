@@ -144,6 +144,9 @@ export default function Home() {
                                     <SelectItem disabled value="lucidereact"><div className="flex items-center"><p className="mr-2">private</p> <Lock size={14} /></div></SelectItem>
                                 </SelectContent>
                             </Select>
+                            <Button variant={"default"} onClick={()=>router.push("/settings/llm")} className="w-min focus:ring-0 h-8">
+                                LLM
+                            </Button>
                         </div>
                     </Card>
                     {

@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { models } from '@/lib/modellist';
 import { isModelSupported } from '@/lib/supportedllm';
 import { useModel } from '@/hooks/useModel';
+import { InfoIcon } from 'lucide-react';
 
 interface Model {
   modelId: string;
@@ -71,6 +72,12 @@ export default function LLMSettingsPage() {
         <CardHeader className="border-b border-gray-200">
           <CardTitle className="text-xl font-semibold">Model Selection</CardTitle>
           <CardDescription>Choose your preferred LLM models for different tasks.</CardDescription>
+          <div className="bg-yellow-50 p-2 rounded-md flex items-start space-x-2 text-yellow-800">
+              <InfoIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
+              <p className="text-sm">
+                anthropicVertex:claude-3-5-sonnet@20240620 is not available. Please select another model.
+              </p>
+          </div>
         </CardHeader>
         <CardContent className="space-y-8 pt-5">
           <div>
