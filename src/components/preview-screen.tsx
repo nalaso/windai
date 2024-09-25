@@ -61,7 +61,21 @@ function castComponents(components: typeof UI | typeof NextComponents): JsxParse
 const ParsedContent = ({ html_code, theme, uiType }: { html_code: string, theme: string, uiType: string }) => {
   const [parsedJsx, setParsedJsx] = useState<React.ReactNode>(null);
   const [renderError, setRenderError] = useState<Error | null>(null)
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsFullScreen(prev => !prev);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -85,14 +99,16 @@ const ParsedContent = ({ html_code, theme, uiType }: { html_code: string, theme:
   }, [html_code, uiType]);
 
   return (
-    <div className={`${theme} relative`}>
-      <ErrorBoundary router={router}>
-        {
-          renderError ? (
-            <div className="bg-black text-white p-4">Error occurred while rendering content. Try using different model </div>
-          ) : parsedJsx
-        }
-      </ErrorBoundary>
+    <div className={`${isFullScreen ? 'fixed inset-0 z-50 bg-background overflow-y-auto' : ''}`}>
+      <div className={`${theme} relative bg-background`}>
+        <ErrorBoundary router={router}>
+          {
+            renderError ? (
+              <div className="bg-black text-white p-4">Error occurred while rendering content. Try using different model </div>
+            ) : parsedJsx
+          }
+        </ErrorBoundary>
+      </div>
     </div>
   );
 };
