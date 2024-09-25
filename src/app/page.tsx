@@ -11,7 +11,7 @@ import { Image, InfoIcon, LoaderCircle, Lock, SendHorizontal, X } from "lucide-r
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
     const router = useRouter();
@@ -62,6 +62,19 @@ export default function Home() {
             toast.error("Failed to generate UI")
         }
     }
+
+    useEffect(() => {
+        const cv = 1;
+        const lv = parseInt(localStorage.getItem("cv") || "0");
+        if (lv < cv) {
+            toast.info("Changing default models to recomended models improve performance.");
+            localStorage.setItem('initialModel', "google:gemini-1.5-pro-002");
+            localStorage.setItem('modifierModel', "google:gemini-1.5-flash-002");
+            localStorage.setItem('descriptiveModel', "githubMistral:Mistral-large");
+            localStorage.setItem('imageModel', "mistral:pixtral-12b-2409");
+            localStorage.setItem("cv", cv.toString());
+        }
+    }, [])
 
     return (
         <div>

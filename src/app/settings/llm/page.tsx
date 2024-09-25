@@ -75,7 +75,7 @@ export default function LLMSettingsPage() {
           <div className="bg-yellow-50 p-2 rounded-md flex items-start space-x-2 text-yellow-800">
               <InfoIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
               <p className="text-sm">
-                anthropicVertex:claude-3-5-sonnet@20240620 is not available. Please select another model.
+                anthropicVertex:claude-3-5-sonnet@20240620 is not available. Please select another model. gemini-1.5-pro-002 is recommended.
               </p>
           </div>
         </CardHeader>

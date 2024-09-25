@@ -143,6 +143,18 @@ const openaiModels:Model[] = [
 
  const googleModels:Model[] = [
     {
+        modelId: 'google:gemini-1.5-pro-002',
+        model: 'gemini-1.5-pro-002',
+    },
+    {
+        modelId: 'google:gemini-1.5-flash-002',
+        model: 'gemini-1.5-flash-002',
+    },
+    {
+        modelId: 'google:gemini-1.5-flash-8b-exp-0924',
+        model: 'gemini-1.5-flash-8b-exp-0924',
+    },
+    {
         modelId: 'google:gemini-1.5-pro-exp-0827',
         model: 'gemini-1.5-pro-exp-0827',
     },
