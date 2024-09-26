@@ -1,5 +1,5 @@
 "use client";
-import { getUIs } from '@/actions/ui/get-uis';
+import { getUIProfile, getUIs } from '@/actions/ui/get-uis';
 import Header from '@/components/header';
 import PromptBadge from '@/components/prompt-badge';
 import { Avatar, AvatarFallback, AvatarImage, Badge, Button, Card, CardContent, CardFooter, Tabs, TabsContent, TabsList, TabsTrigger, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui';
@@ -7,36 +7,66 @@ import { timeAgo } from '@/lib/time';
 import { Eye, Heart, RefreshCcw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { CalendarDays, User, LayoutGrid, MessageSquare } from "lucide-react"
+import { getUser } from '@/actions/user';
+import { toast } from 'sonner';
 
-const Page = () => {
-    const [mode, setMode] = useState<string>("latest");
-    const [timeRange, setTimeRange] = useState<string>("all");
+interface User {
+    id: string;
+    name: string | null;
+    username: string;
+    createdAt: Date;
+    imageUrl: string | null;
+    uiCount: number;
+    subPromptCount: number;
+}
+
+interface UI {
+    id: string;
+    userId: string;
+    prompt: string;
+    img: string;
+    createdAt: Date;
+    likesCount: number;
+    viewCount: number;
+    forkedFrom: string | null;
+    user: {
+        username: string;
+        imageUrl: string | null;
+    }
+}
+
+export default function MinimalistProfilePage({ params }: { params: { username: string } }) {
+    const [mode, setMode] = useState<string>("ownUI");
     const [uis, setUis] = useState<UI[]>([]);
     const [start, setStart] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false)
     const [maxReached, setMaxReached] = useState(false)
+    const [user, setUser] = useState<User | null>(null);
     const limit = 9;
     const router = useRouter();
+    const { username } = params;
 
-    interface UI {
-        id: string;
-        userId: string;
-        prompt: string;
-        img: string;
-        createdAt: Date;
-        likesCount: number;
-        viewCount: number;
-        forkedFrom: string| null;
-        user: {
-            username: string;
-            imageUrl: string| null;
-        }
-    }
+    console.log(username);
+
 
     useEffect(() => {
+        const fetchUser = async () => {
+            const userObj = await getUser(username);
+            if (!userObj) {
+                toast.warning("User not found")
+            }
+            setUser(userObj);
+        };
+        fetchUser();
+    }, [])
+
+    useEffect(() => {
+        if (!user) return
+
         const fetchUIs = async () => {
             setIsLoading(true)
-            const fetchedUIs = await getUIs(mode, start, limit, timeRange);
+            const fetchedUIs = await getUIProfile(user?.id, start, limit, mode);
             if (fetchedUIs.length === 0) {
                 setMaxReached(true)
             }
@@ -49,19 +79,12 @@ const Page = () => {
         };
 
         fetchUIs();
-    }, [mode, start, timeRange]);
+    }, [mode, start, user]);
 
     const handleTabChange = (value: string) => {
         setMaxReached(false)
         setUis([])
         setMode(value);
-        setStart(0);
-    };
-
-    const handleTimeRangeChange = (value: string) => {
-        setMaxReached(false)
-        setUis([])
-        setTimeRange(value);
         setStart(0);
     };
 
@@ -85,35 +108,58 @@ const Page = () => {
     }, [isLoading]);
 
     return (
-        <div className="bg-gray-100 min-h-screen">
+        <div>
             <Header />
+            <div className="flex items-start justify-center bg-gray-50 p-4 pt-10">
+                <Card className="w-full max-w-2xl bg-white shadow-lg">
+                    <CardContent className="p-8">
+                        <div className="flex flex-col space-y-8">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-6 sm:space-y-0 sm:space-x-8">
+                                <Avatar onClick={()=>router.push(`/generations/${user?.username}`)} className="h-32 w-32 border-2 border-gray-200">
+                                    <AvatarImage src={user?.imageUrl || ""} alt={"A"} />
+                                    <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div className="flex flex-col space-y-3 text-center sm:text-left">
+                                    <h2 className="text-3xl font-semibold text-gray-800">{user?.name}</h2>
+                                    <p className="text-lg text-gray-600 flex items-center justify-center sm:justify-start">
+                                        <User className="mr-2 h-5 w-5" />
+                                        @{user?.username}
+                                    </p>
+                                    <p className="text-base text-gray-500 flex items-center justify-center sm:justify-start">
+                                        <CalendarDays className="mr-2 h-5 w-5" />
+                                        Joined {user?.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                    </p>
+                                    <div className='border-t border-gray-200 pt-8'>
+                                        <ul className="space-y-6">
+                                            <li className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-4">
+                                                    <span className="text-xl font-medium text-gray-700">UI Generated</span>
+                                                </div>
+                                                <span className="text-3xl font-semibold text-gray-800">{user?.uiCount}</span>
+                                            </li>
+                                            <li className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-4">
+                                                    <span className="text-xl font-medium text-gray-700">Subprompts</span>
+                                                </div>
+                                                <span className="text-3xl font-semibold text-gray-800">{user?.subPromptCount}</span>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
             <div className="max-w-7xl mx-auto pt-5">
                 <Tabs defaultValue={mode} className="w-full mb-4" onValueChange={handleTabChange}>
                     <div className='flex justify-between py-2 '>
-                        <h1 className="text-3xl font-bold">Explore</h1>
-                        <div className='flex gap-4'>
-                        {
-                            mode!== 'latest' && (
-                                <Select onValueChange={handleTimeRangeChange} defaultValue={timeRange}>
-                                    <SelectTrigger className="w-[180px] h-10 rounded-lg shadow-sm p-2 px-1focus-visible:outline-none">
-                                        <SelectValue placeholder="Select time range" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="1h">Last 1 Hour</SelectItem>
-                                        <SelectItem value="24h">Last 24 Hours</SelectItem>
-                                        <SelectItem value="7d">This Week</SelectItem>
-                                        <SelectItem value="30d">This Month</SelectItem>
-                                        <SelectItem value="all">All Time</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            )
-                        }
                         <TabsList className="bg-gray-300 rounded-lg shadow-sm p-2 px-1 h-10">
-                            <TabsTrigger value="latest" className="px-4 py-2 text-sm font-medium">Latest</TabsTrigger>
-                            <TabsTrigger value="most_viewed" className="px-4 py-2 text-sm font-medium">Most Viewed</TabsTrigger>
-                            <TabsTrigger value="most_liked" className="px-4 py-2 text-sm font-medium">Most Liked</TabsTrigger>
+                            <TabsTrigger value="ownUI" className="px-4 py-2 text-sm font-medium">User UIs</TabsTrigger>
+                            <TabsTrigger value="likedUI" className="px-4 py-2 text-sm font-medium">Liked UIs</TabsTrigger>
                         </TabsList>
-                        </div>
                     </div>
 
                     <TabsContent value={mode}>
@@ -128,7 +174,7 @@ const Page = () => {
                                             <Tooltip>
                                                 <TooltipTrigger>
                                                     <Avatar onClick={()=>router.push(`/generations/${ui?.user?.username}`)} className="border-2 border-primary h-5 w-5">
-                                                        <AvatarImage src={ui.user.imageUrl??""} />
+                                                        <AvatarImage src={ui.user.imageUrl ?? ""} />
                                                         <AvatarFallback>{ui.user.username.substring(0, 2)}</AvatarFallback>
                                                     </Avatar>
                                                 </TooltipTrigger>
@@ -191,9 +237,7 @@ const Page = () => {
                         </div>
                     </TabsContent>
                 </Tabs>
-            </div>
+            </div >
         </div>
-    );
-};
-
-export default Page;
+    )
+}

@@ -48,7 +48,7 @@ const HomeUICards = () => {
                     <div className="flex items-start flex-grow min-w-0 relative">
                         <Tooltip>
                             <TooltipTrigger>
-                                <Avatar className="border-2 border-primary h-5 w-5">
+                                <Avatar onClick={()=>router.push(`/generations/${ui?.user?.username}`)} className="border-2 border-primary h-5 w-5">
                                     <AvatarImage src={ui.user.imageUrl??""} />
                                     <AvatarFallback>{ui.user.username.substring(0, 2)}</AvatarFallback>
                                 </Avatar>

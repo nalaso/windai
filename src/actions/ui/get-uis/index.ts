@@ -99,3 +99,60 @@ export const getUIHome = async () => {
     });
     return uis;
 }
+
+export const getUIProfile = async (userId: string, start: number, limit: number, mode: string) => {
+    if(!userId) return [];
+
+    if(mode === 'ownUI') {
+        const uis = await db.uI.findMany({
+            take: limit,
+            skip: start,
+            where: {
+                userId
+            },
+            orderBy: { createdAt: 'desc' },
+            include: {
+                user: {
+                    select: {
+                        username: true,
+                        imageUrl: true,
+                    },
+                },
+            },
+        });
+        return uis;
+    }
+    else if(mode === 'likedUI'){
+        const likedUIs = await db.like.findMany({
+            where: { 
+                userId
+            },
+            skip: start,
+            take: limit,
+            select: { UIId: true },
+        });
+
+        const uiIds = likedUIs.map(like => like.UIId);
+
+        const uis = await db.uI.findMany({
+            where: { 
+                id: { 
+                    in: uiIds 
+                } 
+            },
+            include: {
+                user: {
+                    select: {
+                        username: true,
+                        imageUrl: true,
+                    },
+                },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+
+        return uis;
+    }
+
+    return [];
+}

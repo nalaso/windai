@@ -12,6 +12,14 @@ export interface Version {
 
 export const commitChanges: Version[] = [
     {
+        date: "2024-09-26",
+        changes: [
+            { type: "feature", description: "Generation page in menu" },
+            { type: "feature", description: "Mode (balanced, creative) selection in settings" },
+            { type: "feature", description: "user generation link in every ui card" },
+        ],
+    },
+    {
         date: "2024-09-25",
         changes: [
             { type: "feature", description: "Implemented full screen functionality (ctrl/cmd + k)" },

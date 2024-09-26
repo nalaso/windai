@@ -1,4 +1,4 @@
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, SquareLibrary } from "lucide-react";
 import { User } from "next-auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -44,8 +44,17 @@ export default function UserButton({ user }: UserButtonProps) {
 				<DropdownMenuLabel>@{user.username}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
+					<Link href={`/generations/${user.username}`} passHref>
+						<DropdownMenuItem className="cursor-pointer">
+							<SquareLibrary className="mr-2 h-4 w-4" />
+							<span>Generations</span>
+						</DropdownMenuItem>
+					</Link>
+				</DropdownMenuGroup>
+				<DropdownMenuSeparator />
+				<DropdownMenuGroup>
 					<Link href="/settings" passHref>
-						<DropdownMenuItem>
+						<DropdownMenuItem className="cursor-pointer">
 							<Settings className="mr-2 h-4 w-4" />
 							<span>Settings</span>
 						</DropdownMenuItem>
@@ -53,7 +62,7 @@ export default function UserButton({ user }: UserButtonProps) {
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={handleSignOut}>
+					<DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
 						<LogOut className="mr-2 h-4 w-4" />
 						<span>Sign out</span>
 					</DropdownMenuItem>
