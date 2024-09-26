@@ -36,7 +36,7 @@ export const useClientMode = () => {
     }, []);
 
     if (!hydrated) {
-        return { preciseMode: false, balancedMode: false, creativeMode: false, setMode }; // Default values
+        return { preciseMode: true, balancedMode: true, creativeMode: true, setMode }; // Default values
     }
 
     return { preciseMode, balancedMode, creativeMode, setMode };
