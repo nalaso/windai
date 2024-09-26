@@ -41,6 +41,7 @@ export default function RootLayout({
                         />
                     </head>
                     <body className={inter.className}>
+                        <Toaster richColors expand />
                         {
                             (process.env.MAINTENANCE === "MAINTENANCE")?(
                                 <MAINTENANCE />
@@ -51,7 +52,6 @@ export default function RootLayout({
                                 </>
                             )
                         }
-                        <Toaster richColors expand />
                         <Analytics />
                         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />
                     </body>
