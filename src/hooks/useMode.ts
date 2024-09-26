@@ -27,9 +27,10 @@ export const useClientMode = () => {
 
     useEffect(() => {
         setHydrated(true);
-        const precise = localStorage.getItem('preciseMode') === 'true';
-        const balanced = localStorage.getItem('balancedMode') === 'true';
-        const creative = localStorage.getItem('creativeMode') === 'true';
+        const precise = localStorage.getItem('preciseMode') === 'true' || localStorage.getItem('preciseMode') === null;
+        const balanced = localStorage.getItem('balancedMode') === 'true' || localStorage.getItem('balancedMode') === null;
+        const creative = localStorage.getItem('creativeMode') === 'true' || localStorage.getItem('creativeMode') === null;
+                
         setMode('preciseMode', precise);
         setMode('balancedMode', balanced);
         setMode('creativeMode', creative);

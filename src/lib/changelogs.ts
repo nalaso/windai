@@ -17,6 +17,7 @@ export const commitChanges: Version[] = [
             { type: "feature", description: "Generation page in menu" },
             { type: "feature", description: "Mode (balanced, creative) selection in settings" },
             { type: "feature", description: "user generation link in every ui card" },
+            { type: "bugfix", description: "Fixed 'unable to generate code' issue'" },
         ],
     },
     {
