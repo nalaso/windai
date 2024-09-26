@@ -480,7 +480,7 @@ const UI = ({ params }: { params: any }) => {
 
 		} catch (error) {
 			console.error('Error generating precise code:', error);
-			toast.error('Failed to generate precise code. Please try again.');
+			toast.error('Failed to generate precise code. Please try again with another model.');
 			setUiState(preuis => ({
 				...preuis,
 				precise: {
@@ -561,7 +561,7 @@ const UI = ({ params }: { params: any }) => {
 
 		} catch (error) {
 			console.error('Error generating creative code:', error);
-			toast.error('Failed to generate creative code. Please try again.');
+			toast.error('Failed to generate creative code. Please try again with another model.');
 			setUiState(preuis => ({
 				...preuis,
 				creative: {
@@ -642,7 +642,7 @@ const UI = ({ params }: { params: any }) => {
 
 		} catch (error) {
 			console.error('Error generating balanced code:', error);
-			toast.error('Failed to generate balanced code. Please try again.');
+			toast.error('Failed to generate balanced code. Please try again with another model.');
 			setUiState(preuis => ({
 				...preuis,
 				balanced: {
@@ -717,7 +717,7 @@ const UI = ({ params }: { params: any }) => {
 			}
 		} catch (error) {
 			console.error('Error generating modified code:', error);
-			toast.error('Failed to generate modified code. Please try again.');
+			toast.error('Failed to generate modified code. Please try again with another model.');
 			setUiState(preuis => ({
 				...preuis,
 				precise: {
@@ -890,7 +890,7 @@ const UI = ({ params }: { params: any }) => {
 			}
 		} catch (error) {
 			console.error('Error generating code from screenshot:', error);
-			toast.error('Failed to generate code from screenshot. Please try again.');
+			toast.error('Failed to generate code from screenshot. Please try again with another model.');
 			setUiState(preuis => ({
 				...preuis,
 				precise: {
@@ -1000,7 +1000,7 @@ const UI = ({ params }: { params: any }) => {
 			capture();
 		} catch (error) {
 			console.error('Error generating code:', error);
-			toast.error('Failed to generate code. Please try again.');
+			toast.error('Failed to generate code. Please try again with another model.');
 			setLoading(false);
 			setVersion(previousSubId);
 		}
@@ -1138,7 +1138,7 @@ const UI = ({ params }: { params: any }) => {
 			capture();
 		} catch (error) {
 			console.error('Error generating code:', error);
-			toast.error('Failed to generate code. Please try again.');
+			toast.error('Failed to generate code. Please try again with another model.');
 			setLoading(false);
 			setVersion(previousSubId);
 		}

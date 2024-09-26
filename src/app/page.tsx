@@ -54,6 +54,7 @@ export default function Home() {
                 setLoading(true)
                 const ui = await createUI(input, userId, uiType)
                 router.push(`/ui/${ui.id}`);
+                setLoading(false)
             } else {
                 toggle()
             }
