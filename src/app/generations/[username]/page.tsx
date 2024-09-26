@@ -52,6 +52,7 @@ export default function MinimalistProfilePage({ params }: { params: { username: 
 
     useEffect(() => {
         const fetchUser = async () => {
+            setIsLoading(true)
             const userObj = await getUser(username);
             if (!userObj) {
                 toast.warning("User not found")

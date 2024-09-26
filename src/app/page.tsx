@@ -53,13 +53,13 @@ export default function Home() {
             if (status === "authenticated" && userId) {
                 setLoading(true)
                 const ui = await createUI(input, userId, uiType)
-                setLoading(false)
                 router.push(`/ui/${ui.id}`);
             } else {
                 toggle()
             }
         } catch (error) {
             toast.error("Failed to generate UI")
+            setLoading(false)
         }
     }
 
