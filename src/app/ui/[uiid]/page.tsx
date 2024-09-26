@@ -21,6 +21,7 @@ import { isParent } from "@/lib/helper"
 import { useSession } from "next-auth/react"
 import { useModel } from "@/hooks/useModel"
 import { isModelSupported } from "@/lib/supportedllm"
+import { useClientMode, useMode } from "@/hooks/useMode"
 
 const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);
@@ -30,6 +31,12 @@ const UI = ({ params }: { params: any }) => {
 
 	const router = useRouter()
 	const {modifierModel, descriptiveModel, initialModel, imageModel} = useModel()
+	const { preciseMode, balancedMode, creativeMode } = useClientMode()
+	const [modesFound, setModesFound] = useState({
+		precise: false,
+		balanced: false,
+		creative: false
+	})
 
 	const [selectedVersion, setSelectedVersion] = useState({
 		prompt: "",
@@ -148,7 +155,7 @@ const UI = ({ params }: { params: any }) => {
 			if (subid.endsWith("0")) {
 				var balancedCode = subPrompt[1].code
 				var creativeCode = subPrompt[2].code
-				if (balancedCode == "") {
+				if (balancedCode == "" && modesFound["balanced"]) {
 					setUiState(preUIState => ({
 						...preUIState,
 						balanced: {
@@ -158,7 +165,7 @@ const UI = ({ params }: { params: any }) => {
 					}))
 					balancedCode = await getCode(subPrompt[1].codeId, i, 1)
 				}
-				if (creativeCode == "") {
+				if (creativeCode == "" && modesFound["creative"]) {
 					setUiState(preUIState => ({
 						...preUIState,
 						creative: {
@@ -238,10 +245,24 @@ const UI = ({ params }: { params: any }) => {
 				}
 
 				const subPromptMap = {
-					"a-0": subPrompts.find(sp => sp.SUBId === "a-0") || [],
-					"b-0": subPrompts.find(sp => sp.SUBId === "b-0") || [],
-					"c-0": subPrompts.find(sp => sp.SUBId === "c-0") || [],
+					"a-0": subPrompts.find(sp => sp.SUBId === "a-0") || {},
+					"b-0": subPrompts.find(sp => sp.SUBId === "b-0") || {},
+					"c-0": subPrompts.find(sp => sp.SUBId === "c-0") || {},
 				};
+
+				setModesFound((prevmodesFound)=>{
+					var modesFound = prevmodesFound
+					if(Object.keys(subPromptMap["a-0"]).length>0){
+						modesFound["precise"]=true
+					}
+					if(Object.keys(subPromptMap["b-0"]).length>0){
+						modesFound["balanced"]=true
+					}
+					if(Object.keys(subPromptMap["c-0"]).length>0){
+						modesFound["creative"]=true
+					}
+					return modesFound
+				})
 
 				const groupedSubPrompts = [
 					[{
@@ -997,7 +1018,7 @@ const UI = ({ params }: { params: any }) => {
 			subPrompt: string;
 			code: string;
 			codeId: string;
-		} | undefined>[];
+		} | undefined>[] = [];
 
 		const previousSubId = selectedVersion.subid;
 
@@ -1012,7 +1033,27 @@ const UI = ({ params }: { params: any }) => {
 				router.push("/settings/llm")
 				return
 			}
-			promises = [generatePreciseCode(), generateBalancedCode(), generateCreativeCode()];
+			
+			var modes = {
+				precise: false,
+				balanced: false,
+				creative: false
+			}
+
+			if(preciseMode) {
+				promises.push(generatePreciseCode());
+				modes.precise = true
+			}	
+			if(balancedMode) {
+				promises.push(generateBalancedCode());
+				modes.balanced = true
+			}
+			if(creativeMode) {
+				promises.push(generateCreativeCode());
+				modes.creative = true
+			}
+
+			setModesFound(modes)
 		} else {
 			if(!isModelSupported(modifierModel)){
 				toast.error("ModifierModel not supported! Choose another model");
@@ -1216,6 +1257,7 @@ const UI = ({ params }: { params: any }) => {
 								setMode={setMode}
 								mode={mode}
 								code={code}
+								modesFound={modesFound}
 								regenerateCode={regenerateCode}
 								isLastSubprompt={!!(selectedVersion?.subid && !selectedVersion.subid.endsWith("0")
 									// && selectedVersion.subid === ui?.subPrompts[ui.subPrompts.length - 1][0].SUBId

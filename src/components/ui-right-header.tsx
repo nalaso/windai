@@ -38,6 +38,7 @@ const UIRigthHeader = ({
     code,
     modelId,
     createdAt,
+    modesFound,
     regenerateCode,
     isLastSubprompt
 }: {
@@ -59,6 +60,9 @@ const UIRigthHeader = ({
     uiType: string,
     modelId?: string,
     createdAt?: string,
+    modesFound: {
+        [key: string]: boolean;
+    },
     regenerateCode: () => void,
     isLastSubprompt: boolean
 }) => {
@@ -220,7 +224,7 @@ const UIRigthHeader = ({
                         }
                     </ToggleGroupItem>
                     {
-                        subid.endsWith("0") && (
+                        subid.endsWith("0") && modesFound?.balanced && (
                             <ToggleGroupItem value="balanced" aria-label="Toggle italic">
                                 Balanced
                                 {
@@ -234,7 +238,7 @@ const UIRigthHeader = ({
                         )
                     }
                     {
-                        subid.endsWith("0") && (
+                        subid.endsWith("0") && modesFound?.creative && (
                             <ToggleGroupItem value="creative" aria-label="Toggle underline">
                                 Creative
                                 {
