@@ -166,7 +166,7 @@ export default function MinimalistProfilePage({ params }: { params: { username: 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {uis && uis.map((ui) => (
                                 <Card key={ui.id} className="bg-white rounded-xl shadow-md overflow-hidden">
-                                    <div onClick={() => router.push(`ui/${ui.id}`)} className="relative cursor-pointer">
+                                    <div onClick={() => router.push(`/ui/${ui.id}`)} className="relative cursor-pointer">
                                         <img src={ui.img} alt={ui.prompt} className="w-full h-48 object-cover" />
                                     </div>
                                     <CardContent className="p-2 flex items-center">
