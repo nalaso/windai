@@ -22,6 +22,7 @@ const Header = () => {
 						WindAI
 					</Button>
 					<Button onClick={() => router.push("/explore")} variant={"outline"} className="text-xl font-semibold">Explore</Button>
+					<Button onClick={() => router.push("/changelog")} variant={"outline"} className="text-xl font-semibold">Changelogs</Button>
 				</div>
 				<div className="flex space-x-2 items-center">
 					{status === "authenticated" && (
