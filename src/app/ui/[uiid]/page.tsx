@@ -7,7 +7,6 @@ import UIHeader from "@/components/ui-header"
 import UIRigthHeader from "@/components/ui-right-header"
 import { useUIState } from "@/hooks/useUIState"
 import html2canvas from 'html2canvas';
-
 import { LoaderCircle, SendHorizontal } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { ImperativePanelGroupHandle } from "react-resizable-panels"
@@ -21,7 +20,7 @@ import { isParent } from "@/lib/helper"
 import { useSession } from "next-auth/react"
 import { useModel } from "@/hooks/useModel"
 import { isModelSupported } from "@/lib/supportedllm"
-import { useClientMode, useMode } from "@/hooks/useMode"
+import { useClientMode } from "@/hooks/useMode"
 
 const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);

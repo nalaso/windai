@@ -182,6 +182,10 @@ const openaiModels:Model[] = [
         modelId: 'google:gemini-1.5-flash',
         model: 'gemini-1.5-flash',
     },
+    {
+        modelId: 'google:gemma-2-27b-it',
+        model: 'gemma-2-27b-it',
+    }
  ];
 
  const vertexModels:Model[] = [
@@ -326,6 +330,17 @@ const openRouterModels:Model[] = [
     }
 ];
 
+const togetherModels:Model[] = [
+    {
+        modelId: 'together:meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo',
+        model: 'Meta-Llama-3.1-405B-Instruct-Turbo',
+    },
+    {
+        modelId: 'together:meta-llama/Llama-Vision-Free',
+        model: 'Llama-Vision-Free',
+    }
+]
+
 const cohereModels:Model[] = [
     {
         modelId: 'cohere:command-light',
@@ -395,6 +410,7 @@ export const models = {
     githubOpenAI: githubOpenAIModels,
     githubMistral: githubMistralModels,
     openRouter: openRouterModels,
+    together: togetherModels,
     cohere: cohereModels,
     groq: groqModels,
     ollama: ollamaModels,

@@ -99,6 +99,11 @@ const openRouter = createOpenAI({
     apiKey: process.env.OPENROUTER_API_KEY,
 });
 
+const together = createOpenAI({
+    baseURL: process.env.TOGETHER_API_URL,
+    apiKey: process.env.TOGETHER_API_KEY,
+});
+
 const anthropicVertex = createAnthropicVertex({   // full documentation here: ✦ https://github.com/nalaso/anthropic-vertex-ai
     projectId: process.env.ANTHROPIC_VERTEX_PROJECT,
     region: process.env.ANTHROPIC_VERTEX_LOCATION,
@@ -121,6 +126,7 @@ const modelRegistry = createProviderRegistry({
     githubOpenAI: githubOpenAI,
     githubMistral: githubMistral,
     openRouter: openRouter,
+    together: together,
     cohere: cohere,
     groq: groq,
     ollama: ollama,
