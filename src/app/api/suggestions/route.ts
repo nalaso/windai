@@ -14,7 +14,7 @@ export async function GET(req: Request): Promise<Response> {
 
     await generateText({
       model: llm(modelId),
-      temperature: 1,
+      topP: 1,
       tools: {
         appIdea: tool({
           description: 'Generate an array of 5 app ideas for a web or mobile application or specific functionality within an app',
