@@ -517,7 +517,12 @@ const UI = ({ params }: { params: any }) => {
 				throw new Error('Failed to generate page description');
 			}
 
-			const codeDescription = await description.json();
+			const pageDescription = await description.json();
+			const codeDescription = prompt + `
+			 -----
+			 Focus on features like
+			 ${pageDescription}
+			`;
 
 			const res = await fetch('/api/generate-code', {
 				method: 'POST',
@@ -598,7 +603,12 @@ const UI = ({ params }: { params: any }) => {
 				throw new Error('Failed to generate page description');
 			}
 
-			const codeDescription = await description.json();
+			const pageDescription = await description.json();
+			const codeDescription = prompt + `
+			 -----
+			 Focus on features like
+			 ${pageDescription}
+			`;
 
 			const res = await fetch('/api/generate-code', {
 				method: 'POST',
