@@ -33,7 +33,7 @@ ${jsxCode}
 export default Component;`;
 }
 
-const shadcnCode = (htmlCode:string) => {
+const shadcnCode = (reactCode:string) => {
     const componentToModuleMap = {
         Accordion: "accordion",
         AccordionItem: "accordion",
@@ -293,7 +293,7 @@ const shadcnCode = (htmlCode:string) => {
     const capitalizedTags = new Set<string>();
 
     // Replace HTML tags with capitalized component names and collect them
-    const jsxCode = htmlCode.replace(/<([A-Z][A-Za-z]*)\b[^>]*>/g, (match:any, p1:any) => {
+    const jsxCode = reactCode.replace(/<([A-Z][A-Za-z]*)\b[^>]*>/g, (match:any, p1:any) => {
         capitalizedTags.add(p1);
         return match;
     });
@@ -316,15 +316,41 @@ const shadcnCode = (htmlCode:string) => {
         .map(([modulePath, components]) => `import { ${components.join(", ")} } from "${modulePath}";`)
         .join("\n");
 
+    // find statements like useState, useEffect, useRef, etc
+    const importHooks = reactCode.match(/import\s+{([^}]+)}\s+from\s+['"]react['"];/);
+
     // Return the final JSX component as a string
     return `
+
+${importHooks ? importHooks[0] : ''}
 ${importCode}
 
-const Component: React.FC = () => {
-return (
-${jsxCode}
-);
+${reactCode.replace(/import\s+({[^}]*})?\s+from\s+['"][^'"]+['"];\s*/g, '')}
+`;
 }
 
-export default Component;`;
+
+export const trimCode = (str: string): string => {
+    // Split the string into lines
+    const lines = str.split('\n');
+    
+    // Find the index of the export statement
+    const exportIndex = lines.findIndex(line => line.trim().startsWith('export'));
+
+    // Filter out lines before 'export' that don't start with 'import'
+    const trimmedLines = lines
+        .slice(0, exportIndex)
+        .filter(line => line.trim().startsWith('import'))
+        .concat(lines.slice(exportIndex));
+
+    // Join the lines back into a string
+    let code = trimmedLines.join('\n');
+
+    // Trim after the last closing brace
+    const lastBraceIndex = code.lastIndexOf('}');
+    if (lastBraceIndex !== -1) {
+        code = code.slice(0, lastBraceIndex + 1);
+    }
+
+    return code;
 }

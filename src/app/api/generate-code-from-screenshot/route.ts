@@ -1,3 +1,4 @@
+import { trimCode } from '@/lib/code';
 import { llm } from '@/lib/llm';
 import { getScreenshotPrompt, getElementProperty, getRefienedElementProperty } from '@/lib/prompt';
 import { generateText } from 'ai';
@@ -41,11 +42,7 @@ export async function POST(req: Request): Promise<Response> {
     const { text } = result;
     
     // Clean up the generated code
-    const code = text
-      .replace(/```/g, '')
-      .replace(/jsx|tsx|ts|js/g, '')
-      .replace("asChild", " ")
-      .replace("fixed", "absolute");
+    const code = trimCode(text.replace(/```/g, '').replace(/typescript|javascript|jsx|tsx|ts|js/g, '').replace("asChild"," ").replace("fixed","absolute").trim()); 
 
     return new Response(JSON.stringify(code), {
       headers: {

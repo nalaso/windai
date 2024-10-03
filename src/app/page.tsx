@@ -4,7 +4,7 @@ import Header from "@/components/header";
 import HomeUICards from "@/components/home-uis";
 import Suggestions from "@/components/suggestions";
 import { TipsCarousel } from "@/components/tips-carousel";
-import { Badge, Button, Card, DropdownMenu,DropdownMenuItem, Input, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui";
+import { Badge, Button, Card, DropdownMenu, DropdownMenuItem, Input, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { useUIState } from "@/hooks/useUIState";
 import { Image, InfoIcon, LoaderCircle, Lock, SendHorizontal, X } from "lucide-react";
@@ -20,7 +20,7 @@ export default function Home() {
     const { data: session, status } = useSession()
     const userId = session?.user?.id
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);   
+    const fileInputRef = useRef<HTMLInputElement>(null);
     
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -80,7 +80,7 @@ export default function Home() {
     return (
         <div>
             <Header />
-            <div className="flex items-center justify-center h-[70vh]">
+            <div className="flex items-center justify-center mt-16">
                 <div className="w-full max-w-lg h-auto items-center flex flex-col space-y-6">
                     <p className="font-bold text-5xl">
                         Generate. Ship. Done.
@@ -158,7 +158,7 @@ export default function Home() {
                                     <SelectItem disabled value="lucidereact"><div className="flex items-center"><p className="mr-2">private</p> <Lock size={14} /></div></SelectItem>
                                 </SelectContent>
                             </Select>
-                            <Button variant={"default"} onClick={()=>router.push("/settings/llm")} className="w-min focus:ring-0 h-8">
+                            <Button variant={"default"} onClick={() => router.push("/settings/llm")} className="w-min focus:ring-0 h-8">
                                 LLM
                             </Button>
                         </div>
@@ -168,17 +168,17 @@ export default function Home() {
                             <div className="bg-yellow-50 p-2 rounded-md flex items-start space-x-2 text-yellow-800">
                                 <InfoIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
                                 <p className="text-sm">
-                                Image to code is in Beta. It doesn&apos;t support ShadcnUI/NextUI yet.
+                                    Image to code is in Beta. It doesn&apos;t support ShadcnUI/NextUI yet.
                                 </p>
                             </div>
                         )
                     }
                     {
-                        uiType==="nextui-react" && (
+                        uiType === "nextui-react" && (
                             <div className="bg-yellow-50 p-2 rounded-md flex items-start space-x-2 text-yellow-800">
                                 <InfoIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
                                 <p className="text-sm">
-                                NextUI is in Beta. May generate unparasarable code thus resulting in error while rendering.
+                                    NextUI is in Beta. May generate unparasarable code thus resulting in error while rendering.
                                 </p>
                             </div>
                         )

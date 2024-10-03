@@ -2,6 +2,7 @@ import { generateText } from 'ai';
 import { getModifierPromt } from '@/lib/prompt';
 import { z } from 'zod';
 import { llm } from '@/lib/llm';
+import { trimCode } from '@/lib/code';
 
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
@@ -21,13 +22,22 @@ export async function POST(req: Request): Promise<Response> {
 
     const result = await generateText({
       model: llm(modelId),
-      prompt: getModifierPromt(precode, modifyDescription, uiType),
+      messages: [
+        {
+          role: "system",
+          content: getModifierPromt(precode, modifyDescription, uiType),
+        },
+        {
+          role: "user",
+          content: `Now modify React code: ${precode} based on this description: ${modifyDescription}`,
+        },
+      ],
     });
 
     const { text } = result;
 
     //TODO revert 'fixed' to 'absolute' after fixing the bug in iframe
-    const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '').replace("asChild", " ").replace("fixed","absolute");
+    const code = trimCode(text.replace(/```/g, '').replace(/typescript|javascript|jsx|tsx|ts|js/g, '').replace("asChild"," ").replace("fixed","absolute").trim()); 
 
     return new Response(JSON.stringify(code), {
       headers: {

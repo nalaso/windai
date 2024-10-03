@@ -1,6 +1,7 @@
+import { trimCode } from '@/lib/code';
 import { llm } from '@/lib/llm';
-import { getGenerationPrompt } from '@/lib/prompt';
-import { generateText } from 'ai';
+import { getGenerationPrompt, getOptimizerPrompt } from '@/lib/prompt';
+import { generateText, tool } from 'ai';
 import { z } from 'zod';
 
 export const maxDuration = 60;
@@ -19,12 +20,22 @@ export async function POST(req: Request): Promise<Response> {
 
     const result = await generateText({
       model: llm(modelId),
-      prompt: getGenerationPrompt(codeDescription,uiType),
+      messages: [
+        {
+          role: "system",
+          content: getGenerationPrompt(uiType),
+        },
+        {
+          role: "user",
+          content: `Now generate React code for this: ${codeDescription} `,
+        },
+      ],
     });
 
     const { text } = result;
+    
     //TODO revert 'fixed' to 'absolute' after fixing the bug in iframe
-    const code = text.replace(/```/g, '').replace(/jsx|tsx|ts|js/g, '').replace("asChild"," ").replace("fixed","absolute");
+    const code = trimCode(text.replace(/```/g, '').replace(/typescript|javascript|jsx|tsx|ts|js/g, '').replace("asChild"," ").replace("fixed","absolute").trim()); 
 
     return new Response(JSON.stringify(code), {
       headers: {

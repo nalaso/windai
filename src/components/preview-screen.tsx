@@ -9,6 +9,7 @@ import * as NextComponents from '@/lib/nextui-components';
 import { NextUIProvider } from '@nextui-org/system';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import ReactLiveContent from './react-live';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -171,7 +172,8 @@ const PreviewScreen = ({ html_code, uiType }: { html_code: string, uiType: strin
   return (
     <NextUIProvider>
       {/* <iframe ref={iframeRef} style={{ width: '100%', height: '100%', border: 'none' }} /> */}
-      <ParsedContent html_code={html_code} theme={theme} uiType={uiType} />
+      {/* <ParsedContent html_code={html_code} theme={theme} uiType={uiType} /> */}
+      <ReactLiveContent react_code={html_code} theme={theme} uiType={uiType} />
     </NextUIProvider>
   );
 };
