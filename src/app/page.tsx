@@ -65,13 +65,13 @@ export default function Home() {
     }
 
     useEffect(() => {
-        const cv = 1;
+        const cv = 2;
         const lv = parseInt(localStorage.getItem("cv") || "0");
         if (lv < cv) {
             toast.info("Changing default models to recomended models improve performance.");
             localStorage.setItem('initialModel', "google:gemini-1.5-pro-002");
             localStorage.setItem('modifierModel', "google:gemini-1.5-flash-002");
-            localStorage.setItem('descriptiveModel', "githubMistral:Mistral-large");
+            localStorage.setItem('descriptiveModel', "google:gemini-1.5-flash-002");
             localStorage.setItem('imageModel', "mistral:pixtral-12b-2409");
             localStorage.setItem("cv", cv.toString());
         }
