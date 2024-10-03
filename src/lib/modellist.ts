@@ -171,16 +171,16 @@ const openaiModels:Model[] = [
         model: 'gemini-1.5-pro-latest',
     },
     {
-        modelId: 'google:gemini-1.5-pro',
-        model: 'gemini-1.5-pro',
+        modelId: 'google:gemini-1.5-pro-001',
+        model: 'gemini-1.5-pro-001',
     },
     {
         modelId: 'google:gemini-1.5-flash-latest',
         model: 'gemini-1.5-flash-latest',
     },
     {
-        modelId: 'google:gemini-1.5-flash',
-        model: 'gemini-1.5-flash',
+        modelId: 'google:gemini-1.5-flash-001',
+        model: 'gemini-1.5-flash-001',
     },
     {
         modelId: 'google:gemma-2-27b-it',
