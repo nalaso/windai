@@ -1,4 +1,5 @@
 "use client"
+import { getLocalStorageItem } from "@/lib/localStorage";
 import { create } from "zustand";
 
 interface ModelStore {
@@ -12,17 +13,10 @@ interface ModelStore {
     setImageModel: (model: string) => void;
 }
 
-const getLocalStorageItem = (key: string, defaultValue: string): string => {
-    if (typeof window !== 'undefined') {
-        return window.localStorage.getItem(key) || defaultValue;
-    }
-    return defaultValue;
-};
-
 export const useModel = create<ModelStore>((set) => ({
-    initialModel: getLocalStorageItem('initialModel', 'google:gemini-1.5-pro-latest'),
+    initialModel: getLocalStorageItem('initialModel', 'google:gemini-1.5-pro-002'),
     modifierModel: getLocalStorageItem('modifierModel', 'groq:llama-3.1-70b-versatile'),
-    descriptiveModel: getLocalStorageItem('descriptiveModel', 'google:gemini-1.5-pro-latest'),
+    descriptiveModel: getLocalStorageItem('descriptiveModel', 'google:gemini-1.5-pro-002'),
     imageModel: getLocalStorageItem('imageModel', 'mistral:pixtral-12b-2409'),
     setInitialModel: (model) => set(() => {
         localStorage.setItem('initialModel', model);

@@ -39,7 +39,7 @@ export const getGenerationPrompt = (uiType: string) => {
             End every js/ts statement with a semicolon. Make sure to include semicolon to import statements as well.
             Do not add explanations like here is the code, i have added the code etc. Just provide the react code.
             I need the response such that i can directly map it a file without any syntax errors.
-            ${true ? "use typescript for the code. Do not define custom interface or types. just use predefined types like string, number etc " : "use javascript for the code"}
+            ${false ? "use typescript for the code. Do not define custom interface or types. just use predefined types like string, number etc " : "use javascript for the complete code"}
 
             eg of Code:
             import { useState } from 'react';
@@ -95,7 +95,7 @@ export const getGenerationPrompt = (uiType: string) => {
             -------------
             After generating the code, ensure the below is followed:
             - All comments and explanations are removed from the code.
-            - No custom interface or types are defined. Use predefined types like string, number etc.
+            ${false && '- No custom interface or types are defined. Use predefined types like string, number etc.'}
         `
     )
 }
@@ -158,7 +158,7 @@ export const getModifierPromt = (precode: string, modifyDescription: string, uiT
             End every js/ts statement with a semicolon. Make sure to include semicolon to import statements as well.
             Do not add explanations like here is the code, i have added the code etc. Just provide the react code.
             I need the response such that i can directly map it a file without any syntax errors.
-            ${true ? "use typescript for the code. Do not define custom interface or types. just use predefined types like string, number etc " : "use javascript for the code"}
+            ${false ? "use typescript for the code. Do not define custom interface or types. just use predefined types like string, number etc " : "use javascript for the code"}
 
             eg of Code:
             import { useState } from 'react';
@@ -226,7 +226,7 @@ export const getScreenshotPrompt = (codeDescription: string, properties: string)
             End every js/ts statement with a semicolon. Make sure to include semicolon to import statements as well.
             Do not add explanations like here is the code, i have added the code etc. Just provide the react code.
             I need the response such that i can directly map it a file without any syntax errors.
-            ${true ? "use typescript for the code. Do not define custom interface or types. just use predefined types like string, number etc " : "use javascript for the code"}
+            ${false ? "use typescript for the code. Do not define custom interface or types. just use predefined types like string, number etc " : "use javascript for the code"}
 
             Images:
             When images are required, ${true?'check if you can genrate those images else utilize the img tag with picsum.photos as the source':''}.
