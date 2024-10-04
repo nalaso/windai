@@ -21,6 +21,7 @@ import { useSession } from "next-auth/react"
 import { useModel } from "@/hooks/useModel"
 import { isModelSupported } from "@/lib/supportedllm"
 import { useClientMode } from "@/hooks/useMode"
+import { deleteUI } from "@/actions/ui/delete-ui"
 
 const UI = ({ params }: { params: any }) => {
 	const ref = useRef<ImperativePanelGroupHandle>(null);
@@ -1094,6 +1095,11 @@ const UI = ({ params }: { params: any }) => {
 			).map(result => result.value);
 
 			if (successfulResults.length === 0) {
+				if(ui?.subPrompts.length === 0){
+					toast.error('All code generation attempts failed. Please try again with another model.');
+					await deleteUI(uiid, userId!);
+					router.push("/");
+				}
 				throw new Error('All code generation attempts failed');
 			}
 
