@@ -35,7 +35,6 @@ const ReactLiveContent = ({ react_code, theme, uiType }: { react_code: string, t
 
     useEffect(() => {
         if (!scope || !react_code) return;   
-        console.log(react_code);        
         const cleanedCodeString = react_code
         .replace(/import\s+({[^}]*})?\s+from\s+['"][^'"]+['"];\s*/g, '') // Remove all import statements
         .replace(/import\s+({[^}]*})?\s+from\s+['"][^'"]+['"]\s*/g, '') // Remove all import statements

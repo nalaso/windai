@@ -47,9 +47,6 @@ export default function MinimalistProfilePage({ params }: { params: { username: 
     const router = useRouter();
     const { username } = params;
 
-    console.log(username);
-
-
     useEffect(() => {
         const fetchUser = async () => {
             setIsLoading(true)

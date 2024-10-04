@@ -173,7 +173,7 @@ const UIRigthHeader = ({
                     <DropdownMenuContent>
                         <DropdownMenuItem className="flex gap-3">
                             <p className="text-gray-400">ModelId : </p>
-                            <Badge variant={"secondary"}>{modelId || "anthropicVertex:claude-3-5-sonnet@20240620"}</Badge>
+                            <Badge variant={"secondary"}>{modelId || ""}</Badge>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="flex gap-3">
                             <p className="text-gray-400">Created At : </p>

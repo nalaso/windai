@@ -12,7 +12,7 @@ export interface ModeStore {
 export const useMode = create<ModeStore>((set) => ({
     preciseMode: true,
     balancedMode: true,
-    creativeMode: true,
+    creativeMode: false,
     setMode: (mode: string, value: boolean) => set(() => {
         if (typeof window !== 'undefined') {
             localStorage.setItem(mode, value.toString());
@@ -29,7 +29,7 @@ export const useClientMode = () => {
         setHydrated(true);
         const precise = localStorage.getItem('preciseMode') === 'true' || localStorage.getItem('preciseMode') === null;
         const balanced = localStorage.getItem('balancedMode') === 'true' || localStorage.getItem('balancedMode') === null;
-        const creative = localStorage.getItem('creativeMode') === 'true' || localStorage.getItem('creativeMode') === null;
+        const creative = localStorage.getItem('creativeMode') === 'true';
                 
         setMode('preciseMode', precise);
         setMode('balancedMode', balanced);
@@ -37,7 +37,7 @@ export const useClientMode = () => {
     }, []);
 
     if (!hydrated) {
-        return { preciseMode: true, balancedMode: true, creativeMode: true, setMode }; // Default values
+        return { preciseMode: true, balancedMode: true, creativeMode: false, setMode }; // Default values
     }
 
     return { preciseMode, balancedMode, creativeMode, setMode };
