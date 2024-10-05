@@ -12,9 +12,11 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useState, useRef, useEffect } from "react";
+import { useModel } from "@/hooks/useModel";
 
 export default function Home() {
     const router = useRouter();
+    const { setInitialModel, setModifierModel, setDescriptiveModel, setImageModel } = useModel();
     const { input, setInput, loading, setLoading, imageBase64, setImageBase64, uiType, setUIType } = useUIState();
     const { toggle } = useAuthModal()
     const { data: session, status } = useSession()
@@ -65,14 +67,14 @@ export default function Home() {
     }
 
     useEffect(() => {
-        const cv = 2;
+        const cv = 3;
         const lv = parseInt(localStorage.getItem("cv") || "0");
         if (lv < cv) {
-            toast.info("Changing default models to recomended models improve performance.");
-            localStorage.setItem('initialModel', "google:gemini-1.5-pro-002");
-            localStorage.setItem('modifierModel', "google:gemini-1.5-flash-002");
-            localStorage.setItem('descriptiveModel', "google:gemini-1.5-flash-002");
-            localStorage.setItem('imageModel', "mistral:pixtral-12b-2409");
+            toast.info("Changing default models to recommended models for better performance.");
+            setInitialModel("glhf:hf:meta-llama/Meta-Llama-3.1-405B-Instruct");
+            setModifierModel("glhf:hf:meta-llama/Meta-Llama-3.1-70B-Instruct");
+            setDescriptiveModel("glhf:hf:google/gemma-2-27b-it");
+            setImageModel("mistral:pixtral-12b-2409");
             localStorage.setItem("cv", cv.toString());
         }
     }, [])

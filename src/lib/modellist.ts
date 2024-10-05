@@ -327,6 +327,14 @@ const openRouterModels:Model[] = [
     {
         modelId: 'openRouter:microsoft/phi-3-medium-128k-instruct:free',
         model: 'phi-3-medium-128k-instruct:free',
+    },
+    {
+        modelId: 'openRouter:meta-llama/llama-3.2-3b-instruct:free',
+        model: 'llama-3.2-3b-instruct:free',
+    },
+    {
+        modelId: 'openRouter:qwen/qwen-2-7b-instruct:free',
+        model: 'qwen-2-7b-instruct:free',
     }
 ];
 
@@ -372,26 +380,49 @@ const cohereModels:Model[] = [
     },
 ];
 
+const glhfModels:Model[] = [
+    {
+        modelId: 'glhf:hf:deepseek-ai/deepseek-llm-67b-chat',
+        model: 'deepseek-llm-67b-chat',
+    },
+    {
+        modelId: 'glhf:hf:google/gemma-2-27b-it',
+        model: 'gemma-2-27b-it',
+    },
+    {
+        modelId: 'glhf:hf:meta-llama/Meta-Llama-3.1-405B-Instruct',
+        model: 'Meta-Llama-3.1-405B-Instruct',
+    },
+    {
+        modelId: 'glhf:hf:meta-llama/Meta-Llama-3.1-70B-Instruct',
+        model: 'Meta-Llama-3.1-70B-Instruct',
+    },
+    {
+        modelId: 'glhf:hf:NousResearch/Hermes-3-Llama-3.1-70B',
+        model: 'Hermes-3-Llama-3.1-70B',
+    }
+];
+
 const groqModels:Model[] = [
     {
-        modelId: 'groq:gemma2-9b-it',
-        model: 'gemma2-9b-it',
+        modelId: 'groq:llama3-groq-70b-8192-tool-use-preview',
+        model: 'llama3-groq-70b-8192-tool-use-preview',
     },
     {
         modelId: 'groq:llama-3.1-70b-versatile',
         model: 'llama-3.1-70b-versatile',
     },
     {
-        modelId: 'groq:llama-3.1-8b-instant',
-        model: 'llama-3.1-8b-instant',
+        modelId: 'groq:llama-3.2-90b-vision-preview',
+        model: 'llama-3.2-90b-vision-preview',
     },
     {
         modelId: 'groq:llama3-70b-8192',
         model: 'llama3-70b-8192',
     },
     {
-        modelId: 'groq:mixtral-8x7b-32768',
-        model: 'mixtral-8x7b-32768',
+        modelId: 'groq:gemma2-9b-it',
+        model: 'gemma2-9b-it',
     },
 ];
 
@@ -413,5 +444,6 @@ export const models = {
     together: togetherModels,
     cohere: cohereModels,
     groq: groqModels,
+    glhf: glhfModels,
     ollama: ollamaModels,
 };

@@ -104,6 +104,11 @@ const together = createOpenAI({
     apiKey: process.env.TOGETHER_API_KEY,
 });
 
+const glhf = createOpenAI({
+    baseURL: process.env.GLHF_API_URL,
+    apiKey: process.env.GLHF_API_KEY,
+});
+
 const anthropicVertex = createAnthropicVertex({   // full documentation here: ✦ https://github.com/nalaso/anthropic-vertex-ai
     projectId: process.env.ANTHROPIC_VERTEX_PROJECT,
     region: process.env.ANTHROPIC_VERTEX_LOCATION,
@@ -129,6 +134,7 @@ const modelRegistry = createProviderRegistry({
     together: together,
     cohere: cohere,
     groq: groq,
+    glhf: glhf,
     ollama: ollama,
 });
 

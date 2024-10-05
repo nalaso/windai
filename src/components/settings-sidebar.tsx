@@ -9,7 +9,7 @@ const sidebarItems = [
   { name: 'Themes', href: '/themes' },
   { name: 'UI', href: '/settings/ui' },
   { name: 'LLM', href: '/settings/llm' }, // Updated this line
-  { name: 'Environment Variables', href: '/settings/environment-variables' },
+  { name: 'API keys', href: '/settings/api-key' },
   { name: 'About', href: '/settings/about' },
 ]
 

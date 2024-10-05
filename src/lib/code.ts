@@ -331,26 +331,12 @@ ${reactCode.replace(/import\s+({[^}]*})?\s+from\s+['"][^'"]+['"];\s*/g, '')}
 
 
 export const trimCode = (str: string): string => {
-    // Split the string into lines
-    const lines = str.split('\n');
-    
-    // Find the index of the export statement
-    const exportIndex = lines.findIndex(line => line.trim().startsWith('export'));
+    const importIndex = str.indexOf('import');
+    const lastBraceIndex = str.lastIndexOf('}');
 
-    // Filter out lines before 'export' that don't start with 'import'
-    const trimmedLines = lines
-        .slice(0, exportIndex)
-        .filter(line => line.trim().startsWith('import'))
-        .concat(lines.slice(exportIndex));
-
-    // Join the lines back into a string
-    let code = trimmedLines.join('\n');
-
-    // Trim after the last closing brace
-    const lastBraceIndex = code.lastIndexOf('}');
-    if (lastBraceIndex !== -1) {
-        code = code.slice(0, lastBraceIndex + 1);
+    if (importIndex !==-1 && lastBraceIndex !== -1) {
+        return str.slice(importIndex, lastBraceIndex + 1);
     }
 
-    return code;
+    return str;
 }
