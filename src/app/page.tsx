@@ -11,7 +11,7 @@ const LINK = "https://pwhl.dev/w-windai";
 
 type Phase = "idle" | "walk" | "punch" | "break" | "done";
 // How long each phase lasts before the next one starts (ms).
-const TIMELINE: [Phase, number][] = [["idle", 1200], ["walk", 2200], ["punch", 1500], ["break", 1100], ["done", 0]];
+const TIMELINE: [Phase, number][] = [["idle", 1200], ["walk", 6000], ["punch", 1500], ["break", 1100], ["done", 0]];
 
 export default function Home() {
     const [phase, setPhase] = useState<Phase>("idle");
@@ -38,11 +38,11 @@ export default function Home() {
         <main className={`relative min-h-screen overflow-hidden bg-white ${phase === "punch" ? "wa-shake" : ""}`}>
             <style>{`
                 .wa-sprite { width: 96px; height: 192px; background-size: 576px 192px; image-rendering: pixelated; }
-                .wa-walk { background-image: url(${ASSETS}/lead-walk-right.png); animation: wa-frames .6s steps(6) infinite; }
+                .wa-walk { background-image: url(${ASSETS}/lead-walk-right.png); animation: wa-frames 1s steps(6) infinite; }
                 .wa-punch { background-image: url(${ASSETS}/lead-punch-right.png); animation: wa-frames .5s steps(6) 3; }
                 @keyframes wa-frames { from { background-position: 0 0 } to { background-position: -576px 0 } }
-                .wa-enter { animation: wa-enter 2.2s linear forwards; }
-                @keyframes wa-enter { from { transform: translateX(-100vw) } to { transform: translateX(6px) } }
+                .wa-enter { animation: wa-enter 6s linear forwards; }
+                @keyframes wa-enter { from { transform: translateX(min(-96px, calc(18rem - 50vw))) } to { transform: translateX(6px) } }
                 .wa-shake { animation: wa-shake .25s linear 6; }
                 @keyframes wa-shake { 0%,100% { transform: translate(0,0) } 25% { transform: translate(-6px,3px) } 50% { transform: translate(5px,-4px) } 75% { transform: translate(-3px,-2px) } }
                 .wa-fall { transition: transform 1s cubic-bezier(.5,0,.9,.5), opacity 1s ease-in; opacity: 0; pointer-events: none; }
@@ -63,7 +63,6 @@ export default function Home() {
                             WindAI
                         </div>
                         <div className="flex gap-3">
-                            <span className={`rounded-lg bg-zinc-900 px-4 py-2 font-semibold text-white ${fall(1)}`}>Github</span>
                             <span className={`rounded-lg bg-zinc-900 px-4 py-2 font-semibold text-white ${fall(2)}`}>Sign In</span>
                         </div>
                     </header>
