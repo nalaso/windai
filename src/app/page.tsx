@@ -18,10 +18,13 @@ export default function Home() {
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-[#1a1a1a] sm:text-6xl">
                 <span className="text-[#8a8580] line-through decoration-2">WindAI</span> is now{" "}
-                <a href="https://pwhl.dev/e-windai" className="text-[#CC4410] hover:underline">
+                <a href="https://pwhl.dev/w-windai" className="text-[#CC4410] hover:underline">
                     Paddlewheel
                 </a>
             </h1>
+            <a href="https://pwhl.dev/w-windai" className="-mt-4 font-mono text-lg text-[#CC4410] underline underline-offset-4">
+                pwhl.dev/w-windai
+            </a>
         </main>
     );
 }
