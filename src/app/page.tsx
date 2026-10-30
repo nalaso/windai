@@ -11,7 +11,7 @@ const LINK = "https://pwhl.dev/w-windai";
 
 type Phase = "idle" | "walk" | "punch" | "break" | "done";
 // How long each phase lasts before the next one starts (ms).
-const TIMELINE: [Phase, number][] = [["idle", 1200], ["walk", 6000], ["punch", 1500], ["break", 1100], ["done", 0]];
+const TIMELINE: [Phase, number][] = [["idle", 300], ["walk", 6000], ["punch", 1500], ["break", 1100], ["done", 0]];
 
 export default function Home() {
     const [phase, setPhase] = useState<Phase>("idle");
@@ -42,7 +42,7 @@ export default function Home() {
                 .wa-punch { background-image: url(${ASSETS}/lead-punch-right.png); animation: wa-frames .5s steps(6) 3; }
                 @keyframes wa-frames { from { background-position: 0 0 } to { background-position: -576px 0 } }
                 .wa-enter { animation: wa-enter 6s linear forwards; }
-                @keyframes wa-enter { from { transform: translateX(min(-96px, calc(18rem - 50vw))) } to { transform: translateX(6px) } }
+                @keyframes wa-enter { from { transform: translateX(min(0px, calc(18rem - 50vw + 96px))) } to { transform: translateX(6px) } }
                 .wa-shake { animation: wa-shake .25s linear 6; }
                 @keyframes wa-shake { 0%,100% { transform: translate(0,0) } 25% { transform: translate(-6px,3px) } 50% { transform: translate(5px,-4px) } 75% { transform: translate(-3px,-2px) } }
                 .wa-fall { transition: transform 1s cubic-bezier(.5,0,.9,.5), opacity 1s ease-in; opacity: 0; pointer-events: none; }
@@ -73,8 +73,9 @@ export default function Home() {
 
                         <div className="relative mt-10 w-full max-w-xl">
                             {(phase === "walk" || phase === "punch") && (
-                                <div className="absolute bottom-0 right-full">
-                                    <div className={`wa-sprite ${phase === "walk" ? "wa-walk wa-enter" : "wa-punch"}`} style={phase === "punch" ? { transform: "translateX(6px)" } : undefined} />
+                                // Movement on the wrapper, leg frames on the sprite: one element can't run both animations.
+                                <div className={`absolute bottom-0 right-full ${phase === "walk" ? "wa-enter" : ""}`} style={phase === "punch" ? { transform: "translateX(6px)" } : undefined}>
+                                    <div className={`wa-sprite ${phase === "walk" ? "wa-walk" : "wa-punch"}`} />
                                 </div>
                             )}
                             <div className={`rounded-xl bg-black p-4 text-left text-white shadow-lg ${phase === "punch" ? "wa-shake" : ""} ${fall(2)}`}>
