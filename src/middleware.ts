@@ -23,6 +23,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-    // Everything except Next's own files and the icons the notice page uses.
-    matcher: ["/((?!_next/|favicon.ico|icon.png|icon$).*)"],
+    // Everything except Next's own files and the images the notice page uses.
+    matcher: ["/((?!_next/|favicon.ico|icon.png|icon$|lead-walk-right.png|lead-punch-right.png).*)"],
 };

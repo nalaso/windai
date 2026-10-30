@@ -38,8 +38,8 @@ export default function Home() {
         <main className={`relative min-h-screen overflow-hidden bg-white ${phase === "punch" ? "wa-shake" : ""}`}>
             <style>{`
                 .wa-sprite { width: 96px; height: 192px; background-size: 576px 192px; image-rendering: pixelated; }
-                .wa-walk { background-image: url(${ASSETS}/lead-walk-right.png); animation: wa-frames 1s steps(6) infinite; }
-                .wa-punch { background-image: url(${ASSETS}/lead-punch-right.png); animation: wa-frames .5s steps(6) 3; }
+                .wa-walk { background-image: url(/lead-walk-right.png); animation: wa-frames 1s steps(6) infinite; }
+                .wa-punch { background-image: url(/lead-punch-right.png); animation: wa-frames .5s steps(6) 3; }
                 @keyframes wa-frames { from { background-position: 0 0 } to { background-position: -576px 0 } }
                 .wa-enter { animation: wa-enter 6s linear forwards; }
                 @keyframes wa-enter { from { transform: translateX(min(0px, calc(18rem - 50vw + 96px))) } to { transform: translateX(6px) } }
