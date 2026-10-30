@@ -104,5 +104,8 @@
     "prisma": "^5.18.0",
     "tailwindcss": "^3.4.6",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": "26.x"
   }
 }
